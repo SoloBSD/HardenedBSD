@@ -1,5 +1,5 @@
 \ Copyright (c) 2006-2015 Devin Teske <dteske@FreeBSD.org>
-\ Copyright (c) 2015-2016 Oliver Pinter <op@HardenedBSD.org>
+\ Copyright (c) 2016 Guillermo Garcia Rojas C. <garciarojas@gmail.com>
 \ All rights reserved.
 \ 
 \ Redistribution and use in source and binary forms, with or without
@@ -33,15 +33,14 @@
 	1+ \ increase y for next time we're called
 ;
 
-: brand ( x y -- ) \ "FreeBSD" [wide] logo in B/W (6 rows x 67 columns)
+: brand ( x y -- ) \ "SoloBSD" [wide] logo in B/W (6 rows x 67 columns)
 
-	s"  _    _               _                     _ ____   _____ _____  " brand+
-	s" | |  | |             | |                   | |  _ \ / ____|  __ \ " brand+
-	s" | |__| | __ _ _ __ __| | ___ _ __   ___  __| | |_) | (___ | |  | |" brand+
-	s" |  __  |/ _` | '__/ _` |/ _ \ '_ \ / _ \/ _` |  _ < \___ \| |  | |" brand+
-	s" | |  | | (_| | | | (_| |  __/ | | |  __/ (_| | |_) |____) | |__| |" brand+
-	s" |_|  |_|\__,_|_|  \__,_|\___|_| |_|\___|\__,_|____/|_____/|_____/ " brand+
+	s"   _____       _       ____   _____ _____  " brand+
+	s"  / ____|     | |     |  _ \ / ____|  __ \ " brand+
+	s" | (___   ___ | | ___ | |_) | (___ | |  | |" brand+
+	s"  \___ \ / _`\| |/ _ \|  _ < \___ \| |  | |" brand+
+	s"  ____) | (_) | | (_) | |_) |____) | |__| |" brand+
+	s" |_____/ \___/|_|\___/|____/|_____/|_____/ " brand+
 
 	2drop
 ;
-

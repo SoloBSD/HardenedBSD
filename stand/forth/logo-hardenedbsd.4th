@@ -1,5 +1,5 @@
 \ Copyright (c) 2006-2015 Devin Teske <dteske@FreeBSD.org>
-\ Copyright (c) 2015-2016 Oliver Pinter <op@HardenedBSD.org>
+\ Copyright (c) 2016 Guillermo Garcia Rojas C. <garciarojas@gmail.com>
 \ All rights reserved.
 \ 
 \ Redistribution and use in source and binary forms, with or without
@@ -34,20 +34,20 @@
 	1+ \ increase y for next time we're called
 ;
 
-: logo ( x y -- ) \ color HardenedBSD mascot (15 rows x 33 columns)
+: logo ( x y -- ) \ color SoloBSD mascot (15 rows x 33 columns)
 
 	s" uKOS2qsmkfe38kEuXLimP+7XoBiuIt5k" logo+
-	s" BM@[36mHardened@[34mBSD@[mxfOL9QwvfA6yxGHkNMG" logo+
+	s" BM@[33mSolo@[31mBSD@[mxfOL9QwclsovfA6yxGHkNMG" logo+
 	s" 2I7ADmw7Mp/P8Y4wjnBFDNKvNzdZa/uu" logo+
 	s" 7jx0/j28DcHs1oTUiFxDezXj0+bYBAjk" logo+
 	s" M/WeI4vOFPUZQcUiqAhCItlLY/1/YsdU" logo+
 	s" bYCu3JOWsOA/Ctw0oVmHA+jY6Z8RJnsT" logo+
-	s" NTm3YVdJVYQ+O2ltoSw@[36mHardened@[34mBSD@[mVD" logo+
+	s" NTm3YVdJdr92VYQ+O2ltoSw@[33mSolo@[31mBSD@[mVD" logo+
 	s" vji9p89gQvsPgS9hh9ekUCw/0TnSeQ1W" logo+
 	s" NHcmBLfiNO7mU9D4rCxiSQfifcIZzC78" logo+
 	s" uwaNYp+XGq+qEt7pQ+aX2nsJ2juBCGai" logo+
 	s" fTclPrFDFBNSqyrmOEI3Lrkn3eudPbJU" logo+
-	s" Nl@[36mHardened@[34mBSD@[mvCOXT59dcSRw9mB3bOl" logo+
+	s" Nl@[33mSolo@[31mBSD@[mvCOXdpwnT59dcSRw9mB3bOl" logo+
 	s" gEcyCwdlh1xWKOu9qGWcmsAhOVReHec4" logo+
 
 	2drop
