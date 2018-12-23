@@ -31,17 +31,17 @@ local drawer = require("drawer")
 
 local hardenedbsd_color = {
 "\027[muKOS2qsmkfe38kEuXLimP+7XoBiuIt5k",
-"BM\027[36mHardened\027[34mBSD\027[mxfOL9QwvfA6yxGHkNMG",
+"BM\027[33mSolo\027[31mBSD\027[mxfOL9QwclsovfA6yxGHkNMG",
 "2I7ADmw7Mp/P8Y4wjnBFDNKvNzdZa/uu",
 "7jx0/j28DcHs1oTUiFxDezXj0+bYBAjk",
 "M/WeI4vOFPUZQcUiqAhCItlLY/1/YsdU",
 "bYCu3JOWsOA/Ctw0oVmHA+jY6Z8RJnsT",
-"NTm3YVdJVYQ+O2ltoSw\027[36mHardened\027[34mBSD\027[mVD",
+"NTm3YVdJdr92VYQ+O2ltoSw\027[33mSolo\027[31mBSD\027[mVD",
 "vji9p89gQvsPgS9hh9ekUCw/0TnSeQ1W",
 "NHcmBLfiNO7mU9D4rCxiSQfifcIZzC78",
 "uwaNYp+XGq+qEt7pQ+aX2nsJ2juBCGai",
 "fTclPrFDFBNSqyrmOEI3Lrkn3eudPbJU",
-"Nl\027[36mHardened\027[34mBSD\027[mvCOXT59dcSRw9mB3bOl",
+"Nl\027[33mSolo\027[31mBSD\027[mvCOXdpwnT59dcSRw9mB3bOl",
 "gEcyCwdlh1xWKOu9qGWcmsAhOVReHec4"
 }
 
