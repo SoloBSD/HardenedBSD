@@ -12,6 +12,7 @@ SRCS=	commands.c display.c machine.c screen.c top.c \
 	username.c utils.c
 MAN=	top.1
 
+<<<<<<< HEAD
 .if ${COMPILER_TYPE} == "gcc"
 .if ${COMPILER_VERSION} >= 50000
 CFLAGS.gcc=-Wno-error=discarded-qualifiers -Wno-error=incompatible-pointer-types
@@ -22,6 +23,8 @@ NO_WERROR=
 CFLAGS.clang=-Wno-error=incompatible-pointer-types-discards-qualifiers
 
 <<<<<<< HEAD
+=======
+>>>>>>> b501965a545d878d6271e7a01b6925f70aaae287
 LIBADD=	ncursesw m kvm jail util sbuf
 =======
 LIBADD=	ncursesw m kvm jail

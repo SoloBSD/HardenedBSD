@@ -20,6 +20,10 @@ PACKAGE=	clang
 LIBADD+=	ncursesw
 LIBADD+=	pthread
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+LIBADD+=	z
+>>>>>>> b501965a545d878d6271e7a01b6925f70aaae287
 
 NOCFI=		yes
 =======

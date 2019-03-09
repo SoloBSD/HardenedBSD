@@ -12,8 +12,13 @@ LLD_SRCS=	${LLVM_SRCS}/tools/lld
 
 PACKAGE=	lld
 PROG_CXX=	ld.lld
+<<<<<<< HEAD
 
 <<<<<<< HEAD
+=======
+# Man page directory
+.PATH:		${LLD_SRCS}/docs
+>>>>>>> b501965a545d878d6271e7a01b6925f70aaae287
 .if (!defined(TOOLS_PREFIX) && ${MK_LLD_IS_LD} != "no") || \
     (defined(TOOLS_PREFIX) && ${MK_LLD_BOOTSTRAP} != "no")
 =======
@@ -42,6 +47,7 @@ SRCS+=		ELF/Arch/AArch64.cpp
 SRCS+=		ELF/Arch/AMDGPU.cpp
 SRCS+=		ELF/Arch/ARM.cpp
 SRCS+=		ELF/Arch/AVR.cpp
+SRCS+=		ELF/Arch/Hexagon.cpp
 SRCS+=		ELF/Arch/Mips.cpp
 SRCS+=		ELF/Arch/MipsArchTree.cpp
 SRCS+=		ELF/Arch/PPC.cpp
@@ -49,6 +55,7 @@ SRCS+=		ELF/Arch/PPC64.cpp
 SRCS+=		ELF/Arch/SPARCV9.cpp
 SRCS+=		ELF/Arch/X86.cpp
 SRCS+=		ELF/Arch/X86_64.cpp
+SRCS+=		ELF/CallGraphSort.cpp
 SRCS+=		ELF/Driver.cpp
 SRCS+=		ELF/DriverUtils.cpp
 SRCS+=		ELF/EhFrame.cpp
@@ -65,7 +72,6 @@ SRCS+=		ELF/OutputSections.cpp
 SRCS+=		ELF/Relocations.cpp
 SRCS+=		ELF/ScriptLexer.cpp
 SRCS+=		ELF/ScriptParser.cpp
-SRCS+=		ELF/Strings.cpp
 SRCS+=		ELF/SymbolTable.cpp
 SRCS+=		ELF/Symbols.cpp
 SRCS+=		ELF/SyntheticSections.cpp

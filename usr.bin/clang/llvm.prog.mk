@@ -23,6 +23,7 @@ PACKAGE=	clang
 
 LIBADD+=	ncursesw
 LIBADD+=	pthread
+LIBADD+=	z
 
 <<<<<<< HEAD
 NOCFI=		yes
