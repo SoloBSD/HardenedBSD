@@ -1,5 +1,6 @@
 /* $FreeBSD$ */
 /* See r303570 */
+<<<<<<< HEAD
 
 typedef void 	(*voidptr) (int *);
 
@@ -29,6 +30,9 @@ t1 (char *a, int b,
 
 void t2 (char *x, int y)
 {
+=======
+void t(void) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	int a,
 	b,
 	c;
@@ -46,6 +50,7 @@ void t2 (char *x, int y)
 	,n
 	,o
 	;
+<<<<<<< HEAD
 	int		chars[ /* push the comma beyond column 74 .... */ ], x;
 }
 
@@ -76,4 +81,6 @@ do_execve(td, args, mac_p)
 	struct mac *mac_p;
 {
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 }

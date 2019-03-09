@@ -31,10 +31,17 @@
 __FBSDID("$FreeBSD$");
 
 #include <sys/param.h>
+<<<<<<< HEAD
 #ifndef WITHOUT_CAPSICUM
 #include <sys/capsicum.h>
 #endif
 #include <sys/endian.h>
+=======
+#include <sys/endian.h>
+#ifndef WITHOUT_CAPSICUM
+#include <sys/capsicum.h>
+#endif
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <sys/socket.h>
 #include <sys/select.h>
 #include <sys/time.h>

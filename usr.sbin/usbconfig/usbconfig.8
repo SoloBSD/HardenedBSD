@@ -23,7 +23,11 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
+<<<<<<< HEAD
 .Dd April 29, 2018
+=======
+.Dd December 30, 2017
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Dt USBCONFIG 8
 .Os
 .Sh NAME
@@ -146,14 +150,29 @@ See
 for more information.
 .El
 .Sh EXAMPLES
+<<<<<<< HEAD
 List all connected USB devices and their attached interface drivers:
+=======
+Show information about the device on USB bus 1 at address 2:
+.Pp
+.Dl usbconfig -d ugen1.2 dump_info
+.Pp
+Dump HID descriptor for device on USB bus 1 at address 2:
+.Pp
+.Dl usbconfig -d ugen1.2 do_request 0x81 0x06 0x2200 0 0x100
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Pp
 .Dl usbconfig show_ifdrv
 .Pp
+<<<<<<< HEAD
 Dump device and configuration descriptors for device on USB bus 1 at address 2:
+=======
+.Dl usbconfig -d ugen1.2 dump_string Z
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Pp
 .Dl usbconfig ugen1.2 dump_all_desc
 .Pp
+<<<<<<< HEAD
 Dump HID descriptor for device on USB bus 1 at address 2:
 .Pp
 .Dl usbconfig ugen1.2 do_request 0x81 0x06 0x2200 0 0x100
@@ -161,6 +180,21 @@ Dump HID descriptor for device on USB bus 1 at address 2:
 Power off the device on USB bus 1 at address 2:
 .Pp
 .Dl usbconfig ugen1.2 power_off
+=======
+.Dl usbconfig -d ugen1.2 dump_curr_config_desc
+.Pp
+Dump device descriptor for device on USB bus 1 at address 2:
+.Pp
+.Dl usbconfig -d ugen1.2 dump_device_desc
+.Pp
+Program the device on USB bus 1 at address 2 to suspend, resume, power off, go into power save, or power on:
+.Pp
+.Dl usbconfig -d ugen1.2 suspend
+.Dl usbconfig -d ugen1.2 resume
+.Dl usbconfig -d ugen1.2 power_off
+.Dl usbconfig -d ugen1.2 power_save
+.Dl usbconfig -d ugen1.2 power_on
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Sh SEE ALSO
 .Xr usb 4 ,
 .Xr usb_quirk 4 ,

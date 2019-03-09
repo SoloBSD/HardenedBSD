@@ -81,6 +81,7 @@ static struct Info {
 	/*
 	 * Virtual memory activity.
 	 */
+<<<<<<< HEAD
 	uint64_t v_vm_faults;	/* number of address memory faults */
 	uint64_t v_io_faults;	/* page faults requiring I/O */
 	uint64_t v_cow_faults;	/* number of copy-on-writes */
@@ -102,6 +103,29 @@ static struct Info {
 	uint64_t v_dfree;	/* pages freed by daemon */
 	uint64_t v_pfree;	/* pages freed by exiting processes */
 	uint64_t v_tfree;	/* total pages freed */
+=======
+	u_int v_vm_faults;	/* number of address memory faults */
+	u_int v_io_faults;	/* page faults requiring I/O */
+	u_int v_cow_faults;	/* number of copy-on-writes */
+	u_int v_zfod;		/* pages zero filled on demand */
+	u_int v_ozfod;		/* optimized zero fill pages */
+	u_int v_swapin;		/* swap pager pageins */
+	u_int v_swapout;	/* swap pager pageouts */
+	u_int v_swappgsin;	/* swap pager pages paged in */
+	u_int v_swappgsout;	/* swap pager pages paged out */
+	u_int v_vnodein;	/* vnode pager pageins */
+	u_int v_vnodeout;	/* vnode pager pageouts */
+	u_int v_vnodepgsin;	/* vnode_pager pages paged in */
+	u_int v_vnodepgsout;	/* vnode pager pages paged out */
+	u_int v_intrans;	/* intransit blocking page faults */
+	u_int v_reactivated;	/* number of pages reactivated by pagedaemon */
+	u_int v_pdwakeups;	/* number of times daemon has awaken from sleep */
+	u_int v_pdpages;	/* number of pages analyzed by daemon */
+
+	u_int v_dfree;		/* pages freed by daemon */
+	u_int v_pfree;		/* pages freed by exiting processes */
+	u_int v_tfree;		/* total pages freed */
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	/*
 	 * Distribution of page usages.
 	 */
@@ -522,11 +546,19 @@ showkre(void)
 	PUTRATE(v_pdwakeups, VMSTATROW + 9, VMSTATCOL, 8);
 	PUTRATE(v_pdpages, VMSTATROW + 10, VMSTATCOL, 8);
 	PUTRATE(v_intrans, VMSTATROW + 11, VMSTATCOL, 8);
+<<<<<<< HEAD
 	putuint64(pgtokb(s.v_wire_count), VMSTATROW + 12, VMSTATCOL, 8);
 	putuint64(pgtokb(s.v_active_count), VMSTATROW + 13, VMSTATCOL, 8);
 	putuint64(pgtokb(s.v_inactive_count), VMSTATROW + 14, VMSTATCOL, 8);
 	putuint64(pgtokb(s.v_laundry_count), VMSTATROW + 15, VMSTATCOL, 8);
 	putuint64(pgtokb(s.v_free_count), VMSTATROW + 16, VMSTATCOL, 8);
+=======
+	putint(pgtokb(s.v_wire_count), VMSTATROW + 12, VMSTATCOL, 8);
+	putint(pgtokb(s.v_active_count), VMSTATROW + 13, VMSTATCOL, 8);
+	putint(pgtokb(s.v_inactive_count), VMSTATROW + 14, VMSTATCOL, 8);
+	putint(pgtokb(s.v_laundry_count), VMSTATROW + 15, VMSTATCOL, 8);
+	putint(pgtokb(s.v_free_count), VMSTATROW + 16, VMSTATCOL, 8);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	if (LINES - 1 > VMSTATROW + 17)
 		putuint64(s.bufspace / 1024, VMSTATROW + 17, VMSTATCOL, 8);
 	PUTRATE(v_vnodein, PAGEROW + 2, PAGECOL + 6, 5);

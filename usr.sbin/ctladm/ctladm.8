@@ -36,7 +36,11 @@
 .\" $Id: //depot/users/kenm/FreeBSD-test2/usr.sbin/ctladm/ctladm.8#3 $
 .\" $FreeBSD$
 .\"
+<<<<<<< HEAD
 .Dd May 10, 2018
+=======
+.Dd July 15, 2017
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Dt CTLADM 8
 .Os
 .Sh NAME
@@ -998,6 +1002,15 @@ Create a LUN with the
 ramdisk as a backing store.
 The LUN will claim to have a size of approximately 10 terabytes,
 while having no real data store (all written data are lost).
+<<<<<<< HEAD
+=======
+.Pp
+.Dl ctladm create -b ramdisk -s 10T -o capacity=10G
+.Pp
+Create a thin provisioned LUN with a ramdisk as a backing store.
+The LUN will have maximal backing store capacity of 10 gigabytes,
+while reporting size of 10 terabytes,
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Pp
 .Dl ctladm create -b ramdisk -s 10485760000000000
 .Pp

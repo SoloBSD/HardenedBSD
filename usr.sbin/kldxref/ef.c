@@ -79,6 +79,7 @@ struct ef_file {
 	int		ef_relasz;		/* number of entries */
 };
 
+<<<<<<< HEAD
 static void	ef_print_phdr(Elf_Phdr *);
 static Elf_Off	ef_get_offset(elf_file_t, Elf_Off);
 static int	ef_parse_dynamic(elf_file_t);
@@ -119,6 +120,43 @@ static struct elf_file_ops ef_file_ops = {
 	.symaddr		= ef_symaddr,
 	.lookup_set		= ef_lookup_set,
 	.lookup_symbol		= ef_lookup_symbol
+=======
+static void ef_print_phdr(Elf_Phdr *);
+static u_long ef_get_offset(elf_file_t, Elf_Off);
+static int ef_parse_dynamic(elf_file_t);
+
+static int ef_get_type(elf_file_t ef);
+static int ef_close(elf_file_t ef);
+static int ef_read(elf_file_t ef, Elf_Off offset, size_t len, void* dest);
+static int ef_read_entry(elf_file_t ef, Elf_Off offset, size_t len, void **ptr);
+static int ef_seg_read(elf_file_t ef, Elf_Off offset, size_t len, void *dest);
+static int ef_seg_read_rel(elf_file_t ef, Elf_Off offset, size_t len,
+    void *dest);
+static int ef_seg_read_string(elf_file_t ef, Elf_Off offset, size_t len,
+    char *dest);
+static int ef_seg_read_entry(elf_file_t ef, Elf_Off offset, size_t len,
+    void **ptr);
+static int ef_seg_read_entry_rel(elf_file_t ef, Elf_Off offset, size_t len,
+    void **ptr);
+static Elf_Addr ef_symaddr(elf_file_t ef, Elf_Size symidx);
+static int ef_lookup_set(elf_file_t ef, const char *name, long *startp,
+    long *stopp, long *countp);
+static int ef_lookup_symbol(elf_file_t ef, const char* name, Elf_Sym** sym);
+
+static struct elf_file_ops ef_file_ops = {
+	ef_get_type,
+	ef_close,
+	ef_read,
+	ef_read_entry,
+	ef_seg_read,
+	ef_seg_read_rel,
+	ef_seg_read_string,
+	ef_seg_read_entry,
+	ef_seg_read_entry_rel,
+	ef_symaddr,
+	ef_lookup_set,
+	ef_lookup_symbol
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 };
 
 static void
@@ -485,9 +523,15 @@ ef_seg_read_rel(elf_file_t ef, Elf_Off offset, size_t len, void *dest)
 	ofs = ef_get_offset(ef, offset);
 	if (ofs == 0) {
 		if (ef->ef_verbose)
+<<<<<<< HEAD
 			warnx("ef_seg_read_rel(%s): zero offset (%jx:%ju)",
 			    ef->ef_name, (uintmax_t)offset, (uintmax_t)ofs);
 		return (EFAULT);
+=======
+			warnx("ef_seg_read_rel(%s): zero offset (%lx:%ld)",
+			    ef->ef_name, (long)offset, ofs);
+		return EFAULT;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	}
 	if ((error = ef_read(ef, ofs, len, dest)) != 0)
 		return (error);
@@ -510,6 +554,7 @@ ef_seg_read_rel(elf_file_t ef, Elf_Off offset, size_t len, void *dest)
 static int
 ef_seg_read_string(elf_file_t ef, Elf_Off offset, size_t len, char *dest)
 {
+<<<<<<< HEAD
 	Elf_Off ofs;
 	ssize_t r;
 
@@ -518,6 +563,15 @@ ef_seg_read_string(elf_file_t ef, Elf_Off offset, size_t len, char *dest)
 		if (ef->ef_verbose)
 			warnx("ef_seg_read_string(%s): bad offset (%jx:%ju)",
 			    ef->ef_name, (uintmax_t)offset, (uintmax_t)ofs);
+=======
+	u_long ofs = ef_get_offset(ef, offset);
+	ssize_t r;
+
+	if (ofs == 0 || ofs == (Elf_Off)-1) {
+		if (ef->ef_verbose)
+			warnx("ef_seg_read_string(%s): bad offset (%lx:%ld)",
+			    ef->ef_name, (long)offset, ofs);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		return (EFAULT);
 	}
 
@@ -531,7 +585,11 @@ ef_seg_read_string(elf_file_t ef, Elf_Off offset, size_t len, char *dest)
 }
 
 static int
+<<<<<<< HEAD
 ef_seg_read_entry(elf_file_t ef, Elf_Off offset, size_t len, void **ptr)
+=======
+ef_seg_read_entry(elf_file_t ef, Elf_Off offset, size_t len, void**ptr)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 {
 	int error;
 

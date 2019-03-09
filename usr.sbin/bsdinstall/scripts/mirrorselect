@@ -84,9 +84,12 @@ DEVEL|PLAYGROUND)
 	11.*)
 		_hbsd_dist_dir="pub/HardenedBSD/releases/`uname -m`/`uname -p`/hardenedbsd-11-stable-LAST"
 		;;
+<<<<<<< HEAD
 	12.*)
 		_hbsd_dist_dir="pub/HardenedBSD/releases/`uname -m`/`uname -p`/hardenedbsd-12-stable-LAST"
 		;;
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	*)
 		_hbsd_dist_dir="pub/HardenedBSD/releases/`uname -m`/`uname -p`/hardenedbsd-master-LAST"
 		;;

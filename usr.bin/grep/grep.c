@@ -51,11 +51,18 @@ __FBSDID("$FreeBSD$");
 #include <string.h>
 #include <unistd.h>
 
+<<<<<<< HEAD
+=======
+#ifndef WITHOUT_FASTMATCH
+#include "fastmatch.h"
+#endif
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include "grep.h"
 
 const char	*errstr[] = {
 	"",
 /* 1*/	"(standard input)",
+<<<<<<< HEAD
 /* 2*/	"unknown %s option",
 /* 3*/	"usage: %s [-abcDEFGHhIiLlmnOoPqRSsUVvwxz] [-A num] [-B num] [-C[num]]\n",
 /* 4*/	"\t[-e pattern] [-f file] [--binary-files=value] [--color=when]\n",
@@ -64,6 +71,17 @@ const char	*errstr[] = {
 /* 7*/	"Binary file %s matches\n",
 /* 8*/	"%s (BSD grep) %s\n",
 /* 9*/	"%s (BSD grep, GNU compatible) %s\n",
+=======
+/* 2*/	"cannot read bzip2 compressed file",
+/* 3*/	"unknown %s option",
+/* 4*/	"usage: %s [-abcDEFGHhIiJLlmnOoPqRSsUVvwxZz] [-A num] [-B num] [-C[num]]\n",
+/* 5*/	"\t[-e pattern] [-f file] [--binary-files=value] [--color=when]\n",
+/* 6*/	"\t[--context[=num]] [--directories=action] [--label] [--line-buffered]\n",
+/* 7*/	"\t[--null] [pattern] [file ...]\n",
+/* 8*/	"Binary file %s matches\n",
+/* 9*/	"%s (BSD grep) %s\n",
+/* 10*/	"%s (BSD grep, GNU compatible) %s\n",
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 };
 
 /* Flags passed to regcomp() and regexec() */
@@ -84,6 +102,12 @@ unsigned int	 patterns;
 static unsigned int pattern_sz;
 struct pat	*pattern;
 regex_t		*r_pattern;
+<<<<<<< HEAD
+=======
+#ifndef WITHOUT_FASTMATCH
+fastmatch_t	*fg_pattern;
+#endif
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 /* Filename exclusion/inclusion patterns */
 unsigned int	fpatterns, dpatterns;
@@ -160,7 +184,11 @@ usage(void)
 	exit(2);
 }
 
+<<<<<<< HEAD
 static const char	*optstr = "0123456789A:B:C:D:EFGHILOPSRUVabcd:e:f:hilm:nopqrsuvwxyz";
+=======
+static const char	*optstr = "0123456789A:B:C:D:EFGHIJMLOPSRUVZabcd:e:f:hilm:nopqrsuvwxXyz";
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 static const struct option long_options[] =
 {
@@ -207,7 +235,13 @@ static const struct option long_options[] =
 	{"version",		no_argument,		NULL, 'V'},
 	{"word-regexp",		no_argument,		NULL, 'w'},
 	{"line-regexp",		no_argument,		NULL, 'x'},
+<<<<<<< HEAD
 	{"null-data",		no_argument,		NULL, 'z'},
+=======
+	{"xz",			no_argument,		NULL, 'X'},
+	{"null-data",		no_argument,		NULL, 'z'},
+	{"decompress",          no_argument,            NULL, 'Z'},
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	{NULL,			no_argument,		NULL, 0}
 };
 
@@ -347,9 +381,27 @@ main(int argc, char *argv[])
 	   way we can have all the funcionalities in one binary
 	   without the need of scripting and using ugly hacks. */
 	pn = getprogname();
+<<<<<<< HEAD
 	if (pn[0] == 'r') {
 		dirbehave = DIR_RECURSE;
 		Hflag = true;
+=======
+	if (pn[0] == 'b' && pn[1] == 'z') {
+		filebehave = FILE_BZIP;
+		pn += 2;
+	} else if (pn[0] == 'x' && pn[1] == 'z') {
+		filebehave = FILE_XZ;
+		pn += 2;
+	} else if (pn[0] == 'l' && pn[1] == 'z') {
+		filebehave = FILE_LZMA;
+		pn += 2;
+	} else if (pn[0] == 'r') {
+		dirbehave = DIR_RECURSE;
+		Hflag = true;
+	} else if (pn[0] == 'z') {
+		filebehave = FILE_GZIP;
+		pn += 1;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	}
 	switch (pn[0]) {
 	case 'e':
@@ -565,9 +617,15 @@ main(int argc, char *argv[])
 			break;
 		case 'V':
 #ifdef WITH_GNU
+<<<<<<< HEAD
 			printf(errstr[9], getprogname(), VERSION);
 #else
 			printf(errstr[8], getprogname(), VERSION);
+=======
+			printf(getstr(10), getprogname(), VERSION);
+#else
+			printf(getstr(9), getprogname(), VERSION);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #endif
 			exit(0);
 		case 'v':
@@ -581,8 +639,19 @@ main(int argc, char *argv[])
 			xflag = true;
 			cflags &= ~REG_NOSUB;
 			break;
+<<<<<<< HEAD
 		case 'z':
 			fileeol = '\0';
+=======
+		case 'X':
+			filebehave = FILE_XZ;
+			break;
+		case 'z':
+			fileeol = '\0';
+			break;
+		case 'Z':
+			filebehave = FILE_GZIP;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			break;
 		case BIN_OPT:
 			if (strcasecmp("binary", optarg) == 0)
@@ -697,6 +766,12 @@ main(int argc, char *argv[])
 		usage();
 	}
 
+<<<<<<< HEAD
+=======
+#ifndef WITHOUT_FASTMATCH
+	fg_pattern = grep_calloc(patterns, sizeof(*fg_pattern));
+#endif
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	r_pattern = grep_calloc(patterns, sizeof(*r_pattern));
 
 	/* Don't process any patterns if we have a blank one */
@@ -707,6 +782,18 @@ main(int argc, char *argv[])
 #endif
 		/* Check if cheating is allowed (always is for fgrep). */
 		for (i = 0; i < patterns; ++i) {
+<<<<<<< HEAD
+=======
+#ifndef WITHOUT_FASTMATCH
+			/*
+			 * Attempt compilation with fastmatch regex and
+			 * fallback to regex(3) if it fails.
+			 */
+			if (fastncomp(&fg_pattern[i], pattern[i].pat,
+			    pattern[i].len, cflags) == 0)
+				continue;
+#endif
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			c = regcomp(&r_pattern[i], pattern[i].pat, cflags);
 			if (c != 0) {
 				regerror(c, &r_pattern[i], re_error,

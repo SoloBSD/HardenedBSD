@@ -1,7 +1,10 @@
 /* $FreeBSD$ */
+<<<<<<< HEAD
 
 int f(struct x *a);
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 /* See r303485 */
 void
 t(void)
@@ -14,8 +17,11 @@ t(void)
 		{ F, G }
 	};
 }
+<<<<<<< HEAD
 
 void u(struct x a) {
 	int b;
 	struct y c = (struct y *)&a;
 }
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2

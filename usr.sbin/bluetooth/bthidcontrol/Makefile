@@ -7,8 +7,12 @@ PROG=		bthidcontrol
 MAN=		bthidcontrol.8
 SRCS=		bthidcontrol.c hid.c lexer.l  parser.y sdp.c
 WARNS?=		1
+<<<<<<< HEAD
 CFLAGS+=	-DBTHIDCONTROL=1 -I${.CURDIR:H}/bthidd -I${SRCTOP}/lib/libsdp \
 		-I${SRCTOP}/lib/libbluetooth
+=======
+CFLAGS+=	-DBTHIDCONTROL=1 -I${.CURDIR:H}/bthidd
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 LIBADD+=	bluetooth sdp usbhid
 

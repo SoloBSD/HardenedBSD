@@ -6,8 +6,12 @@ PROG=	iasl
 SRCS=	acfileio.c adfile.c adisasm.c adwalk.c ahids.c		\
 	ahpredef.c ahtable.c ahuuids.c cmfsize.c dmextern.c	\
 	dmrestag.c dmswitch.c dmtable.c dmtables.c dmtbdump.c	\
+<<<<<<< HEAD
 	dmtbdump1.c dmtbdump2.c dmtbdump3.c dmtbinfo.c		\
 	dmtbinfo1.c dmtbinfo2.c dmtbinfo3.c getopt.c
+=======
+	dmtbinfo.c getopt.c
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 # compiler
 SRCS+=	aslallocate.c aslanalyze.c aslascii.c aslbtypes.c	\

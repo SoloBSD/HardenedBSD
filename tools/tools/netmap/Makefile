@@ -3,7 +3,11 @@
 #
 # For multiple programs using a single source file each,
 # we can just define 'progs' and create custom targets.
+<<<<<<< HEAD
 PROGS	=	pkt-gen nmreplay bridge vale-ctl lb
+=======
+PROGS	=	pkt-gen bridge vale-ctl lb
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 CLEANFILES = $(PROGS) *.o
 MAN=

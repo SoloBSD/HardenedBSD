@@ -25,7 +25,11 @@
 .\"
 .\" $FreeBSD$
 .\"
+<<<<<<< HEAD
 .Dd October 4, 2018
+=======
+.Dd May 23, 2017
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Dt BSDINSTALL 8
 .Os
 .Sh NAME
@@ -261,12 +265,20 @@ overridden when making scripted or customized installers.
 .Bl -tag -width ".Ev BSDINSTALL_DISTSITE"
 .It Ev DISTRIBUTIONS
 The set of distributions to install, e.g., "base kernel ports".
+<<<<<<< HEAD
 Default: unset
+=======
+Default: none
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .It Ev BSDINSTALL_DISTDIR
 The directory in which the distribution files can be found (or to which they
 should be downloaded).
 Default:
+<<<<<<< HEAD
 .Dq Pa /usr/freebsd-dist
+=======
+.Pa /usr/freebsd-dist
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .It Ev BSDINSTALL_DISTSITE
 URL from which the distribution files should be downloaded if they are not
 already present in the directory defined by
@@ -291,7 +303,11 @@ Default:
 .It Ev BSDINSTALL_LOG
 Path to a log file for the installation.
 Default:
+<<<<<<< HEAD
 .Dq Pa /tmp/bsdinstall_log
+=======
+.Pa /tmp/bsdinstall_log
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .It Ev BSDINSTALL_TMPETC
 Directory where files destined for the new system's
 .Pa /etc
@@ -300,7 +316,11 @@ will be stored until the
 target is executed.
 If this directory does not already exist, it will be created.
 Default:
+<<<<<<< HEAD
 .Dq Pa /tmp/bsdinstall_etc
+=======
+.Pa /tmp/bsdinstall_etc
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .It Ev BSDINSTALL_TMPBOOT
 Directory where files destined for the new system's
 .Pa /boot
@@ -309,6 +329,7 @@ will be stored until the
 target is executed.
 If this directory does not already exist, it will be created.
 Default:
+<<<<<<< HEAD
 .Dq Pa /tmp/bsdinstall_boot
 .It Ev ZFSBOOT_POOL_NAME
 Name for the pool containing the base system.
@@ -416,6 +437,9 @@ If set and the installation is interactive, allow the user to confirm
 the layout before continuing with the installation.
 Default:
 .Dq 1
+=======
+.Pa /tmp/bsdinstall_boot
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .El
 .Sh SCRIPTING
 .Nm
@@ -518,6 +542,7 @@ configuration files, install packages, etc.
 Note that newly configured system services, e.g., networking have not
 been started in the installed system at this time and only installation
 host services are available.
+<<<<<<< HEAD
 .Ss ZFS DATASETS
 The
 .Cm zfsboot
@@ -564,6 +589,8 @@ The first column if the dataset to be created on the top of the
 and the rest of the columns are the options to be set on each dataset.
 The options must be written on a coma or space separated list, or both.
 And everything behind a pound/hash character is ignored as a comment.
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Sh HISTORY
 This version of
 .Nm

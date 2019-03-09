@@ -33,7 +33,11 @@ LIBADD+=	ipsec
 .if ${MK_CASPER} != "no"
 LIBADD+=	casper
 LIBADD+=	cap_dns
+<<<<<<< HEAD
 CFLAGS+=-DWITH_CASPER
+=======
+CFLAGS+=-DHAVE_LIBCASPER
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .endif
 
 CFLAGS+= -I${TRACEROUTE_DISTDIR}

@@ -758,6 +758,7 @@ tcp_stats(u_long off, const char *name, int af1 __unused, int proto __unused)
 	    "{N:/time%s unexpected signature received}\n");
 	p(tcps_sig_err_nosigopt, "\t{:no-signature-provided/%ju} "
 	    "{N:/time%s no signature provided by segment}\n");
+<<<<<<< HEAD
 
 	xo_close_container("tcp-signature");
 	xo_open_container("pmtud");
@@ -769,13 +770,19 @@ tcp_stats(u_long off, const char *name, int af1 __unused, int proto __unused)
 	    "{N:/Path MTU discovery black hole detection min MSS activation%s}\n");
 	p(tcps_pmtud_blackhole_failed, "\t{:pmtud-failed/%ju} "
 	    "{N:/Path MTU discovery black hole detection failure%s}\n");
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  #undef p
  #undef p1a
  #undef p2
  #undef p2a
  #undef p3
+<<<<<<< HEAD
 	xo_close_container("pmtud");
 
+=======
+	xo_close_container("tcp-signature");
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	xo_open_container("TCP connection count by state");
 	xo_emit("{T:/TCP connection count by state}:\n");

@@ -13,6 +13,7 @@ INTER=          de_AT.ISO_8859-15 de_DE.ISO8859-1 fr_FR.ISO8859-1 \
 DE_LINKS=       de_DE.ISO8859-15
 FR_LINKS=       fr_FR.ISO8859-15
 
+<<<<<<< HEAD
 FILESGROUPS+=	CALS
 CALS=	calendars/calendar.all \
 	calendars/calendar.australia \
@@ -96,15 +97,35 @@ FILESGROUPS+=	CALS_${lang}
 CALS_${lang}DIR=	${SHAREDIR}/calendar/${lang}
 .for file in ${CAL_${lang}}
 CALS_${lang}+=	${file:S@^@calendars/${lang}/@}
+=======
+beforeinstall:
+	${INSTALL} ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m ${TEXTMODE} \
+	    ${.CURDIR}/calendars/calendar.* ${DESTDIR}${SHAREDIR}/calendar
+.for lang in ${INTER}
+	${INSTALL} ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m ${TEXTMODE} \
+		${.CURDIR}/calendars/${lang}/calendar.* \
+		${DESTDIR}${SHAREDIR}/calendar/${lang} 
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .endfor
 .endfor
 
 
 .for link in ${DE_LINKS}
+<<<<<<< HEAD
 SYMLINKS+=	de_DE.ISO8859-1 ${SHAREDIR}/calendar/${link}
 .endfor
 .for link in ${FR_LINKS}
 SYMLINKS+=	fr_FR.ISO8859-1 ${SHAREDIR}/calendar/${link}
+=======
+	rm -rf ${DESTDIR}${SHAREDIR}/calendar/${link}
+	${INSTALL} ${TAG_ARGS} -l s de_DE.ISO8859-1 \
+	    ${DESTDIR}${SHAREDIR}/calendar/${link}
+.endfor
+.for link in ${FR_LINKS}
+	rm -rf ${DESTDIR}${SHAREDIR}/calendar/${link}
+	${INSTALL} ${TAG_ARGS} -l s fr_FR.ISO8859-1 \
+	    ${DESTDIR}${SHAREDIR}/calendar/${link}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .endfor
 
 HAS_TESTS=

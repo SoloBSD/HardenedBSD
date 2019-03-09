@@ -87,6 +87,10 @@ struct stat stampst;
 static	fstype_t *get_fstype(const char *);
 static int get_tstamp(const char *, struct stat *);
 static	void	usage(fstype_t *, fsinfo_t *);
+<<<<<<< HEAD
+=======
+int		main(int, char *[]);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 int
 main(int argc, char *argv[])
@@ -486,8 +490,13 @@ usage(fstype_t *fstype, fsinfo_t *fsoptions)
 	fprintf(stderr,
 "Usage: %s [-xZ] [-B endian] [-b free-blocks] [-d debug-mask]\n"
 "\t[-F mtree-specfile] [-f free-files] [-M minimum-size] [-m maximum-size]\n"
+<<<<<<< HEAD
 "\t[-N userdb-dir] [-O offset] [-o fs-options] [-R roundup-size]\n"
 "\t[-S sector-size] [-s image-size] [-T <timestamp/file>] [-t fs-type]\n"
+=======
+"\t[-N userdb-dir] [-o fs-options] [-R roundup-size] [-S sector-size]\n"
+"\t[-s image-size] [-T <timestamp/file>] [-t fs-type]\n"
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 "\timage-file directory | manifest [extra-directory ...]\n",
 	    prog);
 

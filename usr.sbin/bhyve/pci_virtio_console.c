@@ -34,16 +34,22 @@
 __FBSDID("$FreeBSD$");
 
 #include <sys/param.h>
+<<<<<<< HEAD
 #ifndef WITHOUT_CAPSICUM
 #include <sys/capsicum.h>
 #endif
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <sys/linker_set.h>
 #include <sys/uio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 
+<<<<<<< HEAD
 #include <err.h>
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -54,7 +60,10 @@ __FBSDID("$FreeBSD$");
 #include <assert.h>
 #include <pthread.h>
 #include <libgen.h>
+<<<<<<< HEAD
 #include <sysexits.h>
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 #include "bhyverun.h"
 #include "pci_emul.h"
@@ -274,11 +283,15 @@ pci_vtcon_sock_add(struct pci_vtcon_softc *sc, const char *name,
 {
 	struct pci_vtcon_sock *sock;
 	struct sockaddr_un sun;
+<<<<<<< HEAD
 	char *pathcopy;
 	int s = -1, fd = -1, error = 0;
 #ifndef WITHOUT_CAPSICUM
 	cap_rights_t rights;
 #endif
+=======
+	int s = -1, fd = -1, error = 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	sock = calloc(1, sizeof(struct pci_vtcon_sock));
 	if (sock == NULL) {
@@ -292,6 +305,7 @@ pci_vtcon_sock_add(struct pci_vtcon_softc *sc, const char *name,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	pathcopy = strdup(path);
 	if (pathcopy == NULL) {
 		error = -1;
@@ -301,15 +315,23 @@ pci_vtcon_sock_add(struct pci_vtcon_softc *sc, const char *name,
 	fd = open(dirname(pathcopy), O_RDONLY | O_DIRECTORY);
 	if (fd < 0) {
 		free(pathcopy);
+=======
+	fd = open(dirname(path), O_RDONLY | O_DIRECTORY);
+	if (fd < 0) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		error = -1;
 		goto out;
 	}
 
 	sun.sun_family = AF_UNIX;
 	sun.sun_len = sizeof(struct sockaddr_un);
+<<<<<<< HEAD
 	strcpy(pathcopy, path);
 	strlcpy(sun.sun_path, basename(pathcopy), sizeof(sun.sun_path));
 	free(pathcopy);
+=======
+	strncpy(sun.sun_path, basename((char *)path), sizeof(sun.sun_path));
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	if (bindat(fd, s, (struct sockaddr *)&sun, sun.sun_len) < 0) {
 		error = -1;
@@ -326,11 +348,14 @@ pci_vtcon_sock_add(struct pci_vtcon_softc *sc, const char *name,
 		goto out;
 	}
 
+<<<<<<< HEAD
 #ifndef WITHOUT_CAPSICUM
 	cap_rights_init(&rights, CAP_ACCEPT, CAP_EVENT, CAP_READ, CAP_WRITE);
 	if (cap_rights_limit(s, &rights) == -1 && errno != ENOSYS)
 		errx(EX_OSERR, "Unable to apply rights for sandbox");
 #endif
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	sock->vss_port = pci_vtcon_port_add(sc, name, pci_vtcon_sock_tx, sock);
 	if (sock->vss_port == NULL) {
@@ -653,7 +678,11 @@ pci_vtcon_init(struct vmctx *ctx, struct pci_devinst *pi, char *opts)
 
 	while ((opt = strsep(&opts, ",")) != NULL) {
 		portname = strsep(&opt, "=");
+<<<<<<< HEAD
 		portpath = opt;
+=======
+		portpath = strdup(opt);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 		/* create port */
 		if (pci_vtcon_sock_add(sc, portname, portpath) < 0) {

@@ -1048,6 +1048,7 @@ chkattached(const char *name)
 	exitstatus = pi.pi_data ? 0 : 2; /* exit(2), if NOT attached */
 	printf("%s: %s%s\n", name, pi.pi_data == 0 ? "not " : "", "attached");
 	close(fd);
+<<<<<<< HEAD
 }
 
 static void
@@ -1162,4 +1163,6 @@ dump_bar(const char *name, const char *reg, const char *bar_start,
 
 	munmap((void *)pbm.pbm_map_base, pbm.pbm_map_length);
 	close(fd);
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 }

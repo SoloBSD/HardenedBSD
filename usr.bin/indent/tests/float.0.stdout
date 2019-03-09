@@ -1,4 +1,5 @@
 /* $FreeBSD$ */
+<<<<<<< HEAD
 void
 t(void)
 {
@@ -7,4 +8,12 @@ t(void)
 	int		z = 0b0101;
 	DO_NOTHING;
 	x._y = 5;
+=======
+/* See r303499 */
+void 
+t(void)
+{
+	unsigned long	x = 314UL;
+	float		y = 3.14f;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 }

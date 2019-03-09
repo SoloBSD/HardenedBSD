@@ -85,9 +85,15 @@ intel_update(const struct ucode_update_params *params)
 	uint32_t sum;
 	unsigned int i;
 	size_t payload_size;
+<<<<<<< HEAD
 	const intel_fw_header_t *fw_header;
 	const intel_cpu_signature_t *ext_table;
 	const intel_ext_header_t *ext_header;
+=======
+	intel_fw_header_t *fw_header;
+	intel_cpu_signature_t *ext_table;
+	intel_ext_header_t *ext_header;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	uint32_t sig, signature, flags;
 	int32_t revision;
 	ssize_t ext_size;
@@ -115,6 +121,11 @@ intel_update(const struct ucode_update_params *params)
 	ext_table = NULL;
 	ext_header = NULL;
 
+	error = ioctl(devfd, CPUCTL_WRMSR, &msrargs);
+	if (error < 0) {
+		WARN(0, "ioctl(%s)", dev);
+		goto fail;
+	}
 	error = ioctl(devfd, CPUCTL_WRMSR, &msrargs);
 	if (error < 0) {
 		WARN(0, "ioctl(%s)", dev);
@@ -150,7 +161,21 @@ intel_update(const struct ucode_update_params *params)
 	/*
 	 * Open firmware image.
 	 */
+<<<<<<< HEAD
 	if (params->fwsize < sizeof(*fw_header)) {
+=======
+	fd = open(path, O_RDONLY, 0);
+	if (fd < 0) {
+		WARN(0, "open(%s)", path);
+		goto fail;
+	}
+	error = fstat(fd, &st);
+	if (error != 0) {
+		WARN(0, "fstat(%s)", path);
+		goto fail;
+	}
+	if (st.st_size < 0 || (unsigned)st.st_size < sizeof(*fw_header)) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		WARNX(2, "file too short: %s", path);
 		goto fail;
 	}
@@ -253,7 +278,11 @@ matched:
 	}
 	fprintf(stderr, "%s: updating cpu %s from rev %#x to rev %#x... ",
 	    path, dev, revision, fw_header->revision);
+<<<<<<< HEAD
 	args.data = __DECONST(void *, fw_data);
+=======
+	args.data = fw_data;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	args.size = data_size;
 	error = ioctl(devfd, CPUCTL_UPDATE, &args);
 	if (error < 0) {
@@ -266,5 +295,15 @@ matched:
 	fprintf(stderr, "done.\n");
 
 fail:
+<<<<<<< HEAD
 	return;
+=======
+	if (fw_image != MAP_FAILED)
+		if (munmap(fw_image, st.st_size) != 0)
+			warn("munmap(%s)", path);
+	if (devfd >= 0)
+		close(devfd);
+	if (fd >= 0)
+		close(fd);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 }

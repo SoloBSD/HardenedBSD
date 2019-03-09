@@ -27,12 +27,16 @@
  * SUCH DAMAGE.
  */
 
+#include <sys/capsicum.h>
 #include <sys/cdefs.h>
 __FBSDID("$FreeBSD$");
 
+<<<<<<< HEAD
 #include <sys/capsicum.h>
 
 #include <capsicum_helpers.h>
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <err.h>
 #include <errno.h>
 #include <utmpx.h>
@@ -57,7 +61,11 @@ main(int argc, char **)
 
 	setutxent();
 
+<<<<<<< HEAD
 	if (caph_enter())
+=======
+	if (cap_enter() < 0 && errno != ENOSYS)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		err(1, "Failed to enter capability mode.");
 
 	while ((ut = getutxent()) != NULL)

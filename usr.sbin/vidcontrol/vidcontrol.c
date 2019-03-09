@@ -393,8 +393,13 @@ load_vt4mappingtable(unsigned int nmappings, FILE *f)
 	if (nmappings == 0)
 		return (NULL);
 
+<<<<<<< HEAD
 	if ((t = calloc(nmappings, sizeof(*t))) == NULL) {
 		warn("calloc");
+=======
+	if ((t = malloc(sizeof *t * nmappings)) == NULL) {
+		warn("malloc");
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		return (NULL);
 	}
 
@@ -1526,6 +1531,14 @@ main(int argc, char **argv)
 	if (termmode != NULL)
 		set_terminal_mode(termmode);
 
+<<<<<<< HEAD
+=======
+	get_normal_colors(argc, argv, &optind);
+
+	if (colors_changed || video_mode_changed)
+		set_colors();
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	if ((optind != argc) || (argc == 1))
 		usage();
 	return (0);

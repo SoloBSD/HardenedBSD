@@ -40,6 +40,9 @@ if [ -f $BSDINSTALL_TMPETC/ttys.hardening ]; then
 	rm $BSDINSTALL_TMPETC/ttys.hardening
 fi
 
+cat $BSDINSTALL_CHROOT/etc/sysctl.conf $BSDINSTALL_TMPETC/sysctl.conf.* >> $BSDINSTALL_TMPETC/sysctl.conf
+rm $BSDINSTALL_TMPETC/sysctl.conf.*
+
 cp $BSDINSTALL_TMPETC/* $BSDINSTALL_CHROOT/etc
 
 cat $BSDINSTALL_TMPBOOT/loader.conf.* >> $BSDINSTALL_TMPBOOT/loader.conf

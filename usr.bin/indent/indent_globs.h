@@ -1,6 +1,9 @@
 /*-
+<<<<<<< HEAD
  * SPDX-License-Identifier: BSD-4-Clause
  *
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  * Copyright (c) 1985 Sun Microsystems, Inc.
  * Copyright (c) 1980, 1993
  *	The Regents of the University of California.  All rights reserved.
@@ -52,9 +55,15 @@
 FILE       *input;		/* the fid for the input file */
 FILE       *output;		/* the output file */
 
+<<<<<<< HEAD
 #define CHECK_SIZE_CODE(desired_size) \
 	if (e_code + (desired_size) >= l_code) { \
 	    int nsize = l_code-s_code + 400 + desired_size; \
+=======
+#define CHECK_SIZE_CODE \
+	if (e_code >= l_code) { \
+	    int nsize = l_code-s_code+400; \
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    int code_len = e_code-s_code; \
 	    codebuf = (char *) realloc(codebuf, nsize); \
 	    if (codebuf == NULL) \
@@ -63,6 +72,7 @@ FILE       *output;		/* the output file */
 	    l_code = codebuf + nsize - 5; \
 	    s_code = codebuf + 1; \
 	}
+<<<<<<< HEAD
 #define CHECK_SIZE_COM(desired_size) \
 	if (e_com + (desired_size) >= l_com) { \
 	    int nsize = l_com-s_com + 400 + desired_size; \
@@ -72,10 +82,18 @@ FILE       *output;		/* the output file */
 		blank_pos = last_bl - combuf; \
 	    else \
 		blank_pos = -1; \
+=======
+#define CHECK_SIZE_COM \
+	if (e_com >= l_com) { \
+	    int nsize = l_com-s_com+400; \
+	    int com_len = e_com - s_com; \
+	    int blank_pos = last_bl - s_com; \
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    combuf = (char *) realloc(combuf, nsize); \
 	    if (combuf == NULL) \
 		err(1, NULL); \
 	    e_com = combuf + com_len + 1; \
+<<<<<<< HEAD
 	    if (blank_pos > 0) \
 		last_bl = combuf + blank_pos; \
 	    l_com = combuf + nsize - 5; \
@@ -84,6 +102,15 @@ FILE       *output;		/* the output file */
 #define CHECK_SIZE_LAB(desired_size) \
 	if (e_lab + (desired_size) >= l_lab) { \
 	    int nsize = l_lab-s_lab + 400 + desired_size; \
+=======
+	    last_bl = combuf + blank_pos + 1; \
+	    l_com = combuf + nsize - 5; \
+	    s_com = combuf + 1; \
+	}
+#define CHECK_SIZE_LAB \
+	if (e_lab >= l_lab) { \
+	    int nsize = l_lab-s_lab+400; \
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    int label_len = e_lab - s_lab; \
 	    labbuf = (char *) realloc(labbuf, nsize); \
 	    if (labbuf == NULL) \
@@ -92,9 +119,15 @@ FILE       *output;		/* the output file */
 	    l_lab = labbuf + nsize - 5; \
 	    s_lab = labbuf + 1; \
 	}
+<<<<<<< HEAD
 #define CHECK_SIZE_TOKEN(desired_size) \
 	if (e_token + (desired_size) >= l_token) { \
 	    int nsize = l_token-s_token + 400 + desired_size; \
+=======
+#define CHECK_SIZE_TOKEN \
+	if (e_token >= l_token) { \
+	    int nsize = l_token-s_token+400; \
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    int token_len = e_token - s_token; \
 	    tokenbuf = (char *) realloc(tokenbuf, nsize); \
 	    if (tokenbuf == NULL) \
@@ -234,6 +267,25 @@ int         inhibit_formatting;	/* true if INDENT OFF is in effect */
 int         suppress_blanklines;/* set iff following blanklines should be
 				 * suppressed */
 
+<<<<<<< HEAD
+=======
+struct fstate {
+    char        font[4];
+    char        size;
+    int         allcaps:1;
+} __aligned(sizeof(int));
+char       *chfont(struct fstate *, struct fstate *, char *);
+
+struct fstate
+            keywordf,		/* keyword font */
+            stringf,		/* string font */
+            boxcomf,		/* Box comment font */
+            blkcomf,		/* Block comment font */
+            scomf,		/* Same line comment font */
+            bodyf;		/* major body font */
+
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #define	STACKSIZE 256
 
 struct parser_state {
@@ -244,12 +296,17 @@ struct parser_state {
     int         box_com;	/* set to true when we are in a "boxed"
 				 * comment. In that case, the first non-blank
 				 * char should be lined up with the / in / followed by * */
+<<<<<<< HEAD
     int         comment_delta;	/* used to set up indentation for all lines
 				 * of a boxed comment after the first one */
     int         n_comment_delta;/* remembers how many columns there were
 				 * before the start of a box comment so that
 				 * forthcoming lines of the comment are
 				 * indented properly */
+=======
+    int         comment_delta,
+                n_comment_delta;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
     int         cast_mask;	/* indicates which close parens potentially
 				 * close off casts */
     int         not_cast_mask;	/* indicates which close parens definitely
@@ -306,6 +363,13 @@ struct parser_state {
     int         want_blank;	/* set to true when the following token should
 				 * be prefixed by a blank. (Said prefixing is
 				 * ignored in some cases.) */
+<<<<<<< HEAD
+=======
+    int         else_if;	/* True iff else if pairs should be handled
+				 * specially */
+    int         decl_indent;	/* column to indent declared identifiers to */
+    int         local_decl_indent;	/* like decl_indent but for locals */
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
     int         keyword;	/* the type of a keyword or 0 */
     int         dumped_decl_indent;
     int         in_parameter_declaration;

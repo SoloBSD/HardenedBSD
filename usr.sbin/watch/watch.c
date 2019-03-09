@@ -1,4 +1,9 @@
 /*-
+<<<<<<< HEAD
+=======
+ * SPDX-License-Identifier: MIT
+ *
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  * Copyright (c) 1995 Ugen J.S.Antsilevich
  *
  * Redistribution and use in source forms, with and without modification,

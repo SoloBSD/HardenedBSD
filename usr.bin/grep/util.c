@@ -52,11 +52,18 @@ __FBSDID("$FreeBSD$");
 #include <wchar.h>
 #include <wctype.h>
 
+<<<<<<< HEAD
+=======
+#ifndef WITHOUT_FASTMATCH
+#include "fastmatch.h"
+#endif
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include "grep.h"
 
 static bool	 first_match = true;
 
 /*
+<<<<<<< HEAD
  * Match printing context
  */
 struct mprintc {
@@ -70,11 +77,29 @@ struct mprintc {
 static void procmatch_match(struct mprintc *mc, struct parsec *pc);
 static void procmatch_nomatch(struct mprintc *mc, struct parsec *pc);
 static bool procmatches(struct mprintc *mc, struct parsec *pc, bool matched);
+=======
+ * Parsing context; used to hold things like matches made and
+ * other useful bits
+ */
+struct parsec {
+	regmatch_t	matches[MAX_MATCHES];		/* Matches made */
+	struct str	ln;				/* Current line */
+	size_t		lnstart;			/* Position in line */
+	size_t		matchidx;			/* Latest match index */
+	int		printed;			/* Metadata printed? */
+	bool		binary;				/* Binary file? */
+};
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #ifdef WITH_INTERNAL_NOSPEC
 static int litexec(const struct pat *pat, const char *string,
     size_t nmatch, regmatch_t pmatch[]);
 #endif
+<<<<<<< HEAD
 static bool procline(struct parsec *pc);
+=======
+static int procline(struct parsec *pc);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 static void printline(struct parsec *pc, int sep);
 static void printline_metadata(struct str *line, int sep);
 
@@ -92,12 +117,22 @@ file_matching(const char *fname)
 
 	for (unsigned int i = 0; i < fpatterns; ++i) {
 		if (fnmatch(fpattern[i].pat, fname, 0) == 0 ||
+<<<<<<< HEAD
 		    fnmatch(fpattern[i].pat, fname_base, 0) == 0)
 			/*
 			 * The last pattern matched wins exclusion/inclusion
 			 * rights, so we can't reasonably bail out early here.
 			 */
 			ret = (fpattern[i].mode != EXCL_PAT);
+=======
+		    fnmatch(fpattern[i].pat, fname_base, 0) == 0) {
+			if (fpattern[i].mode == EXCL_PAT) {
+				ret = false;
+				break;
+			} else
+				ret = true;
+		}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	}
 	free(fname_buf);
 	return (ret);
@@ -130,8 +165,13 @@ grep_tree(char **argv)
 {
 	FTS *fts;
 	FTSENT *p;
+<<<<<<< HEAD
 	int fts_flags;
 	bool matched, ok;
+=======
+	int c, fts_flags;
+	bool ok;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	const char *wd[] = { ".", NULL };
 
 	matched = false;
@@ -279,12 +319,22 @@ bool
 procfile(const char *fn)
 {
 	struct parsec pc;
+<<<<<<< HEAD
 	struct mprintc mc;
 	struct file *f;
 	struct stat sb;
 	mode_t s;
 	int lines;
 	bool line_matched;
+=======
+	long long tail;
+	struct file *f;
+	struct stat sb;
+	struct str *ln;
+	mode_t s;
+	int c, last_outed, t;
+	bool doctx, printmatch, same_file;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	if (strcmp(fn, "-") == 0) {
 		fn = label != NULL ? label : errstr[1];
@@ -308,12 +358,20 @@ procfile(const char *fn)
 		return (false);
 	}
 
+<<<<<<< HEAD
 	pc.ln.file = grep_strdup(fn);
+=======
+	/* Convenience */
+	ln = &pc.ln;
+	pc.ln.file = grep_malloc(strlen(fn) + 1);
+	strcpy(pc.ln.file, fn);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	pc.ln.line_no = 0;
 	pc.ln.len = 0;
 	pc.ln.boff = 0;
 	pc.ln.off = -1;
 	pc.binary = f->binary;
+<<<<<<< HEAD
 	pc.cntlines = false;
 	memset(&mc, 0, sizeof(mc));
 	mc.printmatch = true;
@@ -332,14 +390,34 @@ procfile(const char *fn)
 		 * not going to be doing per-line statistics because of the
 		 * overhead involved. procmatches can figure that stuff out as
 		 * needed. */
+=======
+	pc.printed = 0;
+	tail = 0;
+	last_outed = 0;
+	same_file = false;
+	doctx = false;
+	printmatch = true;
+	if ((pc.binary && binbehave == BINFILE_BIN) || cflag || qflag ||
+	    lflag || Lflag)
+		printmatch = false;
+	if (printmatch && (Aflag != 0 || Bflag != 0))
+		doctx = true;
+	mcount = mlimit;
+
+	for (c = 0;  c == 0 || !(lflag || qflag); ) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		/* Reset per-line statistics */
 		pc.printed = 0;
 		pc.matchidx = 0;
 		pc.lnstart = 0;
 		pc.ln.boff = 0;
 		pc.ln.off += pc.ln.len + 1;
+<<<<<<< HEAD
 		/* XXX TODO: Grab a chunk */
 		if ((pc.ln.dat = grep_fgetln(f, &pc)) == NULL ||
+=======
+		if ((pc.ln.dat = grep_fgetln(f, &pc.ln.len)) == NULL ||
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		    pc.ln.len == 0)
 			break;
 
@@ -355,6 +433,7 @@ procfile(const char *fn)
 			return (0);
 		}
 
+<<<<<<< HEAD
 		line_matched = procline(&pc);
 		if (line_matched)
 			++lines;
@@ -362,6 +441,61 @@ procfile(const char *fn)
 		/* Halt processing if we hit our match limit */
 		if (!procmatches(&mc, &pc, line_matched))
 			break;
+=======
+		if ((t = procline(&pc)) == 0)
+			++c;
+
+		/* Deal with any -B context or context separators */
+		if (t == 0 && doctx) {
+			if (!first_match && (!same_file || last_outed > 0))
+				printf("--\n");
+			if (Bflag > 0)
+				printqueue();
+			tail = Aflag;
+		}
+		/* Print the matching line, but only if not quiet/binary */
+		if (t == 0 && printmatch) {
+			printline(&pc, ':');
+			while (pc.matchidx >= MAX_MATCHES) {
+				/* Reset matchidx and try again */
+				pc.matchidx = 0;
+				if (procline(&pc) == 0)
+					printline(&pc, ':');
+				else
+					break;
+			}
+			first_match = false;
+			same_file = true;
+			last_outed = 0;
+		}
+		if (t != 0 && doctx) {
+			/* Deal with any -A context */
+			if (tail > 0) {
+				grep_printline(&pc.ln, '-');
+				tail--;
+				if (Bflag > 0)
+					clearqueue();
+			} else {
+				/*
+				 * Enqueue non-matching lines for -B context.
+				 * If we're not actually doing -B context or if
+				 * the enqueue resulted in a line being rotated
+				 * out, then go ahead and increment last_outed
+				 * to signify a gap between context/match.
+				 */
+				if (Bflag == 0 || (Bflag > 0 && enqueue(ln)))
+					++last_outed;
+			}
+		}
+
+		/* Count the matches if we have a match limit */
+		if (t == 0 && mflag) {
+			--mcount;
+			if (mflag && mcount <= 0)
+				break;
+		}
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	}
 	if (Bflag > 0)
 		clearqueue();
@@ -370,7 +504,11 @@ procfile(const char *fn)
 	if (cflag) {
 		if (!hflag)
 			printf("%s:", pc.ln.file);
+<<<<<<< HEAD
 		printf("%u\n", lines);
+=======
+		printf("%u\n", c);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	}
 	if (lflag && !qflag && lines != 0)
 		printf("%s%c", fn, nullflag ? 0 : '\n');
@@ -455,13 +593,18 @@ litexec(const struct pat *pat, const char *string, size_t nmatch,
  * matches.  The matching lines are passed to printline() to display the
  * appropriate output.
  */
+<<<<<<< HEAD
 static bool
+=======
+static int
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 procline(struct parsec *pc)
 {
 	regmatch_t pmatch, lastmatch, chkmatch;
 	wchar_t wbegin, wend;
 	size_t st, nst;
 	unsigned int i;
+<<<<<<< HEAD
 	int r = 0, leflags = eflags;
 	size_t startm = 0, matchidx;
 	unsigned int retry;
@@ -490,6 +633,34 @@ procline(struct parsec *pc)
 	/* Loop to process the whole line */
 	while (st <= pc->ln.len) {
 		lastmatched = false;
+=======
+	int c = 0, r = 0, lastmatches = 0, leflags = eflags;
+	size_t startm = 0, matchidx;
+	unsigned int retry;
+
+	matchidx = pc->matchidx;
+
+	/* Special case: empty pattern with -w flag, check first character */
+	if (matchall && wflag) {
+		if (pc->ln.len == 0)
+			return (0);
+		wend = L' ';
+		if (sscanf(&pc->ln.dat[0], "%lc", &wend) != 1 || iswword(wend))
+			return (1);
+		else
+			return (0);
+	} else if (matchall)
+		return (0);
+
+	st = pc->lnstart;
+	nst = 0;
+	/* Initialize to avoid a false positive warning from GCC. */
+	lastmatch.rm_so = lastmatch.rm_eo = 0;
+
+	/* Loop to process the whole line */
+	while (st <= pc->ln.len) {
+		lastmatches = 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		startm = matchidx;
 		retry = 0;
 		if (st > 0 && pc->ln.dat[st - 1] != fileeol)
@@ -501,10 +672,23 @@ procline(struct parsec *pc)
 #ifdef WITH_INTERNAL_NOSPEC
 			if (grepbehave == GREP_FIXED)
 				r = litexec(&pattern[i], pc->ln.dat, 1, &pmatch);
+<<<<<<< HEAD
 			else
 #endif
 			r = regexec(&r_pattern[i], pc->ln.dat, 1, &pmatch,
 			    leflags);
+=======
+			else
+#endif
+#ifndef WITHOUT_FASTMATCH
+			if (fg_pattern[i].pattern)
+				r = fastexec(&fg_pattern[i],
+				    pc->ln.dat, 1, &pmatch, leflags);
+			else
+#endif
+				r = regexec(&r_pattern[i], pc->ln.dat, 1,
+				    &pmatch, leflags);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			if (r != 0)
 				continue;
 			/* Check for full match */
@@ -512,7 +696,15 @@ procline(struct parsec *pc)
 			    (size_t)pmatch.rm_eo != pc->ln.len))
 				continue;
 			/* Check for whole word match */
+<<<<<<< HEAD
 			if (wflag) {
+=======
+#ifndef WITHOUT_FASTMATCH
+			if (wflag || fg_pattern[i].word) {
+#else
+			if (wflag) {
+#endif
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 				wbegin = wend = L' ';
 				if (pmatch.rm_so != 0 &&
 				    sscanf(&pc->ln.dat[pmatch.rm_so - 1],
@@ -541,11 +733,19 @@ procline(struct parsec *pc)
 				if (r == REG_NOMATCH)
 					continue;
 			}
+<<<<<<< HEAD
 			lastmatched = true;
 			lastmatch = pmatch;
 
 			if (matchidx == 0)
 				matched = true;
+=======
+			lastmatches++;
+			lastmatch = pmatch;
+
+			if (matchidx == 0)
+				c++;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 			/*
 			 * Replace previous match if the new one is earlier
@@ -571,7 +771,11 @@ procline(struct parsec *pc)
 			if ((color == NULL && !oflag) || qflag || lflag ||
 			    matchidx >= MAX_MATCHES) {
 				pc->lnstart = nst;
+<<<<<<< HEAD
 				lastmatched = false;
+=======
+				lastmatches = 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 				break;
 			}
 		}
@@ -581,7 +785,11 @@ procline(struct parsec *pc)
 		 * again just in case we still have a chance to match later in
 		 * the string.
 		 */
+<<<<<<< HEAD
 		if (!lastmatched && retry > pc->lnstart) {
+=======
+		if (lastmatches == 0 && retry > pc->lnstart) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			st = retry;
 			continue;
 		}
@@ -592,10 +800,17 @@ procline(struct parsec *pc)
 			break;
 
 		/* If we didn't have any matches or REG_NOSUB set */
+<<<<<<< HEAD
 		if (!lastmatched || (cflags & REG_NOSUB))
 			nst = pc->ln.len;
 
 		if (!lastmatched)
+=======
+		if (lastmatches == 0 || (cflags & REG_NOSUB))
+			nst = pc->ln.len;
+
+		if (lastmatches == 0)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			/* No matches */
 			break;
 		else if (st == nst && lastmatch.rm_so == lastmatch.rm_eo)
@@ -610,8 +825,13 @@ procline(struct parsec *pc)
 	/* Reflect the new matchidx in the context */
 	pc->matchidx = matchidx;
 	if (vflag)
+<<<<<<< HEAD
 		matched = !matched;
 	return matched;
+=======
+		c = !c;
+	return (c ? 0 : 1);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 }
 
 /*

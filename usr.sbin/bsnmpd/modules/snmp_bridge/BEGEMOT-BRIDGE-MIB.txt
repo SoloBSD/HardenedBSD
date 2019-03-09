@@ -878,7 +878,11 @@ begemotBridgeTpMaxAddresses OBJECT-TYPE
     STATUS	current
     DESCRIPTION
 	"The maximum number of entries that this bridge can
+<<<<<<< HEAD
 	learn in its Forwarding Address Table and use for
+=======
+	learn in it's Forwarding Address Table and use for
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	making forwarding decisions."
     ::= { begemotBridgeTpEntry 3 }
 

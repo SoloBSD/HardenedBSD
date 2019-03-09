@@ -20,6 +20,7 @@ CFLAGS+= -DINET
 CFLAGS+= -DINET6
 .endif
 
+<<<<<<< HEAD
 SYSLOGD_D=
 SYSLOGD_DDIR=	/etc/syslog.d
 .if ${MK_FTP} != "no"
@@ -34,6 +35,8 @@ SYSLOGD_D+=	lpr.conf
 SYSLOGD_D+=	ppp.conf
 .endif
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 CFLAGS+= -I${SRCTOP}/usr.bin/wall
 
 .include <bsd.prog.mk>

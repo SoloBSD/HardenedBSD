@@ -58,7 +58,11 @@ diffdir(char *p1, char *p2, int flags)
 	dirlen1 = strlcpy(path1, *p1 ? p1 : ".", sizeof(path1));
 	if (dirlen1 >= sizeof(path1) - 1) {
 		warnc(ENAMETOOLONG, "%s", p1);
+<<<<<<< HEAD
 		status |= 2;
+=======
+		status = 2;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		return;
 	}
 	if (path1[dirlen1 - 1] != '/') {
@@ -68,7 +72,11 @@ diffdir(char *p1, char *p2, int flags)
 	dirlen2 = strlcpy(path2, *p2 ? p2 : ".", sizeof(path2));
 	if (dirlen2 >= sizeof(path2) - 1) {
 		warnc(ENAMETOOLONG, "%s", p2);
+<<<<<<< HEAD
 		status |= 2;
+=======
+		status = 2;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		return;
 	}
 	if (path2[dirlen2 - 1] != '/') {
@@ -131,12 +139,21 @@ diffdir(char *p1, char *p2, int flags)
 			dp2++;
 		} else if (pos < 0) {
 			/* file only in first dir, only diff if -N */
+<<<<<<< HEAD
 			if (Nflag) {
 				diffit(dent1, path1, dirlen1, path2, dirlen2,
 				    flags);
 			} else {
 				print_only(path1, dirlen1, dent1->d_name);
 				status |= 1;
+=======
+			if (Nflag)
+				diffit(dent1, path1, dirlen1, path2, dirlen2,
+				    flags);
+			else {
+				print_only(path1, dirlen1, dent1->d_name);
+				status = 1;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			}
 			dp1++;
 		} else {
@@ -146,7 +163,11 @@ diffdir(char *p1, char *p2, int flags)
 				    flags);
 			else {
 				print_only(path2, dirlen2, dent2->d_name);
+<<<<<<< HEAD
 				status |= 1;
+=======
+				status = 1;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			}
 			dp2++;
 		}

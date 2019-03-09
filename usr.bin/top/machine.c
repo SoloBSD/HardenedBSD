@@ -57,8 +57,19 @@ static int smpmode;
 enum displaymodes displaymode;
 static const int namelength = 10;
 /* TOP_JID_LEN based on max of 999999 */
+<<<<<<< HEAD
 #define TOP_JID_LEN 6
 #define TOP_SWAP_LEN 5
+=======
+#define TOP_JID_LEN 7
+#define TOP_SWAP_LEN 6
+static int jidlength;
+static int swaplength;
+static int cmdlengthdelta;
+
+/* Prototypes for top internals */
+void quit(int);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 /* get_process_info passes back a handle.  This is what it looks like: */
 
@@ -79,6 +90,38 @@ struct handle {
 
 #define	PCTCPU(pp) (pcpu[pp - pbase])
 
+<<<<<<< HEAD
+=======
+/* definitions for indices in the nlist array */
+
+/*
+ *  These definitions control the format of the per-process area
+ */
+
+static char io_header[] =
+    "  PID%*s %-*.*s   VCSW  IVCSW   READ  WRITE  FAULT  TOTAL PERCENT COMMAND";
+
+#define io_Proc_format \
+    "%5d%*s %-*.*s %6ld %6ld %6ld %6ld %6ld %6ld %6.2f%% %.*s"
+
+static char smp_header_thr[] =
+    "  PID%*s %-*.*s  THR PRI NICE   SIZE    RES%*s STATE   C   TIME %7s COMMAND";
+static char smp_header[] =
+    "  PID%*s %-*.*s "   "PRI NICE   SIZE    RES%*s STATE   C   TIME %7s COMMAND";
+
+#define smp_Proc_format \
+    "%5d%*s %-*.*s %s%3d %4s%7s %6s%*.*s %-6.6s %2d%7s %6.2f%% %.*s"
+
+static char up_header_thr[] =
+    "  PID%*s %-*.*s  THR PRI NICE   SIZE    RES%*s STATE    TIME %7s COMMAND";
+static char up_header[] =
+    "  PID%*s %-*.*s "   "PRI NICE   SIZE    RES%*s STATE    TIME %7s COMMAND";
+
+#define up_Proc_format \
+    "%5d%*s %-*.*s %s%3d %4s%7s %6s%*.*s %-6.6s%.0d%7s %6.2f%% %.*s"
+
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 /* process state names for the "STATE" column of the display */
 /* the extra nulls in the string "run" are for adding a slash and
    the processor number when needed */
@@ -126,7 +169,12 @@ static const char *cpustatenames[] = {
 
 /* these are for detailing the memory statistics */
 
+<<<<<<< HEAD
 static const char *memorynames[] = {
+=======
+int memory_stats[7];
+char *memorynames[] = {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	"K Active, ", "K Inact, ", "K Laundry, ", "K Wired, ", "K Buf, ",
 	"K Free", NULL
 };
@@ -138,6 +186,7 @@ static const char *arcnames[] = {
 };
 static int arc_stats[nitems(arcnames)];
 
+<<<<<<< HEAD
 static const char *carcnames[] = {
 	"K Compressed, ", "K Uncompressed, ", ":1 Ratio, ",
 	NULL
@@ -145,6 +194,16 @@ static const char *carcnames[] = {
 static int carc_stats[nitems(carcnames)];
 
 static const char *swapnames[] = {
+=======
+int carc_stats[4];
+char *carcnames[] = {
+	"K Compressed, ", "K Uncompressed, ", ":1 Ratio, ",
+	NULL
+};
+
+int swap_stats[7];
+char *swapnames[] = {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	"K Total, ", "K Used, ", "K Free, ", "% Inuse, ", "K In, ", "K Out",
 	NULL
 };
@@ -189,6 +248,12 @@ static int pageshift;		/* log base 2 of the pagesize */
 /* swap usage */
 #define ki_swap(kip) \
     ((kip)->ki_swrss > (kip)->ki_rssize ? (kip)->ki_swrss - (kip)->ki_rssize : 0)
+<<<<<<< HEAD
+=======
+
+/* useful externals */
+long percentages();
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 /*
  * Sorting orders.  The first element is the default.
@@ -228,7 +293,11 @@ find_uid(uid_t needle, int *haystack)
 	for (; i < TOP_MAX_UIDS; ++i)
 		if ((uid_t)haystack[i] == needle)
 			return 1;
+<<<<<<< HEAD
 	return (0);
+=======
+	return 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 }
 
 void
@@ -273,7 +342,11 @@ machine_init(struct statics *statics)
 {
 	int i, j, empty, pagesize;
 	uint64_t arc_size;
+<<<<<<< HEAD
 	int carc_en;
+=======
+	boolean_t carc_en;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	size_t size;
 
 	size = sizeof(smpmode);
@@ -293,6 +366,20 @@ machine_init(struct statics *statics)
 	    sysctlbyname("vfs.zfs.compressed_arc_enabled", &carc_en, &size,
 	    NULL, 0) == 0 && carc_en == 1)
 		carc_enabled = 1;
+<<<<<<< HEAD
+=======
+
+	if (do_unames) {
+	    while ((pw = getpwent()) != NULL) {
+		if (strlen(pw->pw_name) > namelength)
+			namelength = strlen(pw->pw_name);
+	    }
+	}
+	if (smpmode && namelength > SMPUNAMELEN)
+		namelength = SMPUNAMELEN;
+	else if (namelength > UPUNAMELEN)
+		namelength = UPUNAMELEN;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	kd = kvm_open(NULL, _PATH_DEVNULL, NULL, O_RDONLY, "kvm_open");
 	if (kd == NULL)
@@ -373,6 +460,7 @@ machine_init(struct statics *statics)
 char *
 format_header(const char *uname_field)
 {
+<<<<<<< HEAD
 	static struct sbuf* header = NULL;
 
 	/* clean up from last time. */
@@ -381,8 +469,23 @@ format_header(const char *uname_field)
 	} else {
 		header = sbuf_new_auto();
 	}
+=======
+	static char Header[128];
+	const char *prehead;
+
+	if (ps.jail)
+		jidlength = TOP_JID_LEN + 1;	/* +1 for extra left space. */
+	else
+		jidlength = 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
+
+	if (ps.swap)
+		swaplength = TOP_SWAP_LEN + 1;  /* +1 for extra left space */
+	else
+		swaplength = 0;
 
 	switch (displaymode) {
+<<<<<<< HEAD
 	case DISP_CPU: {
 		sbuf_printf(header, "  %s", ps.thread_id ? " THR" : "PID");
 		sbuf_printf(header, "%*s", ps.jail ? TOP_JID_LEN : 0,
@@ -403,6 +506,23 @@ format_header(const char *uname_field)
 		sbuf_printf(header, " %6s ", ps.wcpu ? "WCPU" : "CPU");
 		sbuf_cat(header, "COMMAND");
 		sbuf_finish(header);
+=======
+	case DISP_CPU:
+		/*
+		 * The logic of picking the right header format seems reverse
+		 * here because we only want to display a THR column when
+		 * "thread mode" is off (and threads are not listed as
+		 * separate lines).
+		 */
+		prehead = smpmode ?
+		    (ps.thread ? smp_header : smp_header_thr) :
+		    (ps.thread ? up_header : up_header_thr);
+		snprintf(Header, sizeof(Header), prehead,
+		    jidlength, ps.jail ? " JID" : "",
+		    namelength, namelength, uname_field,
+		    swaplength, ps.swap ? " SWAP" : "",
+		    ps.wcpu ? "WCPU" : "CPU");
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		break;
 	}
 	case DISP_IO: {
@@ -785,6 +905,18 @@ get_process_info(struct system_info *si, struct process_select *sel,
 	/* get a pointer to the states summary array */
 	si->procstates = process_states;
 
+<<<<<<< HEAD
+=======
+	/* set up flags which define what we are going to select */
+	show_idle = sel->idle;
+	show_jid = sel->jid != -1;
+	show_self = sel->self == -1;
+	show_system = sel->system;
+	show_uid = sel->uid[0] != -1;
+	show_command = sel->command != NULL;
+	show_kidle = sel->kidle;
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	/* count up process states and get pointers to interesting procs */
 	total_procs = 0;
 	active_procs = 0;
@@ -840,7 +972,11 @@ get_process_info(struct system_info *si, struct process_select *sel,
 			/* skip proc. that don't belong to the selected JID */
 			continue;
 
+<<<<<<< HEAD
 		if (sel->uid[0] != -1 && !find_uid(pp->ki_ruid, sel->uid))
+=======
+		if (show_uid && !find_uid(pp->ki_ruid, sel->uid))
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			/* skip proc. that don't belong to the selected UID */
 			continue;
 
@@ -875,6 +1011,11 @@ format_next_process(struct handle * xhandle, char *(*get_userid)(int), int flags
 	size_t state;
 	struct rusage ru, *rup;
 	long p_tot, s_tot;
+<<<<<<< HEAD
+=======
+	char *proc_fmt, thr_buf[6];
+	char jid_buf[TOP_JID_LEN + 1], swap_buf[TOP_SWAP_LEN + 1];
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	char *cmdbuf = NULL;
 	char **args;
 	static struct sbuf* procbuf = NULL;
@@ -950,18 +1091,30 @@ format_next_process(struct handle * xhandle, char *(*get_userid)(int), int flags
 	if (!(flags & FMT_SHOWARGS)) {
 		if (ps.thread && pp->ki_flag & P_HADTHREADS &&
 		    pp->ki_tdname[0]) {
+<<<<<<< HEAD
 			snprintf(cmdbuf, screen_width, "%s{%s%s}", pp->ki_comm,
+=======
+			snprintf(cmdbuf, cmdlen, "%s{%s%s}", pp->ki_comm,
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			    pp->ki_tdname, pp->ki_moretdname);
 		} else {
 			snprintf(cmdbuf, screen_width, "%s", pp->ki_comm);
 		}
 	} else {
 		if (pp->ki_flag & P_SYSTEM ||
+<<<<<<< HEAD
 		    (args = kvm_getargv(kd, pp, screen_width)) == NULL ||
 		    !(*args)) {
 			if (ps.thread && pp->ki_flag & P_HADTHREADS &&
 		    	    pp->ki_tdname[0]) {
 				snprintf(cmdbuf, screen_width,
+=======
+		    (args = kvm_getargv(kd, pp, cmdlen)) == NULL ||
+		    !(*args)) {
+			if (ps.thread && pp->ki_flag & P_HADTHREADS &&
+		    	    pp->ki_tdname[0]) {
+				snprintf(cmdbuf, cmdlen,
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 				    "[%s{%s%s}]", pp->ki_comm, pp->ki_tdname,
 				    pp->ki_moretdname);
 			} else {
@@ -1007,7 +1160,11 @@ format_next_process(struct handle * xhandle, char *(*get_userid)(int), int flags
 			if (strcmp(cmd, pp->ki_comm) != 0) {
 				if (ps.thread && pp->ki_flag & P_HADTHREADS &&
 				    pp->ki_tdname[0])
+<<<<<<< HEAD
 					snprintf(cmdbuf, screen_width,
+=======
+					snprintf(cmdbuf, cmdlen,
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 					    "%s (%s){%s%s}", argbuf,
 					    pp->ki_comm, pp->ki_tdname,
 					    pp->ki_moretdname);
@@ -1017,7 +1174,11 @@ format_next_process(struct handle * xhandle, char *(*get_userid)(int), int flags
 			} else {
 				if (ps.thread && pp->ki_flag & P_HADTHREADS &&
 				    pp->ki_tdname[0])
+<<<<<<< HEAD
 					snprintf(cmdbuf, screen_width,
+=======
+					snprintf(cmdbuf, cmdlen,
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 					    "%s{%s%s}", argbuf, pp->ki_tdname,
 					    pp->ki_moretdname);
 				else
@@ -1027,6 +1188,22 @@ format_next_process(struct handle * xhandle, char *(*get_userid)(int), int flags
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if (ps.jail == 0)
+		jid_buf[0] = '\0';
+	else
+		snprintf(jid_buf, sizeof(jid_buf), "%*d",
+		    jidlength - 1, pp->ki_jid);
+
+	if (ps.swap == 0)
+		swap_buf[0] = '\0';
+	else
+		snprintf(swap_buf, sizeof(swap_buf), "%*s",
+		    swaplength - 1,
+		    format_k2(pagetok(ki_swap(pp)))); /* XXX */
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	if (displaymode == DISP_IO) {
 		oldp = get_old_proc(pp);
 		if (oldp != NULL) {
@@ -1046,6 +1223,7 @@ format_next_process(struct handle * xhandle, char *(*get_userid)(int), int flags
 
 		sbuf_printf(procbuf, "%5d ", (ps.thread_id) ? pp->ki_tid : pp->ki_pid);
 
+<<<<<<< HEAD
 		if (ps.jail) {
 			sbuf_printf(procbuf, "%*d ", TOP_JID_LEN - 1, pp->ki_jid);
 		}
@@ -1057,6 +1235,39 @@ format_next_process(struct handle * xhandle, char *(*get_userid)(int), int flags
 		sbuf_printf(procbuf, "%6ld ", rup->ru_majflt);
 		sbuf_printf(procbuf, "%6ld ", p_tot);
 		sbuf_printf(procbuf, "%6.2f%% ", s_tot == 0 ? 0.0 : (p_tot * 100.0 / s_tot));
+=======
+	/* format this entry */
+	if (smpmode) {
+		if (state == SRUN && pp->ki_oncpu != NOCPU)
+			cpu = pp->ki_oncpu;
+		else
+			cpu = pp->ki_lastcpu;
+	} else
+		cpu = 0;
+	proc_fmt = smpmode ? smp_Proc_format : up_Proc_format;
+	if (ps.thread != 0)
+		thr_buf[0] = '\0';
+	else
+		snprintf(thr_buf, sizeof(thr_buf), "%*d ",
+		    (int)(sizeof(thr_buf) - 2), pp->ki_numthreads);
+
+	snprintf(fmt, sizeof(fmt), proc_fmt,
+	    pp->ki_pid,
+	    jidlength, jid_buf,
+	    namelength, namelength, (*get_userid)(pp->ki_ruid),
+	    thr_buf,
+	    pp->ki_pri.pri_level - PZERO,
+	    format_nice(pp),
+	    format_k2(PROCSIZE(pp)),
+	    format_k2(pagetok(pp->ki_rssize)),
+	    swaplength, swaplength, swap_buf,
+	    status,
+	    cpu,
+	    format_time(cputime),
+	    ps.wcpu ? 100.0 * weighted_cpu(pct, pp) : 100.0 * pct,
+	    screen_width > cmdlengthdelta ? screen_width - cmdlengthdelta : 0,
+	    printable(cmdbuf));
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	} else {
 		sbuf_printf(procbuf, "%5d ", (ps.thread_id) ? pp->ki_tid : pp->ki_pid);
@@ -1294,6 +1505,39 @@ compare_cpu(const void *arg1, const void *arg2)
 	return (0);
 }
 
+<<<<<<< HEAD
+=======
+#ifdef ORDER
+/* "cpu" compare routines */
+int compare_size(), compare_res(), compare_time(), compare_prio(),
+    compare_threads();
+
+/*
+ * "io" compare routines.  Context switches aren't i/o, but are displayed
+ * on the "io" display.
+ */
+int compare_iototal(), compare_ioread(), compare_iowrite(), compare_iofault(),
+    compare_vcsw(), compare_ivcsw();
+
+int (*compares[])() = {
+	compare_cpu,
+	compare_size,
+	compare_res,
+	compare_time,
+	compare_prio,
+	compare_threads,
+	compare_iototal,
+	compare_ioread,
+	compare_iowrite,
+	compare_iofault,
+	compare_vcsw,
+	compare_ivcsw,
+	compare_jid,
+	compare_swap,
+	NULL
+};
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 /* compare_size - the comparison function for sorting by total memory usage */
 
 static int
@@ -1406,8 +1650,13 @@ compare_jid(const void *arg1, const void *arg2)
 static int
 compare_swap(const void *arg1, const void *arg2)
 {
+<<<<<<< HEAD
 	const struct kinfo_proc *p1 = *(const struct kinfo_proc * const *)arg1;
 	const struct kinfo_proc *p2 = *(const struct kinfo_proc * const *)arg2;
+=======
+	struct kinfo_proc *p1 = *(struct kinfo_proc **)arg1;
+	struct kinfo_proc *p2 = *(struct kinfo_proc **)arg2;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	ORDERKEY_SWAP(p1, p2);
 	ORDERKEY_PCTCPU(p1, p2);
@@ -1419,6 +1668,10 @@ compare_swap(const void *arg1, const void *arg2)
 
 	return (0);
 }
+<<<<<<< HEAD
+=======
+#endif /* ORDER */
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 /* assorted comparison functions for sorting by i/o */
 
@@ -1521,7 +1774,11 @@ swapmode(int *retavail, int *retfree)
 	int n;
 	struct kvm_swap swapary[1];
 	static int pagesize = 0;
+<<<<<<< HEAD
 	static unsigned long swap_maxpages = 0;
+=======
+	static u_long swap_maxpages = 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	*retavail = 0;
 	*retfree = 0;

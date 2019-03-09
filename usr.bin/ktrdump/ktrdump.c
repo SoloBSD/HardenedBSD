@@ -185,6 +185,7 @@ main(int ac, char **av)
 	if ((kd = kvm_openfiles(Nflag ? execfile : NULL,
 	    Mflag ? corefile : NULL, NULL, O_RDONLY, errbuf)) == NULL)
 		errx(1, "%s", errbuf);
+<<<<<<< HEAD
 
 	/*
 	 * Cache NLS data, for strerror, for err(3), before entering capability
@@ -192,6 +193,8 @@ main(int ac, char **av)
 	 */
 	caph_cache_catpages();
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	count = kvm_nlist(kd, nl);
 	if (count == -1)
 		errx(1, "%s", kvm_geterr(kd));

@@ -1,6 +1,9 @@
 /*-
+<<<<<<< HEAD
  * SPDX-License-Identifier: BSD-4-Clause
  *
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  * Copyright (c) 1985 Sun Microsystems, Inc.
  * Copyright (c) 1980, 1993
  *	The Regents of the University of California.  All rights reserved.
@@ -60,6 +63,14 @@ __FBSDID("$FreeBSD$");
 #include "indent_codes.h"
 #include "indent.h"
 
+<<<<<<< HEAD
+=======
+#define alphanum 1
+#ifdef undef
+#define opchar 3
+#endif
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 struct templ {
     const char *rwd;
     int         rwcode;
@@ -71,6 +82,7 @@ struct templ {
  */
 struct templ specials[] =
 {
+<<<<<<< HEAD
     {"_Bool", 4},
     {"_Complex", 4},
     {"_Imaginary", 4},
@@ -78,6 +90,16 @@ struct templ specials[] =
     {"bool", 4},
     {"break", 9},
     {"case", 8},
+=======
+    {"switch", 7},
+    {"case", 8},
+    {"break", 9},
+    {"struct", 3},
+    {"union", 3},
+    {"enum", 3},
+    {"default", 8},
+    {"int", 4},
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
     {"char", 4},
     {"complex", 4},
     {"const", 4},
@@ -112,7 +134,20 @@ struct templ specials[] =
     {"unsigned", 4},
     {"void", 4},
     {"volatile", 4},
+<<<<<<< HEAD
     {"while", 5}
+=======
+    {"goto", 9},
+    {"return", 9},
+    {"if", 5},
+    {"while", 5},
+    {"for", 5},
+    {"else", 6},
+    {"do", 6},
+    {"sizeof", 2},
+    {"offsetof", 1},
+    {0, 0}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 };
 
 const char **typenames;
@@ -200,6 +235,7 @@ lexi(struct parser_state *state)
 	 */
 	struct templ *p;
 
+<<<<<<< HEAD
 	if (isdigit((unsigned char)*buf_ptr) ||
 	    (buf_ptr[0] == '.' && isdigit((unsigned char)buf_ptr[1]))) {
 	    char s;
@@ -219,6 +255,91 @@ lexi(struct parser_state *state)
 		    fill_buffer();
 	    }
 	    /* s now indicates the type: f(loating), i(integer), u(nknown) */
+=======
+	if (isdigit(*buf_ptr) || (buf_ptr[0] == '.' && isdigit(buf_ptr[1]))) {
+	    enum base {
+		BASE_2, BASE_8, BASE_10, BASE_16
+	    };
+	    int         seendot = 0,
+	                seenexp = 0,
+			seensfx = 0;
+	    enum base	in_base = BASE_10;
+
+	    if (*buf_ptr == '0') {
+		if (buf_ptr[1] == 'b' || buf_ptr[1] == 'B')
+		    in_base = BASE_2;
+		else if (buf_ptr[1] == 'x' || buf_ptr[1] == 'X')
+		    in_base = BASE_16;
+		else if (isdigit(buf_ptr[1]))
+		    in_base = BASE_8;
+	    }
+	    switch (in_base) {
+	    case BASE_2:
+		*e_token++ = *buf_ptr++;
+		*e_token++ = *buf_ptr++;
+		while (*buf_ptr == '0' || *buf_ptr == '1') {
+		    CHECK_SIZE_TOKEN;
+		    *e_token++ = *buf_ptr++;
+		}
+		break;
+	    case BASE_8:
+		*e_token++ = *buf_ptr++;
+		while (*buf_ptr >= '0' && *buf_ptr <= '8') {
+		    CHECK_SIZE_TOKEN;
+		    *e_token++ = *buf_ptr++;
+		}
+		break;
+	    case BASE_16:
+		*e_token++ = *buf_ptr++;
+		*e_token++ = *buf_ptr++;
+		while (isxdigit(*buf_ptr)) {
+		    CHECK_SIZE_TOKEN;
+		    *e_token++ = *buf_ptr++;
+		}
+		break;
+	    case BASE_10:
+		while (1) {
+		    if (*buf_ptr == '.') {
+			if (seendot)
+			    break;
+			else
+			    seendot++;
+		    }
+		    CHECK_SIZE_TOKEN;
+		    *e_token++ = *buf_ptr++;
+		    if (!isdigit(*buf_ptr) && *buf_ptr != '.') {
+			if ((*buf_ptr != 'E' && *buf_ptr != 'e') || seenexp)
+			    break;
+			else {
+			    seenexp++;
+			    seendot++;
+			    CHECK_SIZE_TOKEN;
+			    *e_token++ = *buf_ptr++;
+			    if (*buf_ptr == '+' || *buf_ptr == '-')
+				*e_token++ = *buf_ptr++;
+			}
+		    }
+		}
+		break;
+	    }
+	    while (1) {
+		if (!(seensfx & 1) && (*buf_ptr == 'U' || *buf_ptr == 'u')) {
+		    CHECK_SIZE_TOKEN;
+		    *e_token++ = *buf_ptr++;
+		    seensfx |= 1;
+		    continue;
+		}
+		if (!(seensfx & 2) && (strchr("fFlL", *buf_ptr) != NULL)) {
+		    CHECK_SIZE_TOKEN;
+		    if (buf_ptr[1] == buf_ptr[0])
+		        *e_token++ = *buf_ptr++;
+		    *e_token++ = *buf_ptr++;
+		    seensfx |= 2;
+		    continue;
+		}
+		break;
+	    }
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	}
 	else
 	    while (isalnum((unsigned char)*buf_ptr) ||
@@ -239,7 +360,11 @@ lexi(struct parser_state *state)
 		if (buf_ptr >= buf_end)
 		    fill_buffer();
 	    }
+<<<<<<< HEAD
 	*e_token = '\0';
+=======
+	*e_token++ = '\0';
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	if (s_token[0] == 'L' && s_token[1] == '\0' &&
 	      (*buf_ptr == '"' || *buf_ptr == '\''))
@@ -249,17 +374,44 @@ lexi(struct parser_state *state)
 	    if (++buf_ptr >= buf_end)
 		fill_buffer();
 	}
+<<<<<<< HEAD
 	state->keyword = 0;
 	if (state->last_token == structure && !state->p_l_follow) {
+=======
+	ps.keyword = 0;
+	if (l_struct && !ps.p_l_follow) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 				/* if last token was 'struct' and we're not
 				 * in parentheses, then this token
 				 * should be treated as a declaration */
 	    state->last_u_d = true;
 	    return (decl);
 	}
+<<<<<<< HEAD
+=======
+	ps.last_u_d = l_struct;	/* Operator after identifier is binary
+				 * unless last token was 'struct' */
+	l_struct = false;
+	last_code = ident;	/* Remember that this is the code we will
+				 * return */
+
+	if (auto_typedefs) {
+	    const char *q = s_token;
+	    size_t q_len = strlen(q);
+	    /* Check if we have an "_t" in the end */
+	    if (q_len > 2 &&
+	        (strcmp(q + q_len - 2, "_t") == 0)) {
+	        ps.keyword = 4;	/* a type name */
+		ps.last_u_d = true;
+	        goto found_auto_typedef;
+	    }
+	}
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	/*
 	 * Operator after identifier is binary unless last token was 'struct'
 	 */
+<<<<<<< HEAD
 	state->last_u_d = (state->last_token == structure);
 
 	p = bsearch(s_token,
@@ -282,6 +434,26 @@ lexi(struct parser_state *state)
 	} else {			/* we have a keyword */
 	    state->keyword = p->rwcode;
 	    state->last_u_d = true;
+=======
+	for (p = specials; (j = p->rwd) != NULL; p++) {
+	    const char *q = s_token;	/* point at scanned token */
+	    if (*j++ != *q++ || *j++ != *q++)
+		continue;	/* This test depends on the fact that
+				 * identifiers are always at least 1 character
+				 * long (ie. the first two bytes of the
+				 * identifier are always meaningful) */
+	    if (q[-1] == 0)
+		break;		/* If its a one-character identifier */
+	    while (*q++ == *j)
+		if (*j++ == 0)
+		    goto found_keyword;	/* I wish that C had a multi-level
+					 * break... */
+	}
+	if (p->rwd) {		/* we have a keyword */
+    found_keyword:
+	    ps.keyword = p->rwcode;
+	    ps.last_u_d = true;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    switch (p->rwcode) {
 	    case 7:		/* it is a switch */
 		return (swstmt);
@@ -291,10 +463,18 @@ lexi(struct parser_state *state)
 	    case 3:		/* a "struct" */
 		/* FALLTHROUGH */
 	    case 4:		/* one of the declaration keywords */
+<<<<<<< HEAD
 	    found_typename:
 		if (state->p_l_follow) {
 		    /* inside parens: cast, param list, offsetof or sizeof */
 		    state->cast_mask |= (1 << state->p_l_follow) & ~state->not_cast_mask;
+=======
+	    found_auto_typedef:
+		if (ps.p_l_follow) {
+		    /* inside parens: cast, param list, offsetof or sizeof */
+		    ps.cast_mask |= (1 << ps.p_l_follow) & ~ps.not_cast_mask;
+		    break;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		}
 		if (state->last_token == period || state->last_token == unary_op) {
 		    state->keyword = 0;
@@ -312,12 +492,15 @@ lexi(struct parser_state *state)
 	    case 6:		/* do, else */
 		return (sp_nparen);
 
+<<<<<<< HEAD
 	    case 10:		/* storage class specifier */
 		return (storage);
 
 	    case 11:		/* typedef */
 		return (type_def);
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    default:		/* all others are treated like any other
 				 * identifier */
 		return (ident);
@@ -340,6 +523,7 @@ lexi(struct parser_state *state)
 	 * token is in fact a declaration keyword -- one that has been
 	 * typedefd
 	 */
+<<<<<<< HEAD
 	else if (!state->p_l_follow && !state->block_init &&
 	    !state->in_stmt &&
 	    ((*buf_ptr == '*' && buf_ptr[1] != '=') ||
@@ -348,6 +532,17 @@ lexi(struct parser_state *state)
 		state->last_token == rbrace)) {
 	    state->keyword = 4;	/* a type name */
 	    state->last_u_d = true;
+=======
+	if (((*buf_ptr == '*' && buf_ptr[1] != '=') || isalpha(*buf_ptr) || *buf_ptr == '_')
+		&& !ps.p_l_follow
+	        && !ps.block_init
+		&& (ps.last_token == rparen || ps.last_token == semicolon ||
+		    ps.last_token == decl ||
+		    ps.last_token == lbrace || ps.last_token == rbrace)) {
+	    ps.keyword = 4;	/* a type name */
+	    ps.last_u_d = true;
+	    last_code = decl;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    return decl;
 	}
 	if (state->last_token == decl)	/* if this is a declared variable,
@@ -634,6 +829,7 @@ add_typename(const char *key)
 	/* take advantage of sorted input */
 	if (comparison == 0)	/* remove duplicates */
 	    return;
+<<<<<<< HEAD
 	typenames[++typename_top] = copy = strdup(key);
     }
     else {
@@ -650,4 +846,15 @@ add_typename(const char *key)
 
     if (copy == NULL)
 	err(1, NULL);
+=======
+	else
+	    p++;
+    if (p >= specials + sizeof specials / sizeof specials[0])
+	return;			/* For now, table overflows are silently
+				 * ignored */
+    p->rwd = key;
+    p->rwcode = val;
+    p[1].rwd = NULL;
+    p[1].rwcode = 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 }

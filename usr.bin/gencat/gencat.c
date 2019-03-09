@@ -4,7 +4,11 @@
 /*	$NetBSD: gencat.c,v 1.18 2003/10/27 00:12:43 lukem Exp $	*/
 
 /*-
+<<<<<<< HEAD
  * SPDX-License-Identifier: (BSD-2-Clause-NetBSD AND ISC)
+=======
+ * SPDX-License-Identifier: BSD-2-Clause-NetBSD AND MIT
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  *
  * Copyright (c) 1996 The NetBSD Foundation, Inc.
  * All rights reserved.

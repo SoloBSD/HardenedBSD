@@ -30,6 +30,7 @@
 .\"
 .\"	@(#)grep.1	8.3 (Berkeley) 4/18/94
 .\"
+<<<<<<< HEAD
 .Dd August 21, 2018
 .Dt GREP 1
 .Os
@@ -38,11 +39,23 @@
 .Nm egrep ,
 .Nm fgrep ,
 .Nm rgrep
+=======
+.Dd April 17, 2017
+.Dt GREP 1
+.Os
+.Sh NAME
+.Nm grep , egrep , fgrep , rgrep ,
+.Nm zgrep , zegrep , zfgrep
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Nd file pattern searcher
 .Sh SYNOPSIS
 .Nm grep
 .Bk -words
+<<<<<<< HEAD
 .Op Fl abcdDEFGHhIiLlmnOopqRSsUVvwxz
+=======
+.Op Fl abcdDEFGHhIiJLlmnOopqRSsUVvwxZz
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Op Fl A Ar num
 .Op Fl B Ar num
 .Op Fl C Ns Op Ar num
@@ -375,7 +388,11 @@ will only search a file until a match has been found,
 making searches potentially less expensive.
 .It Fl R , Fl r , Fl Fl recursive
 Recursively search subdirectories listed.
+<<<<<<< HEAD
 (i.e., force
+=======
+(i.e. force
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Nm grep
 to behave as
 .Nm rgrep ) .
@@ -415,7 +432,16 @@ Obsoleted.
 .It Fl z , Fl Fl null-data
 Treat input and output data as sequences of lines terminated by a
 zero-byte instead of a newline.
+<<<<<<< HEAD
 .It Fl Fl binary-files= Ns Ar value
+=======
+.It Fl Z , Fl Fl decompress
+Force
+.Nm grep
+to behave as
+.Nm zgrep .
+.It Fl Fl binary-files Ns = Ns Ar value
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 Controls searching and printing of binary files.
 Options are:
 .Bl -tag -compact -width "binary (default)"

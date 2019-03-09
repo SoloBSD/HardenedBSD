@@ -131,8 +131,25 @@ via_update(const struct ucode_update_params *params)
 	WARNX(2, "found cpu type %#x family %#x model %#x stepping %#x.",
 	    (signature >> 12) & 0x03, (signature >> 8) & 0x0f,
 	    (signature >> 4) & 0x0f, (signature >> 0) & 0x0f);
+<<<<<<< HEAD
 
 	if (params->fwsize < sizeof(*fw_header)) {
+=======
+	/*
+	 * Open firmware image.
+	 */
+	fd = open(path, O_RDONLY, 0);
+	if (fd < 0) {
+		WARN(0, "open(%s)", path);
+		goto fail;
+	}
+	error = fstat(fd, &st);
+	if (error != 0) {
+		WARN(0, "fstat(%s)", path);
+		goto fail;
+	}
+	if (st.st_size < 0 || (unsigned)st.st_size < sizeof(*fw_header)) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		WARNX(2, "file too short: %s", path);
 		goto fail;
 	}

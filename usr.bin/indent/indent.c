@@ -1,6 +1,9 @@
 /*-
+<<<<<<< HEAD
  * SPDX-License-Identifier: BSD-4-Clause
  *
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  * Copyright (c) 1985 Sun Microsystems, Inc.
  * Copyright (c) 1976 Board of Trustees of the University of Illinois.
  * Copyright (c) 1980, 1993
@@ -44,6 +47,7 @@ static char sccsid[] = "@(#)indent.c	5.17 (Berkeley) 6/7/93";
 #include <sys/cdefs.h>
 __FBSDID("$FreeBSD$");
 
+#include <sys/capsicum.h>
 #include <sys/param.h>
 #include <sys/capsicum.h>
 #include <capsicum_helpers.h>
@@ -93,9 +97,13 @@ main(int argc, char **argv)
     int         type_code;	/* the type of token, returned by lexi */
 
     int         last_else = 0;	/* true iff last keyword was an else */
+<<<<<<< HEAD
     const char *profile_name = NULL;
     const char *envval = NULL;
     struct parser_state transient_state; /* a copy for lookup */
+=======
+    const char *envval = NULL;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
     /*-----------------------------------------------*\
     |		      INITIALIZATION		      |
@@ -250,6 +258,7 @@ main(int argc, char **argv)
     cap_rights_init(&rights, CAP_FSTAT, CAP_READ);
     if (cap_rights_limit(fileno(input), &rights) < 0 && errno != ENOSYS)
 	err(EXIT_FAILURE, "unable to limit rights for %s", in_name);
+<<<<<<< HEAD
     if (caph_enter() < 0)
 	err(EXIT_FAILURE, "unable to enter capability mode");
 
@@ -263,6 +272,41 @@ main(int argc, char **argv)
 	opt.decl_com_ind = opt.ljust_decl ? (opt.com_ind <= 10 ? 2 : opt.com_ind - 8) : opt.com_ind;
     if (opt.continuation_indent == 0)
 	opt.continuation_indent = opt.ind_size;
+=======
+    if (cap_enter() < 0 && errno != ENOSYS)
+	err(EXIT_FAILURE, "unable to enter capability mode");
+
+    if (ps.com_ind <= 1)
+	ps.com_ind = 2;		/* dont put normal comments before column 2 */
+    if (troff) {
+	if (bodyf.font[0] == 0)
+	    parsefont(&bodyf, "R");
+	if (scomf.font[0] == 0)
+	    parsefont(&scomf, "I");
+	if (blkcomf.font[0] == 0)
+	    blkcomf = scomf, blkcomf.size += 2;
+	if (boxcomf.font[0] == 0)
+	    boxcomf = blkcomf;
+	if (stringf.font[0] == 0)
+	    parsefont(&stringf, "L");
+	if (keywordf.font[0] == 0)
+	    parsefont(&keywordf, "B");
+	writefdef(&bodyf, 'B');
+	writefdef(&scomf, 'C');
+	writefdef(&blkcomf, 'L');
+	writefdef(&boxcomf, 'X');
+	writefdef(&stringf, 'S');
+	writefdef(&keywordf, 'K');
+    }
+    if (block_comment_max_col <= 0)
+	block_comment_max_col = max_col;
+    if (ps.local_decl_indent < 0)	/* if not specified by user, set this */
+	ps.local_decl_indent = ps.decl_indent;
+    if (ps.decl_com_ind <= 0)	/* if not specified by user, set this */
+	ps.decl_com_ind = ps.ljust_decl ? (ps.com_ind <= 10 ? 2 : ps.com_ind - 8) : ps.com_ind;
+    if (continuation_indent == 0)
+	continuation_indent = ps.ind_size;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
     fill_buffer();		/* get first batch of stuff into input buffer */
 
     parse(semicolon);
@@ -305,10 +349,29 @@ main(int argc, char **argv)
 	while (ps.search_brace) {
 	    switch (type_code) {
 	    case newline:
+<<<<<<< HEAD
 		if (sc_end == NULL) {
 		    save_com = sc_buf;
 		    save_com[0] = save_com[1] = ' ';
 		    sc_end = &save_com[2];
+=======
+		++line_no;
+		if (sc_end != NULL) {	/* dump comment, if any */
+		    *sc_end++ = '\n';	/* newlines are needed in this case */
+		    goto sw_buffer;
+		}
+		flushed_nl = true;
+	    case form_feed:
+		break;		/* form feeds and newlines found here will be
+				 * ignored */
+
+	    case lbrace:	/* this is a brace that starts the compound
+				 * stmt */
+		if (sc_end == NULL) {	/* ignore buffering if a comment wasn't
+					 * stored up */
+		    ps.search_brace = false;
+		    goto check_type;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		}
 		*sc_end++ = '\n';
 		/*
@@ -335,6 +398,7 @@ main(int argc, char **argv)
 		    save_com[0] = save_com[1] = ' ';
 		    sc_end = &save_com[2];
 		}
+<<<<<<< HEAD
 		comment_buffered = true;
 		*sc_end++ = '/';	/* copy in start of comment */
 		*sc_end++ = '*';
@@ -349,6 +413,21 @@ main(int argc, char **argv)
 			diag2(1, "Internal buffer overflow - Move big comment from right after if, while, or whatever");
 			fflush(output);
 			exit(1);
+=======
+	    case comment:	/* we have a comment, so we must copy it into
+				 * the buffer */
+		if (!flushed_nl || sc_end != NULL) {
+		    if (sc_end == NULL) { /* if this is the first comment, we
+					   * must set up the buffer */
+			save_com[0] = save_com[1] = ' ';
+			sc_end = &(save_com[2]);
+		    }
+		    else {
+			*sc_end++ = '\n';	/* add newline between
+						 * comments */
+			*sc_end++ = ' ';
+			--line_no;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		    }
 		}
 		*sc_end++ = '/';	/* add ending slash */
@@ -379,6 +458,7 @@ main(int argc, char **argv)
 		}
 		/* FALLTHROUGH */
 	    default:		/* it is the start of a normal statement */
+<<<<<<< HEAD
 		{
 		    int remove_newlines;
 
@@ -419,6 +499,37 @@ main(int argc, char **argv)
 		    }
 		    for (t_ptr = token; *t_ptr; ++t_ptr)
 			*sc_end++ = *t_ptr;
+=======
+		if (flushed_nl)	/* if we flushed a newline, make sure it is
+				 * put back */
+		    force_nl = true;
+		if ((type_code == sp_paren && *token == 'i'
+			&& last_else && ps.else_if)
+			|| (type_code == sp_nparen && *token == 'e'
+			&& e_code != s_code && e_code[-1] == '}'))
+		    force_nl = false;
+
+		if (sc_end == NULL) {	/* ignore buffering if comment wasn't
+					 * saved up */
+		    ps.search_brace = false;
+		    goto check_type;
+		}
+		if (force_nl) {	/* if we should insert a nl here, put it into
+				 * the buffer */
+		    force_nl = false;
+		    --line_no;	/* this will be re-increased when the nl is
+				 * read from the buffer */
+		    *sc_end++ = '\n';
+		    *sc_end++ = ' ';
+		    if (verbose && !flushed_nl)	/* print error msg if the line
+						 * was not already broken */
+			diag2(0, "Line broken");
+		    flushed_nl = false;
+		}
+		for (t_ptr = token; *t_ptr; ++t_ptr)
+		    *sc_end++ = *t_ptr;	/* copy token into temp buffer */
+		ps.procname[0] = 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	    sw_buffer:
 		    ps.search_brace = false;	/* stop looking for start of
@@ -428,11 +539,18 @@ main(int argc, char **argv)
 		    buf_ptr = save_com;	/* fix so that subsequent calls to
 					 * lexi will take tokens out of
 					 * save_com */
+<<<<<<< HEAD
 		    *sc_end++ = ' ';/* add trailing blank, just in case */
 		    buf_end = sc_end;
 		    sc_end = NULL;
 		    break;
 		}
+=======
+		*sc_end++ = ' ';/* add trailing blank, just in case */
+		buf_end = sc_end;
+		sc_end = NULL;
+		break;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    }			/* end of switch */
 	    /*
 	     * We must make this check, just in case there was an unexpected
@@ -564,6 +682,7 @@ check_type:
 		    nitems(ps.paren_indents));
 		ps.p_l_follow--;
 	    }
+<<<<<<< HEAD
 	    if (*token == '[')
 		/* not a function pointer declaration or a function call */;
 	    else if (ps.in_decl && !ps.block_init && !ps.dumped_decl_indent &&
@@ -586,6 +705,34 @@ check_type:
 	    if (sp_sw && ps.p_l_follow == 1 && opt.extra_expression_indent
 		    && ps.paren_indents[0] < 2 * opt.ind_size)
 		ps.paren_indents[0] = 2 * opt.ind_size;
+=======
+	    if (ps.want_blank && *token != '[' &&
+		    (ps.last_token != ident || proc_calls_space ||
+		    /* offsetof (1) is never allowed a space; sizeof (2) gets
+		     * one iff -bs; all other keywords (>2) always get a space
+		     * before lparen */
+			(ps.keyword + Bill_Shannon > 2)))
+		*e_code++ = ' ';
+	    ps.want_blank = false;
+	    if (ps.in_decl && !ps.block_init && !ps.dumped_decl_indent &&
+		!is_procname) {
+		/* function pointer declarations */
+		if (troff) {
+		    sprintf(e_code, "\n.Du %dp+\200p \"%s\"\n", dec_ind * 7, token);
+		    e_code += strlen(e_code);
+		}
+		else {
+		    indent_declaration(dec_ind, tabs_to_var);
+		}
+		ps.dumped_decl_indent = true;
+	    }
+	    if (!troff)
+		*e_code++ = token[0];
+	    ps.paren_indents[ps.p_l_follow - 1] = e_code - s_code;
+	    if (sp_sw && ps.p_l_follow == 1 && extra_expression_indent
+		    && ps.paren_indents[0] < 2 * ps.ind_size)
+		ps.paren_indents[0] = 2 * ps.ind_size;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    if (ps.in_or_st && *token == '(' && ps.tos <= 2) {
 		/*
 		 * this is a kluge to make sure that declarations will be
@@ -602,6 +749,10 @@ check_type:
 	    break;
 
 	case rparen:		/* got a ')' or ']' */
+<<<<<<< HEAD
+=======
+	    rparen_count--;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    if (ps.cast_mask & (1 << ps.p_l_follow) & ~ps.not_cast_mask) {
 		ps.last_u_d = true;
 		ps.cast_mask &= (1 << ps.p_l_follow) - 1;
@@ -636,6 +787,7 @@ check_type:
 	    break;
 
 	case unary_op:		/* this could be any unary operation */
+<<<<<<< HEAD
 	    if (!ps.dumped_decl_indent && ps.in_decl && !ps.block_init &&
 		ps.procname[0] == '\0' && ps.paren_level == 0) {
 		/* pointer declarations */
@@ -647,10 +799,30 @@ check_type:
 		for (i = 0; token[i]; ++i)
 		    /* find length of token */;
 		indent_declaration(dec_ind - i, tabs_to_var);
+=======
+	    if (!ps.dumped_decl_indent && ps.in_decl && !is_procname &&
+		!ps.block_init) {
+		/* pointer declarations */
+		if (troff) {
+		    if (ps.want_blank)
+			*e_code++ = ' ';
+		    sprintf(e_code, "\n.Du %dp+\200p \"%s\"\n", dec_ind * 7,
+			token);
+		    e_code += strlen(e_code);
+		}
+		else {
+			/* if this is a unary op in a declaration, we should
+			 * indent this token */
+			for (i = 0; token[i]; ++i)
+			    /* find length of token */;
+			indent_declaration(dec_ind - i, tabs_to_var);
+		}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		ps.dumped_decl_indent = true;
 	    }
 	    else if (ps.want_blank)
 		*e_code++ = ' ';
+<<<<<<< HEAD
 
 	    {
 		int len = e_token - s_token;
@@ -658,6 +830,17 @@ check_type:
 		CHECK_SIZE_CODE(len);
 		memcpy(e_code, token, len);
 		e_code += len;
+=======
+	    {
+		const char *res = token;
+
+		if (troff && token[0] == '-' && token[1] == '>')
+		    res = "\\(->";
+		for (t_ptr = res; *t_ptr; ++t_ptr) {
+		    CHECK_SIZE_CODE;
+		    *e_code++ = *t_ptr;
+		}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    }
 	    ps.want_blank = false;
 	    break;
@@ -748,7 +931,11 @@ check_type:
 	    ps.just_saw_decl--;
 
 	    if (ps.in_decl && s_code == e_code && !ps.block_init &&
+<<<<<<< HEAD
 		!ps.dumped_decl_indent && ps.paren_level == 0) {
+=======
+		!ps.dumped_decl_indent) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		/* indent stray semicolons in declarations */
 		indent_declaration(dec_ind - 1, tabs_to_var);
 		ps.dumped_decl_indent = true;
@@ -976,12 +1163,28 @@ check_type:
 
 	case funcname:
 	case ident:		/* got an identifier or constant */
+<<<<<<< HEAD
 	    if (ps.in_decl) {
 		if (type_code == funcname) {
 		    ps.in_decl = false;
 		    if (opt.procnames_start_line && s_code != e_code) {
 			*e_code = '\0';
 			dump_line();
+=======
+	    if (ps.in_decl) {	/* if we are in a declaration, we must indent
+				 * identifier */
+		if (is_procname == 0 || !procnames_start_line) {
+		    if (!ps.block_init && !ps.dumped_decl_indent) {
+			if (troff) {
+			    if (ps.want_blank)
+				*e_code++ = ' ';
+			    sprintf(e_code, "\n.De %dp+\200p\n", dec_ind * 7);
+			    e_code += strlen(e_code);
+			} else
+			    indent_declaration(dec_ind, tabs_to_var);
+			ps.dumped_decl_indent = true;
+			ps.want_blank = false;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		    }
 		    else if (ps.want_blank) {
 			*e_code++ = ' ';
@@ -994,6 +1197,14 @@ check_type:
 		    indent_declaration(dec_ind, tabs_to_var);
 		    ps.dumped_decl_indent = true;
 		    ps.want_blank = false;
+<<<<<<< HEAD
+=======
+		    if (dec_ind && s_code != e_code) {
+			*e_code = '\0';
+			dump_line();
+		    }
+		    dec_ind = 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		}
 	    }
 	    else if (sp_sw && ps.p_l_follow == 0) {
@@ -1004,6 +1215,7 @@ check_type:
 		parse(hd_type);
 	    }
     copy_id:
+<<<<<<< HEAD
 	    {
 		int len = e_token - s_token;
 
@@ -1012,6 +1224,18 @@ check_type:
 		    *e_code++ = ' ';
 		memcpy(e_code, s_token, len);
 		e_code += len;
+=======
+	    if (ps.want_blank)
+		*e_code++ = ' ';
+	    if (troff && ps.keyword) {
+		e_code = chfont(&bodyf, &keywordf, e_code);
+		for (t_ptr = token; *t_ptr; ++t_ptr) {
+		    CHECK_SIZE_CODE;
+		    *e_code++ = keywordf.allcaps && islower(*t_ptr)
+			? toupper(*t_ptr) : *t_ptr;
+		}
+		e_code = chfont(&keywordf, &bodyf, e_code);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    }
 	    if (type_code != funcname)
 		ps.want_blank = true;
@@ -1030,6 +1254,16 @@ check_type:
 	    ps.want_blank = false;
 	    break;
 
+	case strpfx:
+	    if (ps.want_blank)
+		*e_code++ = ' ';
+	    for (t_ptr = token; *t_ptr; ++t_ptr) {
+		CHECK_SIZE_CODE;
+		*e_code++ = *t_ptr;
+	    }
+	    ps.want_blank = false;
+	    break;
+
 	case period:		/* treat a period kind of like a binary
 				 * operation */
 	    *e_code++ = '.';	/* move the period into line */
@@ -1040,8 +1274,13 @@ check_type:
 	    ps.want_blank = (s_code != e_code);	/* only put blank after comma
 						 * if comma does not start the
 						 * line */
+<<<<<<< HEAD
 	    if (ps.in_decl && ps.procname[0] == '\0' && !ps.block_init &&
 		!ps.dumped_decl_indent && ps.paren_level == 0) {
+=======
+	    if (ps.in_decl && is_procname == 0 && !ps.block_init &&
+		!ps.dumped_decl_indent) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		/* indent leading commas and not the actual identifiers */
 		indent_declaration(dec_ind - 1, tabs_to_var);
 		ps.dumped_decl_indent = true;
@@ -1117,11 +1356,17 @@ check_type:
 		    e_lab--;
 		if (e_lab - s_lab == com_end && bp_save == NULL) {
 		    /* comment on preprocessor line */
+<<<<<<< HEAD
 		    if (sc_end == NULL) {	/* if this is the first comment,
 						 * we must set up the buffer */
 			save_com = sc_buf;
 			sc_end = &save_com[0];
 		    }
+=======
+		    if (sc_end == NULL)	/* if this is the first comment, we
+					 * must set up the buffer */
+			sc_end = &(save_com[0]);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		    else {
 			*sc_end++ = '\n';	/* add newline between
 						 * comments */
@@ -1192,7 +1437,11 @@ check_type:
 		    break;
 		}
 	    }
+<<<<<<< HEAD
 	    if (opt.blanklines_around_conditional_compilation) {
+=======
+	    if (blanklines_around_conditional_compilation) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		postfix_blankline_requested++;
 		n_real_blanklines = 0;
 	    }
@@ -1204,6 +1453,14 @@ check_type:
 				 * character will cause the line to be printed */
 
 	case comment:		/* we have gotten a / followed by * this is a biggie */
+<<<<<<< HEAD
+=======
+	    if (flushed_nl) {	/* we should force a broken line here */
+		dump_line();
+		ps.want_blank = false;	/* dont insert blank at line start */
+		force_nl = false;
+	    }
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    pr_comment();
 	    break;
 	}			/* end of big switch stmt */
@@ -1266,6 +1523,7 @@ indent_declaration(int cur_dec_ind, int tabs_to_var)
     char *startpos = e_code;
 
     /*
+<<<<<<< HEAD
      * get the tab math right for indentations that are not multiples of tabsize
      */
     if ((ps.ind_level * opt.ind_size) % opt.tabsize != 0) {
@@ -1283,6 +1541,22 @@ indent_declaration(int cur_dec_ind, int tabs_to_var)
     }
     CHECK_SIZE_CODE(cur_dec_ind - pos + 1);
     while (pos < cur_dec_ind) {
+=======
+     * get the tab math right for indentations that are not multiples of 8
+     */
+    if ((ps.ind_level * ps.ind_size) % 8 != 0) {
+	pos += (ps.ind_level * ps.ind_size) % 8;
+	cur_dec_ind += (ps.ind_level * ps.ind_size) % 8;
+    }
+    if (tabs_to_var)
+	while ((pos & ~7) + 8 <= cur_dec_ind) {
+	    CHECK_SIZE_CODE;
+	    *e_code++ = '\t';
+	    pos = (pos & ~7) + 8;
+	}
+    while (pos < cur_dec_ind) {
+	CHECK_SIZE_CODE;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	*e_code++ = ' ';
 	pos++;
     }

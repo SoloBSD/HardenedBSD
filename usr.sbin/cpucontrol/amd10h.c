@@ -88,8 +88,14 @@ amd10h_probe(int fd)
  * source code.
  */
 void
+<<<<<<< HEAD
 amd10h_update(const struct ucode_update_params *params)
 {
+=======
+amd10h_update(const char *dev, const char *path)
+{
+	struct stat st;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	cpuctl_cpuid_args_t idargs;
 	cpuctl_msr_args_t msrargs;
 	cpuctl_update_args_t args;
@@ -99,14 +105,19 @@ amd10h_update(const struct ucode_update_params *params)
 	const section_header_t *section_header;
 	const container_header_t *container_header;
 	const uint8_t *fw_data;
+<<<<<<< HEAD
 	const uint8_t *fw_image;
 	const char *dev, *path;
+=======
+	uint8_t *fw_image;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	size_t fw_size;
 	size_t selected_size;
 	uint32_t revision;
 	uint32_t new_rev;
 	uint32_t signature;
 	uint16_t equiv_id;
+<<<<<<< HEAD
 	int devfd;
 	unsigned int i;
 	int error;
@@ -120,6 +131,22 @@ amd10h_update(const struct ucode_update_params *params)
 	assert(path);
 	assert(dev);
 
+=======
+	int fd, devfd;
+	unsigned int i;
+	int error;
+
+	assert(path);
+	assert(dev);
+
+	fd = -1;
+	fw_image = MAP_FAILED;
+	devfd = open(dev, O_RDWR);
+	if (devfd < 0) {
+		WARN(0, "could not open %s for writing", dev);
+		return;
+	}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	idargs.level = 1;
 	error = ioctl(devfd, CPUCTL_CPUID, &idargs);
 	if (error < 0) {
@@ -138,8 +165,12 @@ amd10h_update(const struct ucode_update_params *params)
 
 	WARNX(1, "found cpu family %#x model %#x "
 	    "stepping %#x extfamily %#x extmodel %#x.",
+<<<<<<< HEAD
 	    ((signature >> 8) & 0x0f) + ((signature >> 20) & 0xff),
 	    (signature >> 4) & 0x0f,
+=======
+	    (signature >> 8) & 0x0f, (signature >> 4) & 0x0f,
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    (signature >> 0) & 0x0f, (signature >> 20) & 0xff,
 	    (signature >> 16) & 0x0f);
 	WARNX(1, "microcode revision %#x", revision);
@@ -147,16 +178,44 @@ amd10h_update(const struct ucode_update_params *params)
 	/*
 	 * Open the firmware file.
 	 */
+<<<<<<< HEAD
 	WARNX(1, "checking %s for update.", path);
 	if (fw_size <
+=======
+	fd = open(path, O_RDONLY, 0);
+	if (fd < 0) {
+		WARN(0, "open(%s)", path);
+		goto done;
+	}
+	error = fstat(fd, &st);
+	if (error != 0) {
+		WARN(0, "fstat(%s)", path);
+		goto done;
+	}
+	if (st.st_size < 0 || (size_t)st.st_size <
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    (sizeof(*container_header) + sizeof(*section_header))) {
 		WARNX(2, "file too short: %s", path);
 		goto done;
 	}
+<<<<<<< HEAD
+=======
+	fw_size = st.st_size;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	/*
 	 * mmap the whole image.
 	 */
+<<<<<<< HEAD
+=======
+	fw_image = (uint8_t *)mmap(NULL, st.st_size, PROT_READ,
+	    MAP_PRIVATE, fd, 0);
+	if (fw_image == MAP_FAILED) {
+		WARN(0, "mmap(%s)", path);
+		goto done;
+	}
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	fw_data = fw_image;
 	container_header = (const container_header_t *)fw_data;
 	if (container_header->magic != AMD_10H_MAGIC) {
@@ -198,9 +257,13 @@ amd10h_update(const struct ucode_update_params *params)
 	for (i = 0; equiv_cpu_table[i].installed_cpu != 0; i++) {
 		if (signature == equiv_cpu_table[i].installed_cpu) {
 			equiv_id = equiv_cpu_table[i].equiv_cpu;
+<<<<<<< HEAD
 			WARNX(3, "equiv_id: %x, signature %8x,"
 			    " equiv_cpu_table[%d] %8x", equiv_id, signature,
 			    i, equiv_cpu_table[i].installed_cpu);
+=======
+			WARNX(3, "equiv_id: %x", equiv_id);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			break;
 		}
 	}
@@ -234,6 +297,7 @@ amd10h_update(const struct ucode_update_params *params)
 		fw_data += section_header->size;
 		fw_size -= section_header->size;
 
+<<<<<<< HEAD
 		if (fw_header->processor_rev_id != equiv_id) {
 			WARNX(1, "firmware processor_rev_id %x, equiv_id %x",
 			    fw_header->processor_rev_id, equiv_id);
@@ -244,6 +308,12 @@ amd10h_update(const struct ucode_update_params *params)
 			    fw_header->patch_id, revision);
 			continue; /* not newer revision */
 		}
+=======
+		if (fw_header->processor_rev_id != equiv_id)
+			continue; /* different cpu */
+		if (fw_header->patch_id <= revision)
+			continue; /* not newer revision */
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		if (fw_header->nb_dev_id != 0 || fw_header->sb_dev_id != 0) {
 			WARNX(2, "Chipset-specific microcode is not supported");
 		}
@@ -287,5 +357,15 @@ amd10h_update(const struct ucode_update_params *params)
 		WARNX(0, "revision after update %#x", new_rev);
 
 done:
+<<<<<<< HEAD
+=======
+	if (fd >= 0)
+		close(fd);
+	if (devfd >= 0)
+		close(devfd);
+	if (fw_image != MAP_FAILED)
+		if (munmap(fw_image, st.st_size) != 0)
+			warn("munmap(%s)", path);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	return;
 }

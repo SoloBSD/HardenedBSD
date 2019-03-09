@@ -28,6 +28,10 @@
 __FBSDID("$FreeBSD$");
 
 #include <stdint.h>
+<<<<<<< HEAD
+=======
+#include <stdio.h>
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <string.h>
 
 #include "endian.h"
@@ -65,16 +69,28 @@ osdep_uuidgen(mkimg_uuid_t *uuid)
 static void
 osdep_uuidgen(mkimg_uuid_t *uuid)
 {
+<<<<<<< HEAD
 	struct timeval tv;
+=======
+	struct timespec tp;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	uint64_t time = 0x01B21DD213814000LL;
 	u_int i;
 	uint16_t seq;
 
+<<<<<<< HEAD
 	if (gettimeofday(&tv, NULL) == -1)
 		abort();
 
 	time += (uint64_t)tv.tv_sec * 10000000LL;
 	time += tv.tv_usec * 10;
+=======
+	if (clock_gettime(CLOCK_REALTIME, &tp) == -1)
+		abort();
+
+	time += (uint64_t)tp.tv_sec * 10000000LL;
+	time += tp.tv_nsec / 100;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	uuid->time_low = (uint32_t)time;
 	uuid->time_mid = (uint16_t)(time >> 32);

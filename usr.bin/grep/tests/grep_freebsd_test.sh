@@ -1,7 +1,12 @@
 #
+<<<<<<< HEAD
 # SPDX-License-Identifier: BSD-2-Clause-FreeBSD
 #
 # Copyright (c) 2017 Kyle Evans <kevans@FreeBSD.org>
+=======
+# Copyright (c) 2017 Kyle Evans <kevans@FreeBSD.org>
+# All rights reserved.
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions

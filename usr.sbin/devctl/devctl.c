@@ -71,6 +71,7 @@ DEVCTL_TABLE(top, set);
 static void
 usage(void)
 {
+<<<<<<< HEAD
 	fprintf(stderr,
 	    "usage: devctl attach device\n"
 	    "       devctl detach [-f] device\n"
@@ -84,6 +85,19 @@ usage(void)
 	    "       devctl delete [-f] device\n"
 	    "       devctl freeze\n"
 	    "       devctl thaw\n");
+=======
+	fprintf(stderr, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n",
+	    "usage: devctl attach device",
+	    "       devctl detach [-f] device",
+	    "       devctl disable [-f] device",
+	    "       devctl enable device",
+	    "       devctl suspend device",
+	    "       devctl resume device",
+	    "       devctl set driver [-f] device driver",
+	    "       devctl clear driver [-f] device",
+	    "       devctl rescan device",
+	    "       devctl delete [-f] device");
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	exit(1);
 }
 

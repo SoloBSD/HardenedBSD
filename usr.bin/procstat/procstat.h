@@ -63,8 +63,14 @@ void	procstat_cred(struct procstat *prstat, struct kinfo_proc *kipp);
 void	procstat_cs(struct procstat *prstat, struct kinfo_proc *kipp);
 void	procstat_env(struct procstat *prstat, struct kinfo_proc *kipp);
 void	procstat_files(struct procstat *prstat, struct kinfo_proc *kipp);
+<<<<<<< HEAD
 void	procstat_kstack(struct procstat *prstat, struct kinfo_proc *kipp);
 void	procstat_ptlwpinfo(struct procstat *prstat, struct kinfo_proc *kipp);
+=======
+void	procstat_kstack(struct procstat *prstat, struct kinfo_proc *kipp,
+    int kflag);
+void	procstat_ptlwpinfo(struct procstat *prstat);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 void	procstat_rlimit(struct procstat *prstat, struct kinfo_proc *kipp);
 void	procstat_rusage(struct procstat *prstat, struct kinfo_proc *kipp);
 void	procstat_sigs(struct procstat *prstat, struct kinfo_proc *kipp);

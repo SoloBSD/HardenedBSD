@@ -214,7 +214,11 @@ grep_open(const char *path)
 	/* Check for binary stuff, if necessary */
 	if (binbehave != BINFILE_TEXT && fileeol != '\0' &&
 	    memchr(bufpos, '\0', bufrem) != NULL)
+<<<<<<< HEAD
 		f->binary = true;
+=======
+	f->binary = true;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	return (f);
 

@@ -205,9 +205,14 @@ usage(const char* prog)
 int
 main(int argc, char *argv[])
 {
+<<<<<<< HEAD
 	char	*prog, *end;
 	int	c, sleep_type, battery, ack;
 	int	iflag = 0, kflag = 0, sflag = 0;
+=======
+	char	*prog;
+	int	c, sleep_type;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	prog = argv[0];
 	if (argc < 2)

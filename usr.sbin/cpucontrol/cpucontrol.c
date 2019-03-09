@@ -338,6 +338,7 @@ do_eval_cpu_features(const char *dev)
 }
 
 static int
+<<<<<<< HEAD
 try_a_fw_image(const char *dev_path, int devfd, int fwdfd, const char *dpath,
     const char *fname, struct ucode_handler *handler)
 {
@@ -402,6 +403,8 @@ out:
 }
 
 static int
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 do_update(const char *dev)
 {
 	int fd, fwdfd;
@@ -566,10 +569,13 @@ main(int argc, char *argv[])
 		break;
 	default:
 		usage();	/* Only one command can be selected. */
+<<<<<<< HEAD
 	}
 	while ((elm = SLIST_FIRST(&datadirs)) != NULL) {
 		SLIST_REMOVE_HEAD(&datadirs, next);
 		free(elm);
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	}
 	return (error == 0 ? 0 : 1);
 }

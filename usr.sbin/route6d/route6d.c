@@ -39,7 +39,10 @@ static const char _rcsid[] = "$KAME: route6d.c,v 1.104 2003/10/31 00:30:20 itoju
 #include <sys/param.h>
 #include <sys/file.h>
 #include <sys/ioctl.h>
+<<<<<<< HEAD
 #include <sys/queue.h>
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <sys/socket.h>
 #include <sys/sysctl.h>
 #include <sys/uio.h>
@@ -60,7 +63,15 @@ static const char _rcsid[] = "$KAME: route6d.c,v 1.104 2003/10/31 00:30:20 itoju
 #endif
 #include <signal.h>
 #include <stdio.h>
+<<<<<<< HEAD
 #include <stdarg.h>
+=======
+#ifdef __STDC__
+#include <stdarg.h>
+#else
+#include <varargs.h>
+#endif
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>

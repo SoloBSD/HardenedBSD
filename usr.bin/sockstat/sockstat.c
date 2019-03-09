@@ -672,9 +672,15 @@ gather_inet(int proto)
 			     __IN_IS_ADDR_LOOPBACK(&xip->inp_laddr)))
 				continue;
 #undef	__IN_IS_ADDR_LOOPBACK
+<<<<<<< HEAD
 		} else if (xip->inp_vflag & INP_IPV6) {
 			if ((xip->inp_fport == 0 && !opt_l) ||
 			    (xip->inp_fport != 0 && !opt_c))
+=======
+		} else if (inp->inp_vflag & INP_IPV6) {
+			if ((inp->inp_fport == 0 && !opt_l) ||
+			    (inp->inp_fport != 0 && !opt_c))
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 				continue;
 			if (opt_L &&
 			    (IN6_IS_ADDR_LOOPBACK(&xip->in6p_faddr) ||

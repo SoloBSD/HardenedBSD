@@ -211,14 +211,25 @@ access_memory(struct vmctx *ctx, int vcpu, uint64_t paddr, mem_cb_t *cb,
 		perror = pthread_rwlock_unlock(&mmio_rwlock);
 		assert(perror == 0);
 	}
+<<<<<<< HEAD
 
 	err = cb(ctx, vcpu, paddr, &entry->mr_param, arg);
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	if (!immutable) {
 		perror = pthread_rwlock_unlock(&mmio_rwlock);
 		assert(perror == 0);
 	}
 
+<<<<<<< HEAD
+=======
+	if (!immutable) {
+		perror = pthread_rwlock_unlock(&mmio_rwlock);
+		assert(perror == 0);
+	}
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	return (err);
 }

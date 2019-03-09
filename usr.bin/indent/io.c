@@ -1,6 +1,9 @@
 /*-
+<<<<<<< HEAD
  * SPDX-License-Identifier: BSD-4-Clause
  *
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  * Copyright (c) 1985 Sun Microsystems, Inc.
  * Copyright (c) 1980, 1993
  *	The Regents of the University of California.  All rights reserved.
@@ -156,6 +159,7 @@ dump_line(void)
 		    putc(*p, output);
 	    cur_col = count_spaces(cur_col, s_code);
 	}
+<<<<<<< HEAD
 	if (s_com != e_com) {		/* print comment, if any */
 	    int target = ps.com_col;
 	    char *com_st = s_com;
@@ -178,6 +182,94 @@ dump_line(void)
 		putc('\n', output);
 		cur_col = 1;
 		++ps.out_lines;
+=======
+	if (s_com != e_com) {
+	    if (troff) {
+		int         all_here = 0;
+		char *p;
+
+		if (e_com[-1] == '/' && e_com[-2] == '*')
+		    e_com -= 2, all_here++;
+		while (e_com > s_com && e_com[-1] == ' ')
+		    e_com--;
+		*e_com = 0;
+		p = s_com;
+		while (*p == ' ')
+		    p++;
+		if (p[0] == '/' && p[1] == '*')
+		    p += 2, all_here++;
+		else if (p[0] == '*')
+		    p += p[1] == '/' ? 2 : 1;
+		while (*p == ' ')
+		    p++;
+		if (*p == 0)
+		    goto inhibit_newline;
+		if (comment_open < 2 && ps.box_com) {
+		    comment_open = 0;
+		    fprintf(output, ".*/\n");
+		}
+		if (comment_open == 0) {
+		    if ('a' <= *p && *p <= 'z')
+			*p = *p + 'A' - 'a';
+		    if (e_com - p < 50 && all_here == 2) {
+			char *follow = p;
+			fprintf(output, "\n.nr C! \\w\1");
+			while (follow < e_com) {
+			    switch (*follow) {
+			    case '\n':
+				putc(' ', output);
+			    case 1:
+				break;
+			    case '\\':
+				putc('\\', output);
+				/* add a backslash to escape the '\' */
+			    default:
+				putc(*follow, output);
+			    }
+			    follow++;
+			}
+			putc(1, output);
+		    }
+		    fprintf(output, "\n./* %dp %d %dp\n",
+			    ps.com_col * 7,
+			    (s_code != e_code || s_lab != e_lab) - ps.box_com,
+			    target_col * 7);
+		}
+		comment_open = 1 + ps.box_com;
+		while (*p) {
+		    if (*p == BACKSLASH)
+			putc(BACKSLASH, output);
+		    putc(*p++, output);
+		}
+	    }
+	    else {		/* print comment, if any */
+		int target = ps.com_col;
+		char *com_st = s_com;
+
+		target += ps.comment_delta;
+		while (*com_st == '\t')	/* consider original indentation in
+					 * case this is a box comment */
+		    com_st++, target += 8;
+		while (target <= 0)
+		    if (*com_st == ' ')
+			target++, com_st++;
+		    else if (*com_st == '\t')
+			target = ((target - 1) & ~7) + 9, com_st++;
+		    else
+			target = 1;
+		if (cur_col > target) {	/* if comment can't fit on this line,
+					 * put it on next line */
+		    putc('\n', output);
+		    cur_col = 1;
+		    ++ps.out_lines;
+		}
+		while (e_com > com_st && isspace(e_com[-1]))
+		    e_com--;
+		(void)pad_output(cur_col, target);
+		fwrite(com_st, e_com - com_st, 1, output);
+		ps.comment_delta = ps.n_comment_delta;
+		++ps.com_lines;	/* count lines with comments */
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    }
 	    while (e_com > com_st && isspace((unsigned char)e_com[-1]))
 		e_com--;
@@ -526,3 +618,80 @@ diag2(int level, const char *msg)
     }
 }
 
+<<<<<<< HEAD
+=======
+void
+writefdef(struct fstate *f, int nm)
+{
+    fprintf(output, ".ds f%c %s\n.nr s%c %d\n",
+	    nm, f->font, nm, f->size);
+}
+
+char *
+chfont(struct fstate *of, struct fstate *nf, char *s)
+{
+    if (of->font[0] != nf->font[0]
+	    || of->font[1] != nf->font[1]) {
+	*s++ = '\\';
+	*s++ = 'f';
+	if (nf->font[1]) {
+	    *s++ = '(';
+	    *s++ = nf->font[0];
+	    *s++ = nf->font[1];
+	}
+	else
+	    *s++ = nf->font[0];
+    }
+    if (nf->size != of->size) {
+	*s++ = '\\';
+	*s++ = 's';
+	if (nf->size < of->size) {
+	    *s++ = '-';
+	    *s++ = '0' + of->size - nf->size;
+	}
+	else {
+	    *s++ = '+';
+	    *s++ = '0' + nf->size - of->size;
+	}
+    }
+    return s;
+}
+
+void
+parsefont(struct fstate *f, const char *s0)
+{
+    const char *s = s0;
+    int         sizedelta = 0;
+
+    memset(f, '\0', sizeof(*f));
+    while (*s) {
+	if (isdigit(*s))
+	    f->size = f->size * 10 + *s - '0';
+	else if (isupper(*s))
+	    if (f->font[0])
+		f->font[1] = *s;
+	    else
+		f->font[0] = *s;
+	else if (*s == 'c')
+	    f->allcaps = 1;
+	else if (*s == '+')
+	    sizedelta++;
+	else if (*s == '-')
+	    sizedelta--;
+	else {
+	    errx(1, "bad font specification: %s", s0);
+	}
+	s++;
+    }
+    if (f->font[0] == 0)
+	f->font[0] = 'R';
+    if (bodyf.size == 0)
+	bodyf.size = 11;
+    if (f->size == 0)
+	f->size = bodyf.size + sizedelta;
+    else if (sizedelta > 0)
+	f->size += bodyf.size;
+    else
+	f->size = bodyf.size - f->size;
+}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2

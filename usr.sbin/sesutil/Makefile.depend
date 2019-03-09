@@ -7,9 +7,13 @@ DIRDEPS = \
 	include/xlocale \
 	lib/${CSU_DIR} \
 	lib/libc \
+<<<<<<< HEAD
 	lib/libcompiler_rt \
 	lib/libutil \
 	lib/libxo \
+=======
+	lib/libcompiler_rt
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 
 .include <dirdeps.mk>

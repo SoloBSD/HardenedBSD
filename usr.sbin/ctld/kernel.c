@@ -48,7 +48,10 @@ __FBSDID("$FreeBSD$");
 #include <sys/module.h>
 #include <sys/queue.h>
 #include <sys/sbuf.h>
+<<<<<<< HEAD
 #include <sys/nv.h>
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <sys/stat.h>
 #include <assert.h>
 #include <bsdxml.h>

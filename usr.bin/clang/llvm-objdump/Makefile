@@ -1,7 +1,10 @@
 # $FreeBSD$
 
+<<<<<<< HEAD
 .include <src.opts.mk>
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 PROG_CXX=	llvm-objdump
 MAN=
 
@@ -14,9 +17,12 @@ SRCS+=		llvm-objdump.cpp
 
 LIBADD+=	z
 
+<<<<<<< HEAD
 .if ${MK_LLVM_OBJDUMP_IS_OBJDUMP} != "no"
 SYMLINKS=	${BINDIR}/llvm-objdump \
     ${BINDIR}/objdump
 .endif
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .include "../llvm.prog.mk"

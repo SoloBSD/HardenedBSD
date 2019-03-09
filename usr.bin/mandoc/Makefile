@@ -2,8 +2,13 @@
 
 .include <src.opts.mk>
 
+<<<<<<< HEAD
 MANDOCDIR=	${SRCTOP}/contrib/mandoc
 .PATH: ${MANDOCDIR}
+=======
+MDOCMLDIR=	${SRCTOP}/contrib/mdocml
+.PATH: ${MDOCMLDIR}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 PROG=	mandoc
 MAN=	mandoc.1 eqn.7 mandoc_char.7 tbl.7 man.7 mdoc.7 roff.7
@@ -94,6 +99,10 @@ SRCS=		${LIB_SRCS} \
 
 WARNS?=	3
 CFLAGS+= -DHAVE_CONFIG_H \
+<<<<<<< HEAD
+=======
+	 -D_WITH_GETLINE \
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	 -I${SRCTOP}/lib/libopenbsd/
 LIBADD=	openbsd z
 

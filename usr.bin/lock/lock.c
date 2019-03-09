@@ -247,7 +247,17 @@ main(int argc, char **argv)
 			hi(0);
 			goto tryagain;
 		}
+<<<<<<< HEAD
 		if (!strcmp(s, s1))
+=======
+		if (usemine) {
+			s[strlen(s) - 1] = '\0';
+			cryptpw = crypt(s, mypw);
+			if (cryptpw != NULL && !strcmp(mypw, cryptpw))
+				break;
+		}
+		else if (!strcmp(s, s1))
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			break;
 		(void)printf("\07\n");
 	    	failures++;

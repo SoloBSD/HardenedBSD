@@ -1,6 +1,9 @@
 /*-
+<<<<<<< HEAD
  * SPDX-License-Identifier: BSD-4-Clause
  *
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  * Copyright (c) 1985 Sun Microsystems, Inc.
  * Copyright (c) 1980, 1993
  *	The Regents of the University of California.  All rights reserved.
@@ -99,6 +102,7 @@ struct pro {
 }           pro[] = {
 
     {"T", PRO_SPECIAL, 0, KEY, 0},
+<<<<<<< HEAD
     {"U", PRO_SPECIAL, 0, KEY_FILE, 0},
     {"-version", PRO_SPECIAL, 0, VERSION, 0},
     {"P", PRO_SPECIAL, 0, IGN, 0},
@@ -115,6 +119,22 @@ struct pro {
     {"cd", PRO_INT, 0, 0, &opt.decl_com_ind},
     {"ce", PRO_BOOL, true, ON, &opt.cuddle_else},
     {"ci", PRO_INT, 0, 0, &opt.continuation_indent},
+=======
+    {"P", PRO_SPECIAL, 0, IGN, 0},
+    {"bacc", PRO_BOOL, false, ON, &blanklines_around_conditional_compilation},
+    {"badp", PRO_BOOL, false, ON, &blanklines_after_declarations_at_proctop},
+    {"bad", PRO_BOOL, false, ON, &blanklines_after_declarations},
+    {"bap", PRO_BOOL, false, ON, &blanklines_after_procs},
+    {"bbb", PRO_BOOL, false, ON, &blanklines_before_blockcomments},
+    {"bc", PRO_BOOL, true, OFF, &ps.leave_comma},
+    {"bl", PRO_BOOL, true, OFF, &btype_2},
+    {"br", PRO_BOOL, true, ON, &btype_2},
+    {"bs", PRO_BOOL, false, ON, &Bill_Shannon},
+    {"cdb", PRO_BOOL, true, ON, &comment_delimiter_on_blankline},
+    {"cd", PRO_INT, 0, 0, &ps.decl_com_ind},
+    {"ce", PRO_BOOL, true, ON, &cuddle_else},
+    {"ci", PRO_INT, 0, 0, &continuation_indent},
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
     {"cli", PRO_SPECIAL, 0, CLI, 0},
     {"cs", PRO_BOOL, false, ON, &opt.space_after_cast},
     {"c", PRO_INT, 33, 0, &opt.com_ind},

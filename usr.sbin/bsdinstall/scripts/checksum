@@ -65,7 +65,11 @@ for dist in $DISTRIBUTIONS; do
 		case $(/bin/freebsd-version -u) in
 		*-ALPHA*|*-CURRENT|*-STABLE|*-PRERELEASE)
 			dialog --backtitle "HardenedBSD Installer" --title "Error" \
+<<<<<<< HEAD
 			    --msgbox "The checksum for $dist does not match. It may have become corrupted, or it may be from a newer version of HardenedBSD. Please check for a newer snapshot." 0 0
+=======
+			    --msgbox "The checksum for $dist does not match. It may have become corrupted, or it may be from a newer version of HardenedBSD. Please check for a newer version/snapshot." 0 0
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			;;
 		*)
 			dialog --backtitle "HardenedBSD Installer" --title "Error" \

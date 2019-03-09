@@ -537,7 +537,10 @@ do_link(const char *from_name, const char *to_name,
 			if (target_sb->st_flags & NOCHANGEBITS)
 				(void)chflags(to_name, target_sb->st_flags &
 				     ~NOCHANGEBITS);
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			if (verbose)
 				printf("install: link %s -> %s\n",
 				    from_name, to_name);
@@ -585,7 +588,10 @@ do_symlink(const char *from_name, const char *to_name,
 		if (target_sb->st_flags & NOCHANGEBITS)
 			(void)chflags(to_name, target_sb->st_flags &
 			     ~NOCHANGEBITS);
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		if (verbose)
 			printf("install: symlink %s -> %s\n",
 			    from_name, to_name);
@@ -915,10 +921,15 @@ install(const char *from_name, const char *to_name, u_long fset, u_int flags)
 				(void)printf("install: %s -> %s\n", to_name, backup);
 			if (unlink(backup) < 0 && errno != ENOENT) {
 				serrno = errno;
+<<<<<<< HEAD
 #if HAVE_STRUCT_STAT_ST_FLAGS
 				if (to_sb.st_flags & NOCHANGEBITS)
 					(void)chflags(to_name, to_sb.st_flags);
 #endif
+=======
+				if (to_sb.st_flags & NOCHANGEBITS)
+					(void)chflags(to_name, to_sb.st_flags);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 				unlink(tempfile);
 				errno = serrno;
 				err(EX_OSERR, "unlink: %s", backup);
@@ -926,10 +937,15 @@ install(const char *from_name, const char *to_name, u_long fset, u_int flags)
 			if (link(to_name, backup) < 0) {
 				serrno = errno;
 				unlink(tempfile);
+<<<<<<< HEAD
 #if HAVE_STRUCT_STAT_ST_FLAGS
 				if (to_sb.st_flags & NOCHANGEBITS)
 					(void)chflags(to_name, to_sb.st_flags);
 #endif
+=======
+				if (to_sb.st_flags & NOCHANGEBITS)
+					(void)chflags(to_name, to_sb.st_flags);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 				errno = serrno;
 				err(EX_OSERR, "link: %s to %s", to_name,
 				     backup);
@@ -1159,10 +1175,15 @@ create_newfile(const char *path, int target, struct stat *sbp)
 			if ((size_t)snprintf(backup, MAXPATHLEN, "%s%s",
 			    path, suffix) != strlen(path) + strlen(suffix)) {
 				saved_errno = errno;
+<<<<<<< HEAD
 #if HAVE_STRUCT_STAT_ST_FLAGS
 				if (sbp->st_flags & NOCHANGEBITS)
 					(void)chflags(path, sbp->st_flags);
 #endif
+=======
+				if (sbp->st_flags & NOCHANGEBITS)
+					(void)chflags(path, sbp->st_flags);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 				errno = saved_errno;
 				errx(EX_OSERR, "%s: backup filename too long",
 				    path);
@@ -1174,10 +1195,15 @@ create_newfile(const char *path, int target, struct stat *sbp)
 				    path, backup);
 			if (rename(path, backup) < 0) {
 				saved_errno = errno;
+<<<<<<< HEAD
 #if HAVE_STRUCT_STAT_ST_FLAGS
 				if (sbp->st_flags & NOCHANGEBITS)
 					(void)chflags(path, sbp->st_flags);
 #endif
+=======
+				if (sbp->st_flags & NOCHANGEBITS)
+					(void)chflags(path, sbp->st_flags);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 				errno = saved_errno;
 				err(EX_OSERR, "rename: %s to %s", path, backup);
 			}

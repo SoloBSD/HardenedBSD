@@ -258,6 +258,7 @@ longfile_rn2500_body()
 	atf_check cmp expectfile outpipe
 }
 
+<<<<<<< HEAD
 atf_test_case broken_pipe
 broken_pipe_head()
 {
@@ -271,6 +272,8 @@ broken_pipe_body()
 	    -x '(tail -n 856 ints; echo exit code: $? >&2) | sleep 2'
 }
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 atf_init_test_cases()
 {
@@ -287,5 +290,8 @@ atf_init_test_cases()
 	atf_add_test_case longfile_rc135782
 	atf_add_test_case longfile_rc145782_longlines
 	atf_add_test_case longfile_rn2500
+<<<<<<< HEAD
 	atf_add_test_case broken_pipe
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 }

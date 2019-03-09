@@ -252,7 +252,11 @@ ports_build() (
 	do
 		b=`echo $p | tr / _`
 		t=`echo $p | sed "s,${pd},,"`
+<<<<<<< HEAD
 		pn=`cd $p && ports_make package-name`
+=======
+		pn=`cd $p && make package-name ${PORTS_OPTS}`
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 		if [ "x`basename $p`" == "xpkg" ] ; then
 			log_it "Very Special: $t ($pn)"
@@ -298,8 +302,12 @@ ports_build() (
 			else
 				log_it FAIL build $p
 			fi
+<<<<<<< HEAD
 			ports_make clean
 
+=======
+			make clean ${PORTS_OPTS}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		) > _.$b 2>&1 < /dev/null
 	done
 )

@@ -138,7 +138,11 @@ struct ahci_port {
 	struct pci_ahci_softc *pr_sc;
 	uint8_t *cmd_lst;
 	uint8_t *rfis;
+<<<<<<< HEAD
 	char ident[AHCI_PORT_IDENT];
+=======
+	char ident[20 + 1];
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	int port;
 	int atapi;
 	int reset;
@@ -241,6 +245,7 @@ ahci_generate_intr(struct pci_ahci_softc *sc, uint32_t mask)
 			sc->is |= (1 << i);
 	}
 	DPRINTF("%s(%08x) %08x\n", __func__, mask, sc->is);
+<<<<<<< HEAD
 
 	/* If there is nothing enabled -- clear legacy interrupt and exit. */
 	if (sc->is == 0 || (sc->ghc & AHCI_GHC_IE) == 0) {
@@ -251,6 +256,18 @@ ahci_generate_intr(struct pci_ahci_softc *sc, uint32_t mask)
 		return;
 	}
 
+=======
+
+	/* If there is nothing enabled -- clear legacy interrupt and exit. */
+	if (sc->is == 0 || (sc->ghc & AHCI_GHC_IE) == 0) {
+		if (sc->lintr) {
+			pci_lintr_deassert(pi);
+			sc->lintr = 0;
+		}
+		return;
+	}
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	/* If there is anything and no MSI -- assert legacy interrupt. */
 	nmsg = pci_msi_maxmsgnum(pi);
 	if (nmsg == 0) {
@@ -2376,8 +2393,12 @@ pci_ahci_init(struct vmctx *ctx, struct pci_devinst *pi, char *opts, int atapi)
 		MD5Init(&mdctx);
 		MD5Update(&mdctx, opts, strlen(opts));
 		MD5Final(digest, &mdctx);
+<<<<<<< HEAD
 		snprintf(sc->port[p].ident, AHCI_PORT_IDENT,
 		    "BHYVE-%02X%02X-%02X%02X-%02X%02X",
+=======
+		sprintf(sc->port[p].ident, "BHYVE-%02X%02X-%02X%02X-%02X%02X",
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		    digest[0], digest[1], digest[2], digest[3], digest[4],
 		    digest[5]);
 

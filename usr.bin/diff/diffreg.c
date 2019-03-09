@@ -1,8 +1,12 @@
 /*	$OpenBSD: diffreg.c,v 1.91 2016/03/01 20:57:35 natano Exp $	*/
 
+<<<<<<< HEAD
 /*-
  * SPDX-License-Identifier: BSD-4-Clause
  *
+=======
+/*
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  * Copyright (C) Caldera International Inc.  2001-2002.
  * All rights reserved.
  *
@@ -70,7 +74,15 @@
 __FBSDID("$FreeBSD$");
 
 #include <sys/capsicum.h>
+<<<<<<< HEAD
 #include <sys/stat.h>
+=======
+#include <sys/procdesc.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/event.h>
+#include <sys/wait.h>
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 #include <capsicum_helpers.h>
 #include <ctype.h>
@@ -85,11 +97,23 @@ __FBSDID("$FreeBSD$");
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+<<<<<<< HEAD
 
 #include "pr.h"
 #include "diff.h"
 #include "xmalloc.h"
 
+=======
+#include <unistd.h>
+#include <limits.h>
+#include <signal.h>
+
+#include "diff.h"
+#include "xmalloc.h"
+
+#define _PATH_PR "/usr/bin/pr"
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 /*
  * diff - compare two files.
  */
@@ -254,9 +278,19 @@ diffreg(char *file1, char *file2, int flags, int capsicum)
 {
 	FILE *f1, *f2;
 	int i, rval;
+<<<<<<< HEAD
 	struct pr *pr = NULL;
 	cap_rights_t rights_ro;
 
+=======
+	int	ostdout = -1;
+	int pr_pd, kq;
+	struct kevent *e;
+	cap_rights_t rights_ro;
+
+	e = NULL;
+	kq = -1;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	f1 = f2 = NULL;
 	rval = D_SAME;
 	anychange = 0;
@@ -314,8 +348,57 @@ diffreg(char *file1, char *file2, int flags, int capsicum)
 		goto closem;
 	}
 
+<<<<<<< HEAD
 	if (lflag)
 		pr = start_pr(file1, file2);
+=======
+	if (lflag) {
+		/* redirect stdout to pr */
+		int	 pfd[2];
+		pid_t	pid;
+		char	*header;
+
+		xasprintf(&header, "%s %s %s", diffargs, file1, file2);
+		signal(SIGPIPE, SIG_IGN);
+		fflush(stdout);
+		rewind(stdout);
+		pipe(pfd);
+		switch ((pid = pdfork(&pr_pd, PD_CLOEXEC))) {
+		case -1:
+			status |= 2;
+			free(header);
+			err(2, "No more processes");
+		case 0:
+			/* child */
+			if (pfd[0] != STDIN_FILENO) {
+				dup2(pfd[0], STDIN_FILENO);
+				close(pfd[0]);
+			}
+			close(pfd[1]);
+			execl(_PATH_PR, _PATH_PR, "-h", header, (char *)0);
+			_exit(127);
+		default:
+
+			/* parent */
+			if (pfd[1] != STDOUT_FILENO) {
+				ostdout = dup(STDOUT_FILENO);
+				dup2(pfd[1], STDOUT_FILENO);
+				close(pfd[1]);
+			}
+			close(pfd[0]);
+			rewind(stdout);
+			free(header);
+			kq = kqueue();
+			if (kq == -1)
+				err(2, "kqueue");
+			e = xmalloc(sizeof(struct kevent));
+			EV_SET(e, pr_pd, EVFILT_PROCDESC, EV_ADD, NOTE_EXIT, 0,
+			    NULL);
+			if (kevent(kq, e, 1, NULL, 0, NULL) == -1)
+				err(2, "kevent");
+		}
+	}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	if (capsicum) {
 		cap_rights_init(&rights_ro, CAP_READ, CAP_FSTAT, CAP_SEEK);
@@ -336,7 +419,11 @@ diffreg(char *file1, char *file2, int flags, int capsicum)
 
 		caph_cache_catpages();
 		caph_cache_tzdata();
+<<<<<<< HEAD
 		if (caph_enter() < 0)
+=======
+		if (cap_enter() < 0 && errno != ENOSYS)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			err(2, "unable to enter capability mode");
 	}
 
@@ -389,8 +476,31 @@ diffreg(char *file1, char *file2, int flags, int capsicum)
 	ixnew = xreallocarray(ixnew, len[1] + 2, sizeof(*ixnew));
 	check(f1, f2, flags);
 	output(file1, f1, file2, f2, flags);
+<<<<<<< HEAD
 	if (pr != NULL)
 		stop_pr(pr);
+=======
+	if (ostdout != -1 && e != NULL) {
+		/* close the pipe to pr and restore stdout */
+		int wstatus;
+
+		fflush(stdout);
+		if (ostdout != STDOUT_FILENO) {
+			close(STDOUT_FILENO);
+			dup2(ostdout, STDOUT_FILENO);
+			close(ostdout);
+		}
+		if (kevent(kq, NULL, 0, e, 1, NULL) == -1)
+			err(2, "kevent");
+		wstatus = e[0].data;
+		close(kq);
+		if (WIFEXITED(wstatus) && WEXITSTATUS(wstatus) != 0)
+			errx(2, "pr exited abnormally");
+		else if (WIFSIGNALED(wstatus))
+			errx(2, "pr killed by signal %d",
+			    WTERMSIG(wstatus));
+	}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 closem:
 	if (anychange) {

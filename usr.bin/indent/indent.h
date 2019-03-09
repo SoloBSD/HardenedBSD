@@ -36,8 +36,12 @@ int	compute_code_target(void);
 int	compute_label_target(void);
 int	count_spaces(int, char *);
 int	count_spaces_until(int, char *, char *);
+<<<<<<< HEAD
 void	init_constant_tt(void);
 int	lexi(struct parser_state *);
+=======
+int	lexi(void);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 void	diag2(int, const char *);
 void	diag3(int, const char *, int);
 void	diag4(int, const char *, int, int);

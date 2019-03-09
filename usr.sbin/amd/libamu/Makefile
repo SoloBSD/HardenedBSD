@@ -24,7 +24,11 @@ SRCS+=	transp_sockets.c mtab_bsd.c umount_bsd44.c
 SRCS+=		nfs_prot_x.c xdr_func_%undef.c
 CLEANFILES+=	nfs_prot_x.c xdr_func_%undef.c
 
+<<<<<<< HEAD
 CFLAGS+= -I${SRCTOP}/contrib/amd/libamu \
+=======
+CFLAGS+= -I${.CURDIR}/../../../contrib/amd/libamu \
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	 -I${OBJTOP}/include/rpcsvc
 
 nfs_prot_x.c: ${NFS_PROT_X}

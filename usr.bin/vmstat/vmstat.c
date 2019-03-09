@@ -214,8 +214,12 @@ main(int argc, char *argv[])
 {
 	char *bp, *buf, *memf, *nlistf;
 	float f;
+<<<<<<< HEAD
 	int bufsize, c, reps, todo;
 	size_t len;
+=======
+	int bufsize, c, len, reps, todo;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	unsigned int interval;
 	char errbuf[_POSIX2_LINE_MAX];
 
@@ -307,8 +311,12 @@ main(int argc, char *argv[])
 retry_nlist:
 	if (kd != NULL && (c = kvm_nlist(kd, namelist)) != 0) {
 		if (c > 0) {
+<<<<<<< HEAD
 			bufsize = 0;
 			len = 0;
+=======
+			bufsize = 0, len = 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 			/*
 			 * 'cnt' was renamed to 'vm_cnt'.  If 'vm_cnt' is not
@@ -430,11 +438,16 @@ getdrivedata(char **argv)
 		if (isdigit(**argv))
 			break;
 		num_devices_specified++;
+<<<<<<< HEAD
 		specified_devices = reallocf(specified_devices,
 		    sizeof(char *) * num_devices_specified);
 		if (specified_devices == NULL) {
 			xo_errx(1, "%s", "reallocf (specified_devices)");
 		}
+=======
+		specified_devices = realloc(specified_devices,
+		    sizeof(char *) * num_devices_specified);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		specified_devices[num_devices_specified - 1] = *argv;
 	}
 	dev_select = NULL;
@@ -485,9 +498,56 @@ getuptime(void)
 }
 
 static void
+<<<<<<< HEAD
 fill_vmmeter(struct __vmmeter *vmmp)
 {
 	struct vmmeter vm_cnt;
+=======
+fill_pcpu(struct pcpu ***pcpup, int* maxcpup)
+{
+	struct pcpu **pcpu;
+	int maxcpu, i;
+
+	*pcpup = NULL;
+	*maxcpup = 0;
+
+	if (kd == NULL)
+		return;
+
+	maxcpu = kvm_getmaxcpu(kd);
+	if (maxcpu < 0)
+		xo_errx(1, "kvm_getmaxcpu: %s", kvm_geterr(kd));
+
+	pcpu = calloc(maxcpu, sizeof(struct pcpu *));
+	if (pcpu == NULL)
+		xo_err(1, "calloc");
+
+	for (i = 0; i < maxcpu; i++) {
+		pcpu[i] = kvm_getpcpu(kd, i);
+		if (pcpu[i] == (struct pcpu *)-1)
+			xo_errx(1, "kvm_getpcpu: %s", kvm_geterr(kd));
+	}
+
+	*maxcpup = maxcpu;
+	*pcpup = pcpu;
+}
+
+static void
+free_pcpu(struct pcpu **pcpu, int maxcpu)
+{
+	int i;
+
+	for (i = 0; i < maxcpu; i++)
+		free(pcpu[i]);
+	free(pcpu);
+}
+
+static void
+fill_vmmeter(struct vmmeter *vmmp)
+{
+	struct pcpu **pcpu;
+	int maxcpu, i;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	size_t size;
 
 	if (kd != NULL) {
@@ -525,10 +585,16 @@ fill_vmmeter(struct __vmmeter *vmmp)
 		GET_COUNTER(v_kthreadpages);
 #undef GET_COUNTER
 	} else {
+<<<<<<< HEAD
 #define GET_VM_STATS(cat, name)	do {					\
 	size = sizeof(vmmp->name);					\
 	mysysctl("vm.stats." #cat "." #name, &vmmp->name, &size);	\
 } while (0)
+=======
+		size = sizeof(unsigned int);
+#define GET_VM_STATS(cat, name) \
+	mysysctl("vm.stats." #cat "." #name, &vmmp->name, &size, NULL, 0)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		/* sys */
 		GET_VM_STATS(sys, v_swtch);
 		GET_VM_STATS(sys, v_trap);
@@ -595,7 +661,11 @@ fill_vmtotal(struct vmtotal *vmtp)
 		xo_errx(1, "not implemented");
 	} else {
 		size = sizeof(*vmtp);
+<<<<<<< HEAD
 		mysysctl("vm.vmtotal", vmtp, &size);
+=======
+		mysysctl("vm.vmtotal", vmtp, &size, NULL, 0);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		if (size != sizeof(*vmtp))
 			xo_errx(1, "vm.total size mismatch");
 	}
@@ -799,12 +869,20 @@ dovmstat(unsigned int interval, int reps)
 			xo_emit(" ");
 		} else {
 			xo_emit(" ");
+<<<<<<< HEAD
 			xo_emit("{:available-memory/%7ju}",
 			    vmstat_pgtok(total.t_avm));
 			xo_emit(" ");
 			xo_emit("{:free-memory/%7ju}",
 			    vmstat_pgtok(total.t_free));
 			xo_emit(" ");
+=======
+			xo_emit("{:available-memory/%7d}",
+			    vmstat_pgtok(total.t_avm));
+			xo_emit(" ");
+			xo_emit("{:free-memory/%7d}",
+			    vmstat_pgtok(total.t_free));
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		}
 		xo_emit("{:total-page-faults/%5lu} ",
 		    (unsigned long)rate(sum.v_vm_faults -
@@ -1011,7 +1089,11 @@ dosum(void)
 	    sum.v_vnodepgsin);
 	xo_emit("{:vnode-page-outs/%9u} {N:vnode pager pageouts}\n",
 	    sum.v_vnodeout);
+<<<<<<< HEAD
 	xo_emit("{:vnode-page-out-pages/%9u} {N:vnode pager pages paged out}\n",
+=======
+	xo_emit("{:vnode-page-outs/%9u} {N:vnode pager pages paged out}\n",
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    sum.v_vnodepgsout);
 	xo_emit("{:page-daemon-wakeups/%9u} {N:page daemon wakeups}\n",
 	    sum.v_pdwakeups);
@@ -1064,7 +1146,11 @@ dosum(void)
 		kread(X_NCHSTATS, &lnchstats, sizeof(lnchstats));
 	} else {
 		size = sizeof(lnchstats);
+<<<<<<< HEAD
 		mysysctl("vfs.cache.nchstats", &lnchstats, &size);
+=======
+		mysysctl("vfs.cache.nchstats", &lnchstats, &size, NULL, 0);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		if (size != sizeof(lnchstats))
 			xo_errx(1, "vfs.cache.nchstats size mismatch");
 	}

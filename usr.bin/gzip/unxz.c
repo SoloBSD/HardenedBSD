@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /*	$NetBSD: unxz.c,v 1.8 2018/10/06 16:36:45 martin Exp $	*/
+=======
+/*	$NetBSD: unxz.c,v 1.7 2017/08/04 07:27:08 mrg Exp $	*/
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 /*-
  * SPDX-License-Identifier: BSD-2-Clause-NetBSD

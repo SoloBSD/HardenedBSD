@@ -1231,7 +1231,11 @@ pfq_refresh(void)
 	}
 
 	bzero(&pa, sizeof(pa));
+<<<<<<< HEAD
 	pa.version = PFIOC_ALTQ_VERSION;
+=======
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	if (ioctl(dev, DIOCGETALTQS, &pa)) {
 		syslog(LOG_ERR, "pfq_refresh: ioctl(DIOCGETALTQS): %s",
 		    strerror(errno));
@@ -1649,7 +1653,10 @@ altq_is_enabled(int pfdev)
 	struct pfioc_altq pa;
 
 	errno = 0;
+<<<<<<< HEAD
 	pa.version = PFIOC_ALTQ_VERSION;
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	if (ioctl(pfdev, DIOCGETALTQS, &pa)) {
 		if (errno == ENODEV) {
 			syslog(LOG_INFO, "No ALTQ support in kernel\n"

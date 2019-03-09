@@ -50,7 +50,10 @@ __FBSDID("$FreeBSD$");
 #include <sys/socket.h>
 #define _WANT_FREEBSD11_STAT
 #include <sys/stat.h>
+<<<<<<< HEAD
 #include <sys/time.h>
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <sys/un.h>
 #include <sys/wait.h>
 #include <netinet/in.h>
@@ -260,8 +263,11 @@ static struct syscall decoded_syscalls[] = {
 	  .args = { { Int, 0 } } },
 	{ .name = "getpriority", .ret_type = 1, .nargs = 2,
 	  .args = { { Priowhich, 0 }, { Int, 1 } } },
+<<<<<<< HEAD
 	{ .name = "getrandom", .ret_type = 1, .nargs = 3,
 	  .args = { { BinString | OUT, 0 }, { Sizet, 1 }, { UInt, 2 } } },
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	{ .name = "getrlimit", .ret_type = 1, .nargs = 2,
 	  .args = { { Resource, 0 }, { Rlimit | OUT, 1 } } },
 	{ .name = "getrusage", .ret_type = 1, .nargs = 2,
@@ -390,13 +396,21 @@ static struct syscall decoded_syscalls[] = {
 	  .args = { { Name, 0 }, { Quotactlcmd, 1 }, { Int, 2 }, { Ptr, 3 } } },
 	{ .name = "read", .ret_type = 1, .nargs = 3,
 	  .args = { { Int, 0 }, { BinString | OUT, 1 }, { Sizet, 2 } } },
+<<<<<<< HEAD
+=======
+	{ .name = "readv", .ret_type = 1, .nargs = 3,
+	  .args = { { Int, 0 }, { Iovec | OUT, 1 }, { Int, 2 } } },
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	{ .name = "readlink", .ret_type = 1, .nargs = 3,
 	  .args = { { Name, 0 }, { Readlinkres | OUT, 1 }, { Sizet, 2 } } },
 	{ .name = "readlinkat", .ret_type = 1, .nargs = 4,
 	  .args = { { Atfd, 0 }, { Name, 1 }, { Readlinkres | OUT, 2 },
 		    { Sizet, 3 } } },
+<<<<<<< HEAD
 	{ .name = "readv", .ret_type = 1, .nargs = 3,
 	  .args = { { Int, 0 }, { Iovec | OUT, 1 }, { Int, 2 } } },
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	{ .name = "reboot", .ret_type = 1, .nargs = 1,
 	  .args = { { Reboothowto, 0 } } },
 	{ .name = "recvfrom", .ret_type = 1, .nargs = 6,
@@ -461,10 +475,13 @@ static struct syscall decoded_syscalls[] = {
 	{ .name = "setsockopt", .ret_type = 1, .nargs = 5,
 	  .args = { { Int, 0 }, { Sockoptlevel, 1 }, { Sockoptname, 2 },
 		    { Ptr | IN, 3 }, { Socklent, 4 } } },
+<<<<<<< HEAD
 	{ .name = "shm_open", .ret_type = 1, .nargs = 3,
 	  .args = { { Name | IN, 0 }, { Open, 1 }, { Octal, 2 } } },
 	{ .name = "shm_unlink", .ret_type = 1, .nargs = 1,
 	  .args = { { Name | IN, 0 } } },
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	{ .name = "shutdown", .ret_type = 1, .nargs = 2,
 	  .args = { { Int, 0 }, { Shutdown, 1 } } },
 	{ .name = "sigaction", .ret_type = 1, .nargs = 3,
@@ -960,6 +977,7 @@ find_syscall(struct procabi *abi, u_int number)
 			return (es->sc);
 	}
 	return (NULL);
+<<<<<<< HEAD
 }
 
 static void
@@ -978,6 +996,26 @@ add_syscall(struct procabi *abi, u_int number, struct syscall *sc)
 	}
 }
 
+=======
+}
+
+static void
+add_syscall(struct procabi *abi, u_int number, struct syscall *sc)
+{
+	struct extra_syscall *es;
+
+	if (number < nitems(abi->syscalls)) {
+		assert(abi->syscalls[number] == NULL);
+		abi->syscalls[number] = sc;
+	} else {
+		es = malloc(sizeof(*es));
+		es->sc = sc;
+		es->number = number;
+		STAILQ_INSERT_TAIL(&abi->extra_syscalls, es, entries);
+	}
+}
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 /*
  * If/when the list gets big, it might be desirable to do it
  * as a hash table or binary search.
@@ -1145,7 +1183,11 @@ print_kevent(FILE *fp, struct kevent *ke)
 	print_mask_arg(sysdecode_kevent_flags, fp, ke->flags);
 	fprintf(fp, ",");
 	sysdecode_kevent_fflags(fp, ke->filter, ke->fflags, 16);
+<<<<<<< HEAD
 	fprintf(fp, ",%#jx,%p", (uintmax_t)ke->data, ke->udata);
+=======
+	fprintf(fp, ",%p,%p", (void *)ke->data, (void *)ke->udata);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 }
 
 static void

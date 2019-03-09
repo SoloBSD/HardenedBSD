@@ -67,7 +67,11 @@ __FBSDID("$FreeBSD$");
 #endif
 
 #define BAD_LENGTH	((size_t)-1)
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 typedef struct _bmgr_opts {
 	char	*env;
 	char	*loader;
@@ -82,7 +86,10 @@ typedef struct _bmgr_opts {
 	bool    delete_bootnext;
 	bool    del_timeout;
 	bool    dry_run;
+<<<<<<< HEAD
 	bool	has_bootnum;
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	bool    once;
 	int	cp_src;
 	bool    set_active;
@@ -103,6 +110,10 @@ static struct option lopts[] = {
 	{"del-timout", no_argument, NULL, 'T'},
 	{"delete", required_argument, NULL, 'B'},
 	{"delete-bootnext", required_argument, NULL, 'N'},
+<<<<<<< HEAD
+=======
+	{"device", required_argument, NULL, 'd'},
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	{"dry-run", no_argument, NULL, 'D'},
 	{"env", required_argument, NULL, 'e'},
 	{"help", no_argument, NULL, 'h'},
@@ -110,6 +121,10 @@ static struct option lopts[] = {
 	{"label", required_argument, NULL, 'L'},
 	{"loader", required_argument, NULL, 'l'},
 	{"once", no_argument, NULL, 'O'},
+<<<<<<< HEAD
+=======
+	{"partition", required_argument, NULL, 'p'},
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	{"set-timeout", required_argument, NULL, 't'},
 	{"verbose", no_argument, NULL, 'v'},
 	{ NULL, 0, NULL, 0}
@@ -129,8 +144,12 @@ struct entry {
 	char		*name;
 	char		*label;
 	int		idx;
+<<<<<<< HEAD
 	int		flags;
 #define SEEN	1
+=======
+	int		part;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	LIST_ENTRY(entry) entries;
 };
@@ -171,7 +190,11 @@ set_bootvar(const char *name, uint8_t *data, size_t size)
 
 #define USAGE \
 	"   [-aAnNB Bootvar] [-t timeout] [-T] [-o bootorder] [-O] [--verbose] [--help] \n\
+<<<<<<< HEAD
   [-c -l loader [-k kernel ] [-L label] [--dry-run] [-b Bootvar]]"
+=======
+  [-c -l loader [-k kernel ] [-L label] [--dry-run]]"
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 #define CREATE_USAGE \
 	"       efibootmgr -c -l loader [-k kernel] [-L label] [--dry-run]"
@@ -202,10 +225,13 @@ parse_args(int argc, char *argv[])
 			opts.set_active = true;
 			opts.bootnum = strtoul(optarg, NULL, 16);
 			break;
+<<<<<<< HEAD
 		case 'b':
 			opts.has_bootnum = true;
 			opts.bootnum = strtoul(optarg, NULL, 16);
 			break;
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		case 'B':
 			opts.delete = true;
 			opts.bootnum = strtoul(optarg, NULL, 16);
@@ -271,6 +297,14 @@ parse_args(int argc, char *argv[])
 			errx(1, "%s",CREATE_USAGE);
 		return;
 	}
+<<<<<<< HEAD
+=======
+	if (opts.set_bootnext && !(opts.bootnum))
+		errx(1, "%s", BOOTNEXT_USAGE);
+
+	if ((opts.set_active ||  opts.set_inactive) && !(opts.bootnum))
+		errx(1, "%s", ACTIVE_USAGE);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	if (opts.order && !(opts.order))
 		errx(1, "%s", ORDER_USAGE);
@@ -278,6 +312,30 @@ parse_args(int argc, char *argv[])
 
 
 static void
+<<<<<<< HEAD
+=======
+print_order(void)
+{
+	uint32_t attrs;
+	uint8_t *data;
+	size_t size, i;
+
+	if (efi_get_variable(EFI_GLOBAL_GUID, "BootOrder", &data, &size, &attrs) < 0) {
+		printf("BootOrder : Couldn't get value for BootOrder\n");
+		return;
+	}
+
+	if (size % 2 == 1)
+		errx(1, "Bad BootOrder variable: odd length");
+
+	printf("BootOrder : ");
+	for (i = 0; i < size; i += 2)
+		printf("%04x%s", le16dec(data + i), i == size - 2 ? "\n" : ", ");
+}
+
+
+static void
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 read_vars(void)
 {
 
@@ -557,6 +615,7 @@ make_next_boot_var_name(void)
 	return name;
 }
 
+<<<<<<< HEAD
 static char *
 make_boot_var_name(uint16_t bootnum)
 {
@@ -573,6 +632,8 @@ make_boot_var_name(uint16_t bootnum)
 		err(1, "asprintf");
 	return name;
 }
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 static size_t
 create_loadopt(uint8_t *buf, size_t bufmax, uint32_t attributes, efidp dp, size_t dp_size,
@@ -621,8 +682,12 @@ create_loadopt(uint8_t *buf, size_t bufmax, uint32_t attributes, efidp dp, size_
 
 
 static int
+<<<<<<< HEAD
 make_boot_var(const char *label, const char *loader, const char *kernel, const char *env, bool dry_run,
     int bootnum, bool activate)
+=======
+make_boot_var(const char *label, const char *loader, const char *kernel, const char *env, bool dry_run)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 {
 	struct entry *new_ent;
 	uint32_t load_attrs = 0;
@@ -634,10 +699,14 @@ make_boot_var(const char *label, const char *loader, const char *kernel, const c
 
 	assert(label != NULL);
 
+<<<<<<< HEAD
 	if (bootnum == -1)
 		bootvar = make_next_boot_var_name();
 	else
 		bootvar = make_boot_var_name((uint16_t)bootnum);
+=======
+	bootvar = make_next_boot_var_name();
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	if (bootvar == NULL)
 		err(1, "bootvar creation");
 	if (loader == NULL)
@@ -665,8 +734,11 @@ make_boot_var(const char *label, const char *loader, const char *kernel, const c
 
 	/* don't make the new bootvar active by default, use the -a option later */
 	load_attrs = LOAD_OPTION_CATEGORY_BOOT;
+<<<<<<< HEAD
 	if (activate)
 		load_attrs |= LOAD_OPTION_ACTIVE;
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	load_opt_buf = malloc(MAX_LOADOPT_LEN);
 	if (load_opt_buf == NULL)
 		err(1, "malloc");
@@ -779,6 +851,7 @@ get_descr(uint8_t *data)
 }
 
 
+<<<<<<< HEAD
 static bool
 print_boot_var(const char *name, bool verbose, bool curboot)
 {
@@ -804,6 +877,8 @@ print_boot_var(const char *name, bool verbose, bool curboot)
 }
 
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 /* Cmd epilogue, or just the default with no args.
  * The order is [bootnext] bootcurrent, timeout, order, and the bootvars [-v]
  */
@@ -816,10 +891,17 @@ print_boot_vars(bool verbose)
 	 */
 	struct entry *v;
 	uint8_t *data;
+<<<<<<< HEAD
 	size_t size;
 	uint32_t attrs;
 	int ret, bolen;
 	uint16_t *boot_order = NULL, current;
+=======
+	char *d;
+	size_t size;
+	uint32_t attrs, load_attrs;
+	int ret;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	ret = efi_get_variable(EFI_GLOBAL_GUID, "BootNext", &data, &size, &attrs);
 	if (ret > 0) {
@@ -827,6 +909,7 @@ print_boot_vars(bool verbose)
 	}
 
 	ret = efi_get_variable(EFI_GLOBAL_GUID, "BootCurrent", &data, &size,&attrs);
+<<<<<<< HEAD
 	current = le16dec(data);
 	printf("BootCurrent: %04x\n", current);
 
@@ -879,6 +962,34 @@ print_boot_vars(bool verbose)
 					print_boot_var(v->name, verbose, v->idx == current);
 			}
 		}
+=======
+	printf("BootCurrent: %04x\n", le16dec(data));
+
+	ret = efi_get_variable(EFI_GLOBAL_GUID, "Timeout", &data, &size, &attrs);
+	if (ret > 0) {
+		printf("Timeout : %d seconds\n", le16dec(data));
+	}
+	print_order();
+
+	/* now we want to fetch 'em all fresh again
+	 * which possibly includes a newly created bootvar
+	 */
+	LIST_FOREACH(v, &efivars, entries) {
+		attrs = 0;
+		ret = efi_get_variable(EFI_GLOBAL_GUID, v->name, &data,
+		    &size, &attrs);
+		if (ret < 0)
+			continue; /* we must have deleted it */
+		load_attrs = le32dec(data);
+		d = get_descr(data);
+		printf("%s%c %s", v->name,
+		    ((load_attrs & LOAD_OPTION_ACTIVE) ? '*': ' '), d);
+		free(d);
+		if (verbose)
+			print_loadopt_str(data, size);
+		else
+			printf("\n");
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	}
 	return 0;
 }
@@ -916,8 +1027,12 @@ main(int argc, char *argv[])
 		 * side effect, adds to boot order, but not yet active.
 		 */
 		make_boot_var(opts.label ? opts.label : "",
+<<<<<<< HEAD
 		    opts.loader, opts.kernel, opts.env, opts.dry_run,
 		    opts.has_bootnum ? opts.bootnum : -1, opts.set_active);
+=======
+		    opts.loader, opts.kernel, opts.env, opts.dry_run);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	else if (opts.set_active || opts.set_inactive )
 		handle_activity(opts.bootnum, opts.set_active);
 	else if (opts.order != NULL)

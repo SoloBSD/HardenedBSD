@@ -49,7 +49,10 @@ __FBSDID("$FreeBSD$");
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+<<<<<<< HEAD
 #include <pcap.h>
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 #include "t4_ioctl.h"
 #include "tcb_common.h"
@@ -94,6 +97,7 @@ usage(FILE *fp)
 	    "\tcontext <type> <id>                 show an SGE context\n"
 	    "\tdumpstate <dump.bin>                dump chip state\n"
 	    "\tfilter <idx> [<param> <val>] ...    set a filter\n"
+<<<<<<< HEAD
 	    "\tfilter <idx> delete|clear [prio 1]  delete a filter\n"
 	    "\tfilter list                         list all filters\n"
 	    "\tfilter mode [<match>] ...           get/set global filter mode\n"
@@ -101,6 +105,11 @@ usage(FILE *fp)
 	    "\thashfilter <idx> delete|clear       delete a hashfilter\n"
 	    "\thashfilter list                     list all hashfilters\n"
 	    "\thashfilter mode                     get global hashfilter mode\n"
+=======
+	    "\tfilter <idx> delete|clear           delete a filter\n"
+	    "\tfilter list                         list all filters\n"
+	    "\tfilter mode [<match>] ...           get/set global filter mode\n"
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    "\ti2c <port> <devaddr> <addr> [<len>] read from i2c device\n"
 	    "\tloadboot <bi.bin> [pf|offset <val>] install boot image\n"
 	    "\tloadboot clear [pf|offset <val>]    remove boot image\n"
@@ -111,8 +120,11 @@ usage(FILE *fp)
 	    "\tloadfw <fw-image.bin>               install firmware\n"
 	    "\tmemdump <addr> <len>                dump a memory range\n"
 	    "\tmodinfo <port> [raw]                optics/cable information\n"
+<<<<<<< HEAD
 	    "\tpolicy <policy.txt>                 install offload policy\n"
 	    "\tpolicy clear                        remove offload policy\n"
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    "\treg <address>[=<val>]               read/write register\n"
 	    "\treg64 <address>[=<val>]             read/write 64 bit register\n"
 	    "\tregdump [<module>] ...              dump registers\n"
@@ -147,6 +159,10 @@ real_doit(unsigned long cmd, void *data, const char *cmdstr)
 			rc = errno;
 			return (rc);
 		}
+<<<<<<< HEAD
+=======
+		chip_id = nexus[1] - '0';
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	}
 
 	rc = ioctl(fd, cmd, data);
@@ -603,14 +619,20 @@ do_show_info_header(uint32_t mode)
  */
 static int
 parse_val_mask(const char *param, const char *args[], uint32_t *val,
+<<<<<<< HEAD
     uint32_t *mask, int hashfilter)
 {
 	long l;
+=======
+    uint32_t *mask)
+{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	char *p;
 
 	if (strcmp(param, args[0]) != 0)
 		return (EINVAL);
 
+<<<<<<< HEAD
 	p = str_to_number(args[1], &l, NULL);
 	if (l >= 0 && l <= UINT32_MAX) {
 		*val = (uint32_t)l;
@@ -632,6 +654,19 @@ parse_val_mask(const char *param, const char *args[], uint32_t *val,
 					return (0);
 				}
 			}
+=======
+	*val = strtoul(args[1], &p, 0);
+	if (p > args[1]) {
+		if (p[0] == 0) {
+			*mask = ~0;
+			return (0);
+		}
+
+		if (p[0] == ':' && p[1] != 0) {
+			*mask = strtoul(p+1, &p, 0);
+			if (p[0] == 0)
+				return (0);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		}
 	}
 
@@ -665,7 +700,11 @@ parse_val_mask(const char *param, const char *args[], uint32_t *val,
  */
 static int
 parse_ipaddr(const char *param, const char *args[], int *afp, uint8_t addr[],
+<<<<<<< HEAD
     uint8_t mask[], int maskless)
+=======
+    uint8_t mask[])
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 {
 	const char *colon, *afn;
 	char *slash;
@@ -722,11 +761,14 @@ parse_ipaddr(const char *param, const char *args[], int *afp, uint8_t addr[],
 		char *p;
 		unsigned int prefix = strtoul(slash + 1, &p, 10);
 
+<<<<<<< HEAD
 		if (maskless) {
 			warnx("mask cannot be provided for maskless specification");
 			return (EINVAL);
 		}
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		if (p == slash + 1) {
 			warnx("missing address prefix for %s", param);
 			return (EINVAL);
@@ -744,6 +786,7 @@ parse_ipaddr(const char *param, const char *args[], int *afp, uint8_t addr[],
 		masksize = prefix;
 	}
 
+<<<<<<< HEAD
 	if (mask != NULL) {
 		/*
 		 * Fill in mask.
@@ -753,6 +796,15 @@ parse_ipaddr(const char *param, const char *args[], int *afp, uint8_t addr[],
 		if (masksize)
 			*m = ~0 << (8 - masksize);
 	}
+=======
+	/*
+	 * Fill in mask.
+	 */
+	for (m = mask; masksize >= 8; m++, masksize -= 8)
+		*m = ~0;
+	if (masksize)
+		*m = ~0 << (8 - masksize);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	return (0);
 }
@@ -768,11 +820,15 @@ static int
 parse_val(const char *param, const char *args[], uint32_t *val)
 {
 	char *p;
+<<<<<<< HEAD
 	long l;
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	if (strcmp(param, args[0]) != 0)
 		return (EINVAL);
 
+<<<<<<< HEAD
 	p = str_to_number(args[1], &l, NULL);
 	if (*p || l < 0 || l > UINT32_MAX) {
 		warnx("parameter \"%s\" has bad \"value\" %s", args[0], args[1]);
@@ -781,6 +837,14 @@ parse_val(const char *param, const char *args[], uint32_t *val)
 
 	*val = (uint32_t)l;
 	return (0);
+=======
+	*val = strtoul(args[1], &p, 0);
+	if (p > args[1] && p[0] == 0)
+		return (0);
+
+	warnx("parameter \"%s\" has bad \"value\" %s", args[0], args[1]);
+	return (EINVAL);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 }
 
 static void
@@ -933,7 +997,11 @@ do_show_one_filter_info(struct t4_filter *t, uint32_t mode)
 				printf("(hash)");
 		}
 	}
+<<<<<<< HEAD
 	if (chip_id <= 5 && t->fs.prio)
+=======
+	if (t->fs.prio)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		printf(" Prio");
 	if (t->fs.rpttid)
 		printf(" RptTID");
@@ -941,9 +1009,15 @@ do_show_one_filter_info(struct t4_filter *t, uint32_t mode)
 }
 
 static int
+<<<<<<< HEAD
 show_filters(int hash)
 {
 	uint32_t mode = 0, header, hpfilter = 0;
+=======
+show_filters(void)
+{
+	uint32_t mode = 0, header = 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	struct t4_filter t;
 	int rc;
 
@@ -952,6 +1026,7 @@ show_filters(int hash)
 	if (rc != 0)
 		return (rc);
 
+<<<<<<< HEAD
 	if (!hash && chip_id >= 6) {
 		header = 0;
 		bzero(&t, sizeof (t));
@@ -977,27 +1052,43 @@ show_filters(int hash)
 	bzero(&t, sizeof (t));
 	t.idx = 0;
 	t.fs.hash = hash;
+=======
+	t.idx = 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	for (t.idx = 0; ; t.idx++) {
 		rc = doit(CHELSIO_T4_GET_FILTER, &t);
 		if (rc != 0 || t.idx == 0xffffffff)
 			break;
 
 		if (!header) {
+<<<<<<< HEAD
 			if (hpfilter)
 				printf("\nNormal Priority TCAM Region:\n");
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			do_show_info_header(mode);
 			header = 1;
 		}
 		do_show_one_filter_info(&t, mode);
+<<<<<<< HEAD
 	}
+=======
+	};
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	return (rc);
 }
 
 static int
+<<<<<<< HEAD
 get_filter_mode(int hashfilter)
 {
 	uint32_t mode = hashfilter;
+=======
+get_filter_mode(void)
+{
+	uint32_t mode = 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	int rc;
 
 	rc = doit(CHELSIO_T4_GET_FILTER_MODE, &mode);
@@ -1116,23 +1207,37 @@ set_filter_mode(int argc, const char *argv[])
 }
 
 static int
+<<<<<<< HEAD
 del_filter(uint32_t idx, int prio, int hashfilter)
 {
 	struct t4_filter t;
 
 	t.fs.prio = prio;
 	t.fs.hash = hashfilter;
+=======
+del_filter(uint32_t idx)
+{
+	struct t4_filter t;
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	t.idx = idx;
 
 	return doit(CHELSIO_T4_DEL_FILTER, &t);
 }
 
+<<<<<<< HEAD
 #define MAX_VLANID (4095)
 
 static int
 set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 {
 	int rc, af = AF_UNSPEC, start_arg = 0;
+=======
+static int
+set_filter(uint32_t idx, int argc, const char *argv[])
+{
+	int af = AF_UNSPEC, start_arg = 0;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	struct t4_filter t;
 
 	if (argc < 2) {
@@ -1142,7 +1247,10 @@ set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 	bzero(&t, sizeof (t));
 	t.idx = idx;
 	t.fs.hitcnts = 1;
+<<<<<<< HEAD
 	t.fs.hash = hash;
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	for (start_arg = 0; start_arg + 2 <= argc; start_arg += 2) {
 		const char **args = &argv[start_arg];
@@ -1166,6 +1274,7 @@ set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 				return (EINVAL);
 			}
 			af = newaf;
+<<<<<<< HEAD
 		} else if (!parse_val_mask("fcoe", args, &val, &mask, hash)) {
 			t.fs.val.fcoe = val;
 			t.fs.mask.fcoe = mask;
@@ -1173,29 +1282,51 @@ set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 			t.fs.val.iport = val;
 			t.fs.mask.iport = mask;
 		} else if (!parse_val_mask("ovlan", args, &val, &mask, hash)) {
+=======
+		} else if (!parse_val_mask("fcoe", args, &val, &mask)) {
+			t.fs.val.fcoe = val;
+			t.fs.mask.fcoe = mask;
+		} else if (!parse_val_mask("iport", args, &val, &mask)) {
+			t.fs.val.iport = val;
+			t.fs.mask.iport = mask;
+		} else if (!parse_val_mask("ovlan", args, &val, &mask)) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			t.fs.val.vnic = val;
 			t.fs.mask.vnic = mask;
 			t.fs.val.ovlan_vld = 1;
 			t.fs.mask.ovlan_vld = 1;
+<<<<<<< HEAD
 		} else if (!parse_val_mask("ivlan", args, &val, &mask, hash)) {
+=======
+		} else if (!parse_val_mask("ivlan", args, &val, &mask)) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			t.fs.val.vlan = val;
 			t.fs.mask.vlan = mask;
 			t.fs.val.vlan_vld = 1;
 			t.fs.mask.vlan_vld = 1;
+<<<<<<< HEAD
 		} else if (!parse_val_mask("pf", args, &val, &mask, hash)) {
+=======
+		} else if (!parse_val_mask("pf", args, &val, &mask)) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			t.fs.val.vnic &= 0x1fff;
 			t.fs.val.vnic |= (val & 0x7) << 13;
 			t.fs.mask.vnic &= 0x1fff;
 			t.fs.mask.vnic |= (mask & 0x7) << 13;
 			t.fs.val.pfvf_vld = 1;
 			t.fs.mask.pfvf_vld = 1;
+<<<<<<< HEAD
 		} else if (!parse_val_mask("vf", args, &val, &mask, hash)) {
+=======
+		} else if (!parse_val_mask("vf", args, &val, &mask)) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			t.fs.val.vnic &= 0xe000;
 			t.fs.val.vnic |= val & 0x1fff;
 			t.fs.mask.vnic &= 0xe000;
 			t.fs.mask.vnic |= mask & 0x1fff;
 			t.fs.val.pfvf_vld = 1;
 			t.fs.mask.pfvf_vld = 1;
+<<<<<<< HEAD
 		} else if (!parse_val_mask("tos", args, &val, &mask, hash)) {
 			t.fs.val.tos = val;
 			t.fs.mask.tos = mask;
@@ -1234,6 +1365,38 @@ set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 			t.fs.nat_dport = val;
 		} else if (!parse_val_mask("nat_sport", args, &val, &mask, 1)) {
 			t.fs.nat_sport = val;
+=======
+		} else if (!parse_val_mask("tos", args, &val, &mask)) {
+			t.fs.val.tos = val;
+			t.fs.mask.tos = mask;
+		} else if (!parse_val_mask("proto", args, &val, &mask)) {
+			t.fs.val.proto = val;
+			t.fs.mask.proto = mask;
+		} else if (!parse_val_mask("ethtype", args, &val, &mask)) {
+			t.fs.val.ethtype = val;
+			t.fs.mask.ethtype = mask;
+		} else if (!parse_val_mask("macidx", args, &val, &mask)) {
+			t.fs.val.macidx = val;
+			t.fs.mask.macidx = mask;
+		} else if (!parse_val_mask("matchtype", args, &val, &mask)) {
+			t.fs.val.matchtype = val;
+			t.fs.mask.matchtype = mask;
+		} else if (!parse_val_mask("frag", args, &val, &mask)) {
+			t.fs.val.frag = val;
+			t.fs.mask.frag = mask;
+		} else if (!parse_val_mask("dport", args, &val, &mask)) {
+			t.fs.val.dport = val;
+			t.fs.mask.dport = mask;
+		} else if (!parse_val_mask("sport", args, &val, &mask)) {
+			t.fs.val.sport = val;
+			t.fs.mask.sport = mask;
+		} else if (!parse_ipaddr("dip", args, &af, t.fs.val.dip,
+		    t.fs.mask.dip)) {
+			/* nada */;
+		} else if (!parse_ipaddr("sip", args, &af, t.fs.val.sip,
+		    t.fs.mask.sip)) {
+			/* nada */;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		} else if (!strcmp(argv[start_arg], "action")) {
 			if (!strcmp(argv[start_arg + 1], "pass"))
 				t.fs.action = FILTER_PASS;
@@ -1250,6 +1413,7 @@ set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 		} else if (!parse_val("hitcnts", args, &val)) {
 			t.fs.hitcnts = val;
 		} else if (!parse_val("prio", args, &val)) {
+<<<<<<< HEAD
 			if (hash) {
 				warnx("Hashfilters doesn't support \"prio\"\n");
 				return (EINVAL);
@@ -1259,6 +1423,8 @@ set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 				     " \"0\" or \"1\"", argv[start_arg + 1]);
 				return (EINVAL);
 			}
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			t.fs.prio = val;
 		} else if (!parse_val("rpttid", args, &val)) {
 			t.fs.rpttid = 1;
@@ -1270,6 +1436,7 @@ set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 			t.fs.dirsteerhash = 1;
 		} else if (!parse_val("eport", args, &val)) {
 			t.fs.eport = val;
+<<<<<<< HEAD
 		} else if (!parse_val("swapmac", args, &val)) {
 			t.fs.swapmac = 1;
 		} else if (!strcmp(argv[start_arg], "nat")) {
@@ -1297,6 +1464,8 @@ set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 			t.fs.nat_seq_chk = val;
 		} else if (!parse_val("natflag", args, &val)) {
 			t.fs.nat_flag_chk = 1;
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		} else if (!strcmp(argv[start_arg], "dmac")) {
 			struct ether_addr *daddr;
 
@@ -1327,18 +1496,36 @@ set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 				t.fs.newvlan = VLAN_REWRITE;
 			} else if (argv[start_arg + 1][0] == '+') {
 				t.fs.newvlan = VLAN_INSERT;
+<<<<<<< HEAD
 			} else {
 				warnx("unknown vlan parameter \"%s\"; must"
 				     " be one of \"none\", \"=<vlan>\", "
 				     " \"+<vlan>\"", argv[start_arg + 1]);
+=======
+			} else if (isdigit(argv[start_arg + 1][0]) &&
+			    !parse_val_mask("vlan", args, &val, &mask)) {
+				t.fs.val.vlan = val;
+				t.fs.mask.vlan = mask;
+				t.fs.val.vlan_vld = 1;
+				t.fs.mask.vlan_vld = 1;
+			} else {
+				warnx("unknown vlan parameter \"%s\"; must"
+				     " be one of \"none\", \"=<vlan>\", "
+				     " \"+<vlan>\", or \"<vlan>\"",
+				     argv[start_arg + 1]);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 				return (EINVAL);
 			}
 			if (t.fs.newvlan == VLAN_REWRITE ||
 			    t.fs.newvlan == VLAN_INSERT) {
 				t.fs.vlan = strtoul(argv[start_arg + 1] + 1,
 				    &p, 0);
+<<<<<<< HEAD
 				if (p == argv[start_arg + 1] + 1 || p[0] != 0 ||
 				    t.fs.vlan > MAX_VLANID) {
+=======
+				if (p == argv[start_arg + 1] + 1 || p[0] != 0) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 					warnx("invalid vlan \"%s\"",
 					     argv[start_arg + 1]);
 					return (EINVAL);
@@ -1358,6 +1545,7 @@ set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 	 * Check basic sanity of option combinations.
 	 */
 	if (t.fs.action != FILTER_SWITCH &&
+<<<<<<< HEAD
 	    (t.fs.eport || t.fs.newdmac || t.fs.newsmac || t.fs.newvlan ||
 	    t.fs.swapmac || t.fs.nat_mode)) {
 		warnx("port, dmac, smac, vlan, and nat only make sense with"
@@ -1369,6 +1557,13 @@ set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 		warnx("nat params only make sense with valid nat mode");
 		return (EINVAL);
 	}
+=======
+	    (t.fs.eport || t.fs.newdmac || t.fs.newsmac || t.fs.newvlan)) {
+		warnx("prio, port dmac, smac and vlan only make sense with"
+		     " \"action switch\"");
+		return (EINVAL);
+	}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	if (t.fs.action != FILTER_PASS &&
 	    (t.fs.rpttid || t.fs.dirsteer || t.fs.maskhash)) {
 		warnx("rpttid, queue and tcbhash don't make sense with"
@@ -1381,6 +1576,7 @@ set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 	}
 
 	t.fs.type = (af == AF_INET6 ? 1 : 0); /* default IPv4 */
+<<<<<<< HEAD
 	rc = doit(CHELSIO_T4_SET_FILTER, &t);
 	if (hash && rc == 0)
 		printf("%d\n", t.idx);
@@ -1389,13 +1585,24 @@ set_filter(uint32_t idx, int argc, const char *argv[], int hash)
 
 static int
 filter_cmd(int argc, const char *argv[], int hashfilter)
+=======
+	return doit(CHELSIO_T4_SET_FILTER, &t);
+}
+
+static int
+filter_cmd(int argc, const char *argv[])
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 {
 	long long val;
 	uint32_t idx;
 	char *s;
 
 	if (argc == 0) {
+<<<<<<< HEAD
 		warnx("%sfilter: no arguments.", hashfilter ? "hash" : "");
+=======
+		warnx("filter: no arguments.");
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		return (EINVAL);
 	};
 
@@ -1404,19 +1611,31 @@ filter_cmd(int argc, const char *argv[], int hashfilter)
 		if (argc != 1)
 			warnx("trailing arguments after \"list\" ignored.");
 
+<<<<<<< HEAD
 		return show_filters(hashfilter);
+=======
+		return show_filters();
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	}
 
 	/* mode */
 	if (argc == 1 && strcmp(argv[0], "mode") == 0)
+<<<<<<< HEAD
 		return get_filter_mode(hashfilter);
 
 	/* mode <mode> */
 	if (!hashfilter && strcmp(argv[0], "mode") == 0)
+=======
+		return get_filter_mode();
+
+	/* mode <mode> */
+	if (strcmp(argv[0], "mode") == 0)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		return set_filter_mode(argc - 1, argv + 1);
 
 	/* <idx> ... */
 	s = str_to_number(argv[0], NULL, &val);
+<<<<<<< HEAD
 	if (*s || val < 0 || val > 0xffffffffU) {
 		if (hashfilter) {
 			/*
@@ -1427,12 +1646,16 @@ filter_cmd(int argc, const char *argv[], int hashfilter)
 			idx = (uint32_t) -1;
 			goto setf;
 		}
+=======
+	if (*s || val > 0xffffffffU) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		warnx("\"%s\" is neither an index nor a filter subcommand.",
 		    argv[0]);
 		return (EINVAL);
 	}
 	idx = (uint32_t) val;
 
+<<<<<<< HEAD
 	/* <idx> delete|clear [prio 0|1] */
 	if ((argc == 2 || argc == 4) &&
 	    (strcmp(argv[1], "delete") == 0 || strcmp(argv[1], "clear") == 0)) {
@@ -1469,6 +1692,16 @@ filter_cmd(int argc, const char *argv[], int hashfilter)
 setf:
 	/* [<param> <val>] ... */
 	return set_filter(idx, argc, argv, hashfilter);
+=======
+	/* <idx> delete|clear */
+	if (argc == 2 &&
+	    (strcmp(argv[1], "delete") == 0 || strcmp(argv[1], "clear") == 0)) {
+		return del_filter(idx);
+	}
+
+	/* <idx> [<param> <val>] ... */
+	return set_filter(idx, argc - 1, argv + 1);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 }
 
 /*
@@ -2912,6 +3145,7 @@ sched_class(int argc, const char *argv[])
 			warnx("sched params \"level\" parameter missing");
 			errs++;
 		}
+<<<<<<< HEAD
 		if (op.u.params.mode < 0 &&
 		    op.u.params.level == SCHED_CLASS_LEVEL_CL_RL) {
 			warnx("sched params \"mode\" parameter missing");
@@ -2926,6 +3160,17 @@ sched_class(int argc, const char *argv[])
 		if (op.u.params.ratemode < 0 &&
 		    (op.u.params.level == SCHED_CLASS_LEVEL_CL_RL ||
 		    op.u.params.level == SCHED_CLASS_LEVEL_CH_RL)) {
+=======
+		if (op.u.params.mode < 0) {
+			warnx("sched params \"mode\" parameter missing");
+			errs++;
+		}
+		if (op.u.params.rateunit < 0) {
+			warnx("sched params \"rate-unit\" parameter missing");
+			errs++;
+		}
+		if (op.u.params.ratemode < 0) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			warnx("sched params \"rate-mode\" parameter missing");
 			errs++;
 		}
@@ -2933,9 +3178,13 @@ sched_class(int argc, const char *argv[])
 			warnx("sched params \"channel\" missing");
 			errs++;
 		}
+<<<<<<< HEAD
 		if (op.u.params.cl < 0 &&
 		    (op.u.params.level == SCHED_CLASS_LEVEL_CL_RL ||
 		    op.u.params.level == SCHED_CLASS_LEVEL_CL_WRR)) {
+=======
+		if (op.u.params.cl < 0) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			warnx("sched params \"class\" missing");
 			errs++;
 		}
@@ -2946,6 +3195,7 @@ sched_class(int argc, const char *argv[])
 			    "rate-limit level");
 			errs++;
 		}
+<<<<<<< HEAD
 		if (op.u.params.level == SCHED_CLASS_LEVEL_CL_WRR &&
 		    (op.u.params.weight < 1 || op.u.params.weight > 99)) {
 			warnx("sched params \"weight\" missing or invalid "
@@ -2954,6 +3204,17 @@ sched_class(int argc, const char *argv[])
 		}
 		if (op.u.params.pktsize < 0 &&
 		    op.u.params.level == SCHED_CLASS_LEVEL_CL_RL) {
+=======
+		if (op.u.params.weight < 0 &&
+		    op.u.params.level == SCHED_CLASS_LEVEL_CL_WRR) {
+			warnx("sched params \"weight\" missing for "
+			    "weighted-round-robin level");
+			errs++;
+		}
+		if (op.u.params.pktsize < 0 &&
+		    (op.u.params.level == SCHED_CLASS_LEVEL_CL_RL ||
+		    op.u.params.level == SCHED_CLASS_LEVEL_CH_RL)) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			warnx("sched params \"pkt-size\" missing for "
 			    "rate-limit level");
 			errs++;
@@ -3038,6 +3299,7 @@ sched_queue(int argc, const char *argv[])
 }
 
 static int
+<<<<<<< HEAD
 parse_offload_settings_word(const char *s, char **pnext, const char *ws,
     int *pneg, struct offload_settings *os)
 {
@@ -3485,6 +3747,8 @@ load_offload_policy(int argc, const char *argv[])
 }
 
 static int
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 run_cmd(int argc, const char *argv[])
 {
 	int rc = -1;
@@ -3501,7 +3765,11 @@ run_cmd(int argc, const char *argv[])
 	else if (!strcmp(cmd, "regdump"))
 		rc = dump_regs(argc, argv);
 	else if (!strcmp(cmd, "filter"))
+<<<<<<< HEAD
 		rc = filter_cmd(argc, argv, 0);
+=======
+		rc = filter_cmd(argc, argv);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	else if (!strcmp(cmd, "context"))
 		rc = get_sge_context(argc, argv);
 	else if (!strcmp(cmd, "loadfw"))
@@ -3530,10 +3798,13 @@ run_cmd(int argc, const char *argv[])
 		rc = loadbootcfg(argc, argv);
 	else if (!strcmp(cmd, "dumpstate"))
 		rc = dumpstate(argc, argv);
+<<<<<<< HEAD
 	else if (!strcmp(cmd, "policy"))
 		rc = load_offload_policy(argc, argv);
 	else if (!strcmp(cmd, "hashfilter"))
 		rc = filter_cmd(argc, argv, 1);
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	else {
 		rc = EINVAL;
 		warnx("invalid command \"%s\"", cmd);
@@ -3607,7 +3878,10 @@ main(int argc, const char *argv[])
 	}
 
 	nexus = argv[1];
+<<<<<<< HEAD
 	chip_id = nexus[1] - '0';
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	/* progname and nexus */
 	argc -= 2;

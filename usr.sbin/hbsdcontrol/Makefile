@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 PACKAGE=hardenedbsd
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 PROG=hbsdcontrol
 
 .PATH: ${SRCTOP}/contrib/hardenedbsd/hbsdcontrol

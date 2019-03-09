@@ -451,7 +451,11 @@ tests_rfc5424() {
 	tmpdir_clean
 }
 
+<<<<<<< HEAD
 echo 1..180
+=======
+echo 1..128
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 mkdir -p ${TMPDIR}
 cd ${TMPDIR}
 
@@ -546,12 +550,15 @@ tests_time_rotate "gz" "${TMPDIR}/alog/"
 echo "$LOGFPATH	640  3	   *	@T00  NCJ" > newsyslog.conf
 tests_time_rotate "bz2" "${TMPDIR}/alog/"
 
+<<<<<<< HEAD
 echo "$LOGFPATH	640  3	   *	@T00  NCX" > newsyslog.conf
 tests_time_rotate "xz" "${TMPDIR}/alog/"
 
 echo "$LOGFPATH	640  3	   *	@T00  NCY" > newsyslog.conf
 tests_time_rotate "zst" "${TMPDIR}/alog/"
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 # RFC-5424; Normal, no archive dir
 echo "$LOGFPATH5424	640  3	   *	@T00  NCT" > newsyslog.conf
 echo "$LOGFPATH	640  3	   *	@T00  NC" >> newsyslog.conf

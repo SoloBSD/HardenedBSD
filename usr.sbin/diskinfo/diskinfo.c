@@ -412,9 +412,14 @@ speeddisk(int fd, off_t mediasize, u_int sectorsize)
 	 * as do 2048 or fewer sectors.
 	 */
 	sectorcount = mediasize / sectorsize;
+<<<<<<< HEAD
 	if (mediasize < 1024 * 1024 || sectorcount < 2048)
 		return;
 
+=======
+	if (sectorcount <= 0)
+		return;		/* Can't test devices with no sectors */
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	step = 1ULL << (flsll(sectorcount / (4 * 200)) - 1);
 	if (step > 16384)

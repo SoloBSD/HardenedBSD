@@ -13,7 +13,10 @@ MAN=	fstyp.8
 
 WARNS?=	2
 
+<<<<<<< HEAD
 .include <bsd.endian.mk>
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 .if ${TARGET_ENDIANNESS} == 1234
 HAS_TESTS=
@@ -36,7 +39,11 @@ CFLAGS+= -I${SRCTOP}/cddl/contrib/opensolaris/head
 
 CFLAGS+=-I${SRCTOP}/sys
 
+<<<<<<< HEAD
 LIBADD=	geom md ufs
+=======
+LIBADD=	geom md
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 .if ${MK_ZFS} != "no"
 LIBADD+=nvpair zfs

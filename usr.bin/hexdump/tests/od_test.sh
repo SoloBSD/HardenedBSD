@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 #
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 # SPDX-License-Identifier: BSD-2-Clause-FreeBSD
 #
 # Copyright 2018 (C) Yuri Pankov

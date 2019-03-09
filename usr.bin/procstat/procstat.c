@@ -44,6 +44,7 @@
 
 #include "procstat.h"
 
+<<<<<<< HEAD
 enum {
 	PS_CMP_NORMAL = 0x00,
 	PS_CMP_PLURAL = 0x01, 
@@ -102,10 +103,16 @@ static const struct procstat_cmd cmd_table[] = {
 	    &cmdopt_signals, PS_CMP_PLURAL | PS_CMP_SUBSTR },
 	{ "vm", "vm", NULL, &procstat_vm, &cmdopt_none, PS_CMP_NORMAL }
 };
+=======
+static int aflag, bflag, cflag, eflag, fflag, iflag, jflag, kflag;
+static int lflag, Lflag, rflag, sflag, tflag, vflag, xflag, Sflag;
+int	hflag, nflag, Cflag, Hflag;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 static void
 usage(void)
 {
+<<<<<<< HEAD
 	size_t i, l;
 	int multi;
 
@@ -142,6 +149,15 @@ usage(void)
 			xo_error(" %s", cmd_table[i].usage);
 		xo_error("\n");
 	}
+=======
+
+	xo_error("usage: procstat [--libxo] [-CHhn] [-M core] "
+	    "[-N system] [-w interval]\n"
+	    "                [-b | -c | -e | -f | -i | -j | -k | "
+	    "-l | -r | -s | \n"
+	    "                 -S | -t | -v | -x]\n"
+	    "                [-a | pid | core ...]\n");
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	xo_finish();
 	exit(EX_USAGE);
 }
@@ -156,7 +172,44 @@ procstat(const struct procstat_cmd *cmd, struct procstat *prstat,
 	if (pidstr == NULL)
 		xo_errc(1, ENOMEM, "Failed to allocate memory in procstat()");
 	xo_open_container(pidstr);
+<<<<<<< HEAD
 	cmd->cmd(prstat, kipp);
+=======
+
+	if (bflag)
+		procstat_bin(prstat, kipp);
+	else if (cflag)
+		procstat_args(prstat, kipp);
+	else if (eflag)
+		procstat_env(prstat, kipp);
+	else if (fflag)
+		procstat_files(prstat, kipp);
+	else if (iflag)
+		procstat_sigs(prstat, kipp);
+	else if (jflag)
+		procstat_threads_sigs(prstat, kipp);
+	else if (kflag)
+		procstat_kstack(prstat, kipp, kflag);
+	else if (lflag)
+		procstat_rlimit(prstat, kipp);
+	else if (Lflag)
+		procstat_ptlwpinfo(prstat);
+	else if (rflag)
+		procstat_rusage(prstat, kipp);
+	else if (sflag)
+		procstat_cred(prstat, kipp);
+	else if (tflag)
+		procstat_threads(prstat, kipp);
+	else if (vflag)
+		procstat_vm(prstat, kipp);
+	else if (xflag)
+		procstat_auxv(prstat, kipp);
+	else if (Sflag)
+		procstat_cs(prstat, kipp);
+	else
+		procstat_basic(kipp);
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	xo_close_container(pidstr);
 	free(pidstr);
 }
@@ -200,6 +253,7 @@ kinfo_proc_thread_name(const struct kinfo_proc *kipp)
 	return (name);
 }
 
+<<<<<<< HEAD
 static const struct procstat_cmd *
 getcmd(const char *str)
 {
@@ -232,6 +286,8 @@ getcmd(const char *str)
 	return (cmd);
 }
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 int
 main(int argc, char *argv[])
 {
@@ -253,7 +309,11 @@ main(int argc, char *argv[])
 	aflag = 0;
 	argc = xo_parse_args(argc, argv);
 
+<<<<<<< HEAD
 	while ((ch = getopt(argc, argv, "abCcefHhijkLlM:N:nrSstvw:x")) != -1) {
+=======
+	while ((ch = getopt(argc, argv, "abCcefHhijklLM:N:nrSstvw:x")) != -1) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		switch (ch) {
 		case 'a':
 			aflag++;
@@ -318,8 +378,19 @@ main(int argc, char *argv[])
 				usage();
 			cmd = getcmd("rlimit");
 			break;
+<<<<<<< HEAD
 		case 'M':
 			memf = optarg;
+=======
+
+		case 'L':
+			Lflag++;
+			xocontainer = "ptlwpinfo";
+			break;
+
+		case 'n':
+			nflag++;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			break;
 		case 'N':
 			nlistf = optarg;

@@ -1,7 +1,10 @@
 # $FreeBSD$
 
+<<<<<<< HEAD
 .include <src.opts.mk>
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 AWKSRC=	${SRCTOP}/contrib/one-true-awk
 .PATH: ${AWKSRC}
 
@@ -29,9 +32,12 @@ proctab.c: maketab
 
 build-tools: maketab
 maketab: ytab.h maketab.c ${BUILD_TOOLS_META}
+<<<<<<< HEAD
 
 # awk needs some work before we can connect these tests to the build
 #HAS_TESTS=
 #SUBDIR.${MK_TESTS}+= tests
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 .include <bsd.prog.mk>

@@ -38,6 +38,22 @@
 #include <stdio.h>
 #include <zlib.h>
 
+<<<<<<< HEAD
+=======
+#ifndef WITHOUT_FASTMATCH
+#include "fastmatch.h"
+#endif
+
+#ifdef WITHOUT_NLS
+#define	getstr(n)	 errstr[n]
+#else
+#include <nl_types.h>
+
+extern nl_catd		 catalog;
+#define	getstr(n)	 catgets(catalog, 1, n, errstr[n])
+#endif
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 extern const char		*errstr[];
 
 #define	VERSION		"2.6.0-FreeBSD"
@@ -133,6 +149,12 @@ extern unsigned int dpatterns, fpatterns, patterns;
 extern struct pat *pattern;
 extern struct epat *dpattern, *fpattern;
 extern regex_t	*er_pattern, *r_pattern;
+<<<<<<< HEAD
+=======
+#ifndef WITHOUT_FASTMATCH
+extern fastmatch_t *fg_pattern;
+#endif
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 /* For regex errors  */
 #define	RE_ERROR_BUF	512

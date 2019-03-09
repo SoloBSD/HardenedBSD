@@ -781,12 +781,27 @@ do_rules(FILE *f)
 				continue;
 			}
 			if (ftp->f_depends) {
+<<<<<<< HEAD
+=======
+				fprintf(f, "%s%sln: %s%s%c %s\n",
+					ftp->f_objprefix, tail(np),
+					ftp->f_srcprefix, np, och,
+					ftp->f_depends);
+				fprintf(f, "\t${NORMAL_LINT}\n\n");
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 				fprintf(f, "%s%so: %s%s%c %s\n",
 					ftp->f_objprefix, tail(np),
 					ftp->f_srcprefix, np, och,
 					ftp->f_depends);
 			}
 			else {
+<<<<<<< HEAD
+=======
+				fprintf(f, "%s%sln: %s%s%c\n",
+					ftp->f_objprefix, tail(np),
+					ftp->f_srcprefix, np, och);
+				fprintf(f, "\t${NORMAL_LINT}\n\n");
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 				fprintf(f, "%s%so: %s%s%c\n",
 					ftp->f_objprefix, tail(np),
 					ftp->f_srcprefix, np, och);

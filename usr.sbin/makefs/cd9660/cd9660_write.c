@@ -145,8 +145,15 @@ static int
 cd9660_write_volume_descriptors(iso9660_disk *diskStructure, FILE *fd)
 {
 	volume_descriptor *vd_temp = diskStructure->firstVolumeDescriptor;
+<<<<<<< HEAD
 
 	while (vd_temp != NULL) {
+=======
+	int pos;
+
+	while (vd_temp != NULL) {
+		pos = vd_temp->sector * diskStructure->sectorSize;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		cd9660_write_filedata(diskStructure, fd, vd_temp->sector,
 		    vd_temp->volumeDescriptorData, 1);
 		vd_temp = vd_temp->next;

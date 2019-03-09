@@ -1,7 +1,11 @@
 #	$FreeBSD$
 #
 
+<<<<<<< HEAD
 .PATH:	${SRCDIR}/cd9660
+=======
+.PATH:	${SRCDIR}/cd9660 ${SRCTOP}/sys/fs/cd9660/
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 CFLAGS+=-I${SRCTOP}/sys/fs/cd9660/
 

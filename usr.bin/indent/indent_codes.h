@@ -1,6 +1,9 @@
 /*-
+<<<<<<< HEAD
  * SPDX-License-Identifier: BSD-4-Clause
  *
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  * Copyright (c) 1985 Sun Microsystems, Inc.
  * Copyright (c) 1980, 1993
  *	The Regents of the University of California.  All rights reserved.
@@ -71,7 +74,10 @@
 #define elsehead	31
 #define period		32
 #define strpfx		33
+<<<<<<< HEAD
 #define storage		34
 #define funcname	35
 #define type_def	36
 #define structure	37
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2

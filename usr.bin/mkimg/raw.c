@@ -28,6 +28,12 @@
 __FBSDID("$FreeBSD$");
 
 #include <sys/errno.h>
+<<<<<<< HEAD
+=======
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <unistd.h>
 
 #include "image.h"

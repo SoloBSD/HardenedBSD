@@ -36,7 +36,11 @@
 #include "procstat.h"
 
 void
+<<<<<<< HEAD
 procstat_ptlwpinfo(struct procstat *prstat, struct kinfo_proc *kipp __unused)
+=======
+procstat_ptlwpinfo(struct procstat *prstat)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 {
 	struct ptrace_lwpinfo *pl;
 	unsigned int count, i;
@@ -45,6 +49,7 @@ procstat_ptlwpinfo(struct procstat *prstat, struct kinfo_proc *kipp __unused)
 	if (pl == NULL)
 		return;
 
+<<<<<<< HEAD
 	if ((procstat_opts & PS_OPT_NOHEADER) == 0)
 		xo_emit(
 	    "{T:/%6s %7s %5s %5s %5s %6s %5s} {[:/%d}{T:/%s}{]:} {T:/%s}\n",
@@ -55,6 +60,16 @@ procstat_ptlwpinfo(struct procstat *prstat, struct kinfo_proc *kipp __unused)
 	for (i = 0; i < count; i++) {
 		xo_open_container("thread");
 		xo_emit("{:lwpid/%6d} ", pl[i].pl_lwpid);
+=======
+	if (!hflag)
+		xo_emit("{:/%6s %7s %5s %5s %5s %6s %5s} {[:/%d}{:/%s}{]:}"
+		    " {:/%s}\n",
+		    "LWPID", "EVENT", "SIGNO", "CODE", "ERRNO", "PID", "UID",
+		    2 * sizeof(void *) + 2, "ADDR", "TDNAME");
+
+	for (i = 0; i < count; i++) {
+		xo_emit("{:lpwid/%6d} ", pl[i].pl_lwpid);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		switch (pl[i].pl_event) {
 		case PL_EVENT_NONE:
 			xo_emit("{eq:event/none}{d:event/%7s} ", "none");
@@ -87,9 +102,13 @@ procstat_ptlwpinfo(struct procstat *prstat, struct kinfo_proc *kipp __unused)
 			    2 * sizeof(void *) + 2, "-");
 		}
 		xo_emit("{:tdname/%s}\n", pl[i].pl_tdname);
+<<<<<<< HEAD
 		xo_close_container("thread");
 	}
 	xo_close_container("threads");
+=======
+	}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	procstat_freeptlwpinfo(prstat, pl);
 }

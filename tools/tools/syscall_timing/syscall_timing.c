@@ -32,7 +32,10 @@
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/mman.h>
+<<<<<<< HEAD
 #include <sys/procdesc.h>
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <sys/resource.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -259,8 +262,29 @@ test_getppid(uintmax_t num, uintmax_t int_arg __unused, const char *path __unuse
 	return (i);
 }
 
+<<<<<<< HEAD
 static uintmax_t
 test_getpriority(uintmax_t num, uintmax_t int_arg __unused, const char *path __unused)
+=======
+uintmax_t
+test_getresuid(uintmax_t num, uintmax_t int_arg, const char *path)
+{
+	uid_t ruid, euid, suid;
+	uintmax_t i;
+
+	benchmark_start();
+	for (i = 0; i < num; i++) {
+		if (alarm_fired)
+			break;
+		(void)getresuid(&ruid, &euid, &suid);
+	}
+	benchmark_stop();
+	return (i);
+}
+
+uintmax_t
+test_clock_gettime(uintmax_t num, uintmax_t int_arg, const char *path)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 {
 	uintmax_t i;
 
@@ -289,8 +313,28 @@ test_getprogname(uintmax_t num, uintmax_t int_arg __unused, const char *path __u
 	return (i);
 }
 
+<<<<<<< HEAD
 static uintmax_t
 test_getresuid(uintmax_t num, uintmax_t int_arg __unused, const char *path __unused)
+=======
+uintmax_t
+test_getpriority(uintmax_t num, uintmax_t int_arg, const char *path)
+{
+	uintmax_t i;
+
+	benchmark_start();
+	for (i = 0; i < num; i++) {
+		if (alarm_fired)
+			break;
+		(void)getpriority(PRIO_PROCESS, 0);
+	}
+	benchmark_stop();
+	return (i);
+}
+
+uintmax_t
+test_pipe(uintmax_t num, uintmax_t int_arg, const char *path)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 {
 	uid_t ruid, euid, suid;
 	uintmax_t i;
@@ -303,8 +347,38 @@ test_getresuid(uintmax_t num, uintmax_t int_arg __unused, const char *path __unu
 	return (i);
 }
 
+<<<<<<< HEAD
 static uintmax_t
 test_gettimeofday(uintmax_t num, uintmax_t int_arg __unused, const char *path __unused)
+=======
+uintmax_t
+test_select(uintmax_t num, uintmax_t int_arg, const char *path)
+{
+	fd_set readfds, writefds, exceptfds;
+	struct timeval tv;
+	uintmax_t i;
+	int error;
+
+	FD_ZERO(&readfds);
+	FD_ZERO(&writefds);
+	FD_ZERO(&exceptfds);
+
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+
+	benchmark_start();
+	for (i = 0; i < num; i++) {
+		if (alarm_fired)
+			break;
+		(void)select(0, &readfds, &writefds, &exceptfds, &tv);
+	}
+	benchmark_stop();
+	return (i);
+}
+
+uintmax_t
+test_socket_stream(uintmax_t num, uintmax_t int_arg, const char *path)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 {
 	struct timeval tv;
 	uintmax_t i;
@@ -376,8 +450,35 @@ test_open_close(uintmax_t num, uintmax_t int_arg __unused, const char *path)
 	return (i);
 }
 
+<<<<<<< HEAD
 static uintmax_t
 test_open_read_close(uintmax_t num, uintmax_t int_arg, const char *path)
+=======
+uintmax_t
+test_access(uintmax_t num, uintmax_t int_arg, const char *path)
+{
+	uintmax_t i;
+	int fd;
+
+	fd = access(path, O_RDONLY);
+	if (fd < 0)
+		err(-1, "test_access: %s", path);
+	close(fd);
+
+	benchmark_start();
+	for (i = 0; i < num; i++) {
+		if (alarm_fired)
+			break;
+		access(path, O_RDONLY);
+		close(fd);
+	}
+	benchmark_stop();
+	return (i);
+}
+
+uintmax_t
+test_create_unlink(uintmax_t num, uintmax_t int_arg, const char *path)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 {
 	char buf[int_arg];
 	uintmax_t i;
@@ -554,7 +655,26 @@ test_pipepingtd(uintmax_t num, uintmax_t int_arg, const char *path __unused)
 }
 #endif /* WITH_PTHREAD */
 
+<<<<<<< HEAD
 static uintmax_t
+=======
+uintmax_t
+test_bad_open(uintmax_t num, uintmax_t int_arg, const char *path)
+{
+	uintmax_t i;
+
+	benchmark_start();
+	for (i = 0; i < num; i++) {
+		if (alarm_fired)
+			break;
+		open("", O_RDONLY);
+	}
+	benchmark_stop();
+	return (i);
+}
+
+uintmax_t
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 test_read(uintmax_t num, uintmax_t int_arg, const char *path)
 {
 	char buf[int_arg];
@@ -891,6 +1011,7 @@ struct test {
 #define	FLAG_PATH	0x00000001
 
 static const struct test tests[] = {
+<<<<<<< HEAD
 	{ "access", test_access, .t_flags = FLAG_PATH },
 	{ "bad_open", test_bad_open, .t_flags = 0 },
 	{ "chroot", test_chroot, .t_flags = 0 },
@@ -911,6 +1032,25 @@ static const struct test tests[] = {
 	{ "memcpy_10000", test_memcpy, .t_flags = 0, .t_int = 10000 },
 	{ "memcpy_100000", test_memcpy, .t_flags = 0, .t_int = 100000 },
 	{ "memcpy_1000000", test_memcpy, .t_flags = 0, .t_int = 1000000 },
+=======
+	{ "getuid", test_getuid },
+	{ "getppid", test_getppid },
+	{ "getresuid", test_getresuid },
+	{ "clock_gettime", test_clock_gettime },
+	{ "gettimeofday", test_gettimeofday },
+	{ "getpriority", test_getpriority },
+	{ "pipe", test_pipe },
+	{ "select", test_select },
+	{ "socket_local_stream", test_socket_stream, .t_int = PF_LOCAL },
+	{ "socket_local_dgram", test_socket_dgram, .t_int = PF_LOCAL },
+	{ "socketpair_stream", test_socketpair_stream },
+	{ "socketpair_dgram", test_socketpair_dgram },
+	{ "socket_tcp", test_socket_stream, .t_int = PF_INET },
+	{ "socket_udp", test_socket_dgram, .t_int = PF_INET },
+	{ "access", test_access, .t_flags = FLAG_PATH },
+	{ "create_unlink", test_create_unlink, .t_flags = FLAG_PATH },
+	{ "bad_open", test_bad_open },
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	{ "open_close", test_open_close, .t_flags = FLAG_PATH },
 	{ "open_read_close_1", test_open_read_close, .t_flags = FLAG_PATH,
 	    .t_int = 1 },
@@ -988,8 +1128,13 @@ main(int argc, char *argv[])
 	char *tmp_dir, *tmp_path;
 	long long ll;
 	char *endp;
+<<<<<<< HEAD
 	int ch, fd, error, i, j, rv;
 	uintmax_t iterations, k, loops;
+=======
+	int ch, fd, error, i, j, k, rv;
+	uintmax_t iterations, loops;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	alarm_timeout = 1;
 	iterations = 0;

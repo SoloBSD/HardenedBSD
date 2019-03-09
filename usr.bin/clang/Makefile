@@ -17,6 +17,10 @@ SUBDIR+=	lli
 SUBDIR+=	llvm-ar
 SUBDIR+=	llvm-as
 SUBDIR+=	llvm-bcanalyzer
+<<<<<<< HEAD
+=======
+SUBDIR+=	llvm-cov
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 SUBDIR+=	llvm-cxxdump
 SUBDIR+=	llvm-cxxfilt
 SUBDIR+=	llvm-diff
@@ -30,6 +34,10 @@ SUBDIR+=	llvm-mc
 SUBDIR+=	llvm-modextract
 SUBDIR+=	llvm-nm
 SUBDIR+=	llvm-objcopy
+<<<<<<< HEAD
+=======
+SUBDIR+=	llvm-objdump
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 SUBDIR+=	llvm-pdbutil
 SUBDIR+=	llvm-profdata
 SUBDIR+=	llvm-rtdyld
@@ -40,13 +48,19 @@ SUBDIR+=	opt
 
 .if ${MK_LLD} != "no"
 SUBDIR+=	lld
+<<<<<<< HEAD
 .endif
 .if ${MK_LLDB} != "no"
 SUBDIR+=	lldb
 .endif
 .if ${MK_LLVM_COV} != "no"
 SUBDIR+=	llvm-cov
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .endif
+.if ${MK_LLDB} != "no"
+SUBDIR+=	lldb
+.endif # MK_LLDB
 .endif # TOOLS_PREFIX
 
 SUBDIR_PARALLEL=

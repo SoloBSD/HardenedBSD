@@ -29,6 +29,12 @@ SRCS+=	getid.c misc.c spec.c
 CFLAGS+=-I${SRCTOP}/contrib/mknod
 SRCS+=	pack_dev.c
 
+<<<<<<< HEAD
+=======
+.PATH:	${SRCTOP}/sys/ufs/ffs
+SRCS+=	ffs_tables.c
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 CFLAGS+=	-I${SRCTOP}/lib/libnetbsd
 LIBADD=		netbsd util sbuf
 

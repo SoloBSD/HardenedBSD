@@ -36,7 +36,10 @@ __FBSDID("$FreeBSD$");
 #include <dev/ic/ns16550.h>
 #ifndef WITHOUT_CAPSICUM
 #include <sys/capsicum.h>
+<<<<<<< HEAD
 #include <capsicum_helpers.h>
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #endif
 
 #include <stdio.h>
@@ -665,6 +668,10 @@ uart_set_backend(struct uart_softc *sc, const char *opts)
 #ifndef WITHOUT_CAPSICUM
 	cap_rights_t rights;
 	cap_ioctl_t cmds[] = { TIOCGETA, TIOCSETA, TIOCGWINSZ };
+<<<<<<< HEAD
+=======
+	cap_ioctl_t sicmds[] = { TIOCGETA, TIOCGWINSZ };
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #endif
 
 	retval = -1;
@@ -687,6 +694,7 @@ uart_set_backend(struct uart_softc *sc, const char *opts)
 	if (retval == 0)
 		retval = fcntl(sc->tty.fd, F_SETFL, O_NONBLOCK);
 
+<<<<<<< HEAD
 	if (retval == 0) {
 #ifndef WITHOUT_CAPSICUM
 		cap_rights_init(&rights, CAP_EVENT, CAP_IOCTL, CAP_READ,
@@ -703,6 +711,26 @@ uart_set_backend(struct uart_softc *sc, const char *opts)
 				    "Unable to apply rights for sandbox");
 		}
 #endif
+=======
+#ifndef WITHOUT_CAPSICUM
+	cap_rights_init(&rights, CAP_EVENT, CAP_IOCTL, CAP_READ, CAP_WRITE);
+	if (cap_rights_limit(sc->tty.fd, &rights) == -1 && errno != ENOSYS)
+		errx(EX_OSERR, "Unable to apply rights for sandbox");
+	if (cap_ioctls_limit(sc->tty.fd, cmds, nitems(cmds)) == -1 && errno != ENOSYS)
+		errx(EX_OSERR, "Unable to apply rights for sandbox");
+	if (!uart_stdio) {
+		cap_rights_init(&rights, CAP_FCNTL, CAP_FSTAT, CAP_IOCTL, CAP_READ);
+		if (cap_rights_limit(STDIN_FILENO, &rights) == -1 && errno != ENOSYS)
+			errx(EX_OSERR, "Unable to apply rights for sandbox");
+		if (cap_ioctls_limit(STDIN_FILENO, sicmds, nitems(sicmds)) == -1 && errno != ENOSYS)
+			errx(EX_OSERR, "Unable to apply rights for sandbox");
+		if (cap_fcntls_limit(STDIN_FILENO, CAP_FCNTL_GETFL) == -1 && errno != ENOSYS)
+			errx(EX_OSERR, "Unable to apply rights for sandbox");
+	}
+#endif
+
+	if (retval == 0)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		uart_opentty(sc);
 	}
 

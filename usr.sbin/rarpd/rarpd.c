@@ -1,5 +1,9 @@
 /*-
+<<<<<<< HEAD
  * SPDX-License-Identifier: BSD-1-Clause
+=======
+ * SPDX-License-Identifier: 0BSD
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  *
  * Copyright (c) 1990, 1991, 1992, 1993, 1996
  *	The Regents of the University of California.  All rights reserved.

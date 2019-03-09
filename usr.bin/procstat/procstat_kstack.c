@@ -172,7 +172,11 @@ procstat_kstack(struct procstat *procstat, struct kinfo_proc *kipp)
 	unsigned int i, j;
 	unsigned int kip_count, kstk_count;
 
+<<<<<<< HEAD
 	if ((procstat_opts & PS_OPT_NOHEADER) == 0)
+=======
+	if (!hflag)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		xo_emit("{T:/%5s %6s %-19s %-19s %-29s}\n", "PID", "TID", "COMM",
 		    "TDNAME", "KSTACK");
 

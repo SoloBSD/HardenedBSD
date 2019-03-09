@@ -103,11 +103,14 @@ typedef struct mkimg_uuid mkimg_uuid_t;
 
 void mkimg_uuid(mkimg_uuid_t *);
 void mkimg_uuid_enc(void *, const mkimg_uuid_t *);
+<<<<<<< HEAD
 
 #ifdef __linux__
 # if !defined(__unused)
 #   define __unused __attribute__ ((__unused__))
 # endif
 #endif
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 #endif /* _MKIMG_MKIMG_H_ */

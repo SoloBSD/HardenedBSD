@@ -4,8 +4,11 @@ MAN=
 
 .include <src.opts.mk>
 
+<<<<<<< HEAD
 MK_CFI=	no
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .PATH:	${SRCTOP}/contrib/ntp/ntpd \
 	${.OBJDIR}
 

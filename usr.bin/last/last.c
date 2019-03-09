@@ -65,6 +65,8 @@ __FBSDID("$FreeBSD$");
 
 #include <libxo/xo.h>
 
+#include <libxo/xo.h>
+
 #define	NO	0				/* false/no */
 #define	YES	1				/* true/yes */
 #define	ATOI2(ar)	((ar)[0] - '0') * 10 + ((ar)[1] - '0'); (ar) += 2;
@@ -240,6 +242,11 @@ wtmp(void)
 	xo_open_container("last-information");
 
 	/* Load the last entries from the file. */
+<<<<<<< HEAD
+=======
+	if (setutxdb(UTXDB_LOG, file) != 0)
+		xo_err(1, "%s", file);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	while ((ut = getutxent()) != NULL) {
 		if (amount % 128 == 0) {
 			buf = realloc(buf, (amount + 128) * sizeof *ut);

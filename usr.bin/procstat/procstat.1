@@ -25,7 +25,11 @@
 .\"
 .\" $FreeBSD$
 .\"
+<<<<<<< HEAD
 .Dd October 14, 2017
+=======
+.Dd October 3, 2017
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Dt PROCSTAT 1
 .Os
 .Sh NAME
@@ -34,6 +38,7 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl -libxo
+<<<<<<< HEAD
 .Op Fl h
 .Op Fl M Ar core
 .Op Fl N Ar system
@@ -102,6 +107,14 @@
 .Op Fl N Ar system
 .Op Fl w Ar interval
 .Ar core ...
+=======
+.Op Fl CHhn
+.Op Fl M Ar core
+.Op Fl N Ar system
+.Op Fl w Ar interval
+.Op Fl b | c | e | f | i | j | k | l | L | r | s | S | t | v | x
+.Op Fl a | Ar pid | Ar core ...
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Sh DESCRIPTION
 .Nm
 utility displays detailed information about the processes identified by the
@@ -171,9 +184,15 @@ subcommand option is used (or the command flag is repeated), function
 offsets as well as function names are printed.
 .It Ar rlimit | Fl l
 Display resource limits for the process.
+<<<<<<< HEAD
 .It Ar ptlwpinfo | Fl L
 Display LWP info for the process pertaining to its signal driven exit.
 .It Ar rusage | Fl r
+=======
+.It Fl L
+Display LWP info for the process pertaining to it's signal driven exit.
+.It Fl r
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 Display resource usage information for the process.
 .Pp
 If the

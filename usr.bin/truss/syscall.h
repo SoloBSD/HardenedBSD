@@ -69,6 +69,7 @@
  * IN (meaning that the data is passed *into* the system call).
  */
 
+<<<<<<< HEAD
 enum Argtype {
 	None = 1,
 
@@ -199,6 +200,29 @@ enum Argtype {
 
 	MAX_ARG_TYPE,
 };
+=======
+enum Argtype { None = 1, Hex, Octal, Int, UInt, LongHex, Name, Ptr, Stat, Ioctl,
+	Quad, Signal, Sockaddr, StringArray, Timespec, Timeval, Itimerval,
+	Pollfd, Fd_set, Sigaction, Fcntl, Mprot, Mmapflags, Whence, Readlinkres,
+	Sigset, Sigprocmask, StatFs, Kevent, Sockdomain, Socktype, Open,
+	Fcntlflag, Rusage, RusageWho, BinString, Shutdown, Resource, Rlimit,
+	Timeval2, Pathconf, Rforkflags, ExitStatus, Waitoptions, Idtype, Procctl,
+	LinuxSockArgs, Umtxop, Atfd, Atflags, Timespec2, Accessmode, Long,
+	Sysarch, ExecArgs, ExecEnv, PipeFds, QuadHex, Utrace, IntArray, Pipe2,
+	CapFcntlRights, Fadvice, FileFlags, Flockop, Getfsstatmode, Kldsymcmd,
+	Kldunloadflags, Sizet, Madvice, Socklent, Sockprotocol, Sockoptlevel,
+	Sockoptname, Msgflags, CapRights, PUInt, PQuadHex, Acltype,
+	Extattrnamespace, Minherit, Mlockall, Mountflags, Msync, Priowhich,
+	Ptraceop, Quotactlcmd, Reboothowto, Rtpriofunc, Schedpolicy, Schedparam,
+	PSig, Siginfo, Kevent11, Iovec, Sctpsndrcvinfo, Msghdr,
+
+	CloudABIAdvice, CloudABIClockID, ClouduABIFDSFlags,
+	CloudABIFDStat, CloudABIFileStat, CloudABIFileType,
+	CloudABIFSFlags, CloudABILookup, CloudABIMFlags, CloudABIMProt,
+	CloudABIMSFlags, CloudABIOFlags, CloudABISDFlags,
+	CloudABISignal, CloudABISockStat, CloudABISSFlags,
+	CloudABITimestamp, CloudABIULFlags, CloudABIWhence };
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 #define	ARG_MASK	0xff
 #define	OUT	0x100

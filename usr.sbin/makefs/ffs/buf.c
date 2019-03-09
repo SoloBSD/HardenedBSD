@@ -62,15 +62,26 @@ bread(struct vnode *vp, daddr_t blkno, int size, struct ucred *u1 __unused,
 {
 	off_t	offset;
 	ssize_t	rv;
+<<<<<<< HEAD
 	fsinfo_t *fs = vp->fs;
+=======
+	struct fs *fs = vp->fs;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	assert (bpp != NULL);
 
 	if (debug & DEBUG_BUF_BREAD)
+<<<<<<< HEAD
 		printf("%s: blkno %lld size %d\n", __func__, (long long)blkno,
 		    size);
 	*bpp = getblk(vp, blkno, size, 0, 0, 0);
 	offset = (*bpp)->b_blkno * fs->sectorsize + fs->offset;
+=======
+		printf("bread: fs %p blkno %lld size %d\n",
+		    fs, (long long)blkno, size);
+	*bpp = getblk(vp, blkno, size, 0, 0, 0);
+	offset = (*bpp)->b_blkno * sectorsize;	/* XXX */
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	if (debug & DEBUG_BUF_BREAD)
 		printf("%s: blkno %lld offset %lld bcount %ld\n", __func__,
 		    (long long)(*bpp)->b_blkno, (long long) offset,
@@ -93,7 +104,7 @@ bread(struct vnode *vp, daddr_t blkno, int size, struct ucred *u1 __unused,
 }
 
 void
-brelse(struct buf *bp)
+brelse(struct buf *bp, int u1 __unused)
 {
 
 	assert (bp != NULL);
@@ -179,7 +190,14 @@ getblk(struct vnode *vp, daddr_t blkno, int size, int u1 __unused,
 	static int buftailinitted;
 	struct buf *bp;
 	void *n;
+	int fd = vp->fd;
+	struct fs *fs = vp->fs;
 
+<<<<<<< HEAD
+=======
+	blkno += vp->offset;
+	assert (fs != NULL);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	if (debug & DEBUG_BUF_GETBLK)
 		printf("getblk: blkno %lld size %d\n", (long long)blkno, size);
 
@@ -207,7 +225,10 @@ getblk(struct vnode *vp, daddr_t blkno, int size, int u1 __unused,
 	bp->b_bcount = size;
 	if (bp->b_data == NULL || bp->b_bcount > bp->b_bufsize) {
 		n = erealloc(bp->b_data, size);
+<<<<<<< HEAD
 		memset(n, 0, size);
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		bp->b_data = n;
 		bp->b_bufsize = size;
 	}

@@ -46,7 +46,10 @@ __FBSDID("$FreeBSD$");
 #include <ufs/ufs/dinode.h>
 #include "ffs/ufs_bswap.h"
 #include <ufs/ffs/fs.h>
+<<<<<<< HEAD
 #include "ffs/ffs_extern.h"
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 #define	fs_old_postbloff	fs_spare5[0]
 #define	fs_old_rotbloff		fs_spare5[1]

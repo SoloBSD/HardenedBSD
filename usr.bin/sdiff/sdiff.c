@@ -213,7 +213,11 @@ main(int argc, char **argv)
 	int ch, fd[2] = {-1}, status;
 	pid_t pid=0;
 	const char *outfile = NULL;
+<<<<<<< HEAD
 	char **diffargv, *diffprog = diff_path, *filename1, *filename2,
+=======
+	char **diffargv, *diffprog = DIFF_PATH, *filename1, *filename2,
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	     *tmp1, *tmp2, *s1, *s2;
 	int i;
 	char I_arg[] = "-I";
@@ -271,7 +275,11 @@ main(int argc, char **argv)
 				sprintf(diffargv[1], "%s%c", diffargv[1], ch);
 			break;
 		case 'H':
+<<<<<<< HEAD
 			diffargv[diffargc++] = speed_lf;
+=======
+			diffargv[diffargc++] = "--speed-large-files";
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			break;
 		case DIFFPROG_OPT:
 			diffargv[0] = diffprog = optarg;

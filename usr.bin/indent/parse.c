@@ -1,6 +1,9 @@
 /*-
+<<<<<<< HEAD
  * SPDX-License-Identifier: BSD-4-Clause
  *
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  * Copyright (c) 1985 Sun Microsystems, Inc.
  * Copyright (c) 1980, 1993
  *	The Regents of the University of California.  All rights reserved.
@@ -95,7 +98,11 @@ parse(int tk) /* tk: the code for the construct scanned */
 	break;
 
     case ifstmt:		/* scanned if (...) */
+<<<<<<< HEAD
 	if (ps.p_stack[ps.tos] == elsehead && opt.else_if) /* "else if ..." */
+=======
+	if (ps.p_stack[ps.tos] == elsehead && ps.else_if)	/* "else if ..." */
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		/*
 		 * Note that the stack pointer here is decremented, effectively
 		 * reducing "else if" to "if". This saves a lot of stack space

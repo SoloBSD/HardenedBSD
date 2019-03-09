@@ -29,6 +29,10 @@ __FBSDID("$FreeBSD$");
 
 #include <sys/errno.h>
 #include <assert.h>
+<<<<<<< HEAD
+=======
+#include <stdint.h>
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

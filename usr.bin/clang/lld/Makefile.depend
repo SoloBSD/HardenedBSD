@@ -3,6 +3,10 @@
 
 DIRDEPS = \
 	gnu/lib/csu \
+<<<<<<< HEAD
+=======
+	gnu/lib/libgcc \
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	include \
 	include/xlocale \
 	lib/${CSU_DIR} \

@@ -53,8 +53,12 @@
 #include <sysexits.h>
 #include <unistd.h>
 
+<<<<<<< HEAD
 static int flag_a, flag_b, flag_B, flag_c, flag_C, flag_d, flag_o, flag_p,
 	   flag_s;
+=======
+static int flag_a, flag_b, flag_B, flag_c, flag_d, flag_o, flag_p, flag_s;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 static int flag_I = 1000000;
 
 #define HIGH_PCT_BUSY_THRESH 80
@@ -110,7 +114,11 @@ main(int argc, char **argv)
 		flag_b = 1;
 
 	f_s[0] = '\0';
+<<<<<<< HEAD
 	while ((i = getopt(argc, argv, "abBdcCf:I:ops")) != -1) {
+=======
+	while ((i = getopt(argc, argv, "abBdcf:I:ops")) != -1) {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		switch (i) {
 		case 'a':
 			flag_a = 1;
@@ -236,10 +244,15 @@ main(int argc, char **argv)
 		geom_stats_snapshot_reset(sq);
 		if (!flag_b)
 			move(0,0);
+<<<<<<< HEAD
 		if (!flag_C)
 			PRINTMSG("dT: %5.3fs  w: %.3fs", dt,
 					(float)flag_I / 1000000);
 		if (!flag_C && f_s[0] != '\0') {
+=======
+		PRINTMSG("dT: %5.3fs  w: %.3fs", dt, (float)flag_I / 1000000);
+		if (f_s[0] != '\0') {
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			PRINTMSG("  filter: ");
 			if (!flag_b) {
 				getyx(stdscr, cury, curx);
@@ -258,6 +271,7 @@ main(int argc, char **argv)
 			}
 			PRINTMSG("%s", pf_s);
 		}
+<<<<<<< HEAD
 		if (!flag_C) {
 			PRINTMSG("\n");
 			PRINTMSG(" L(q)  ops/s   ");
@@ -304,6 +318,27 @@ main(int argc, char **argv)
 			PRINTMSG(",%%busy\n");
 			head_printed = 1;
 		}
+=======
+		PRINTMSG("\n");
+		PRINTMSG(" L(q)  ops/s   ");
+		if (flag_s) {
+			PRINTMSG(" r/s     kB   kBps   ms/r   ");
+			PRINTMSG(" w/s     kB   kBps   ms/w   ");
+		}
+		else {
+			PRINTMSG(" r/s   kBps   ms/r   ");
+			PRINTMSG(" w/s   kBps   ms/w   ");
+		}
+		if (flag_d) {
+			if (flag_s)
+				PRINTMSG(" d/s     kB   kBps   ms/d   ");
+			else
+				PRINTMSG(" d/s   kBps   ms/d   ");
+		}
+		if (flag_o)
+			PRINTMSG(" o/s   ms/o   ");
+		PRINTMSG("%%busy Name\n");
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		for (;;) {
 			gsp = geom_stats_snapshot_next(sp);
 			gsq = geom_stats_snapshot_next(sq);
@@ -381,7 +416,62 @@ main(int argc, char **argv)
 				continue;
 			}
 
+<<<<<<< HEAD
 			/* store name for geom device */
+=======
+			PRINTMSG(" %4ju", (uintmax_t)u64);
+			PRINTMSG(" %6.0f", (double)ld[0]);
+			PRINTMSG(" %6.0f", (double)ld[1]);
+			if (flag_s)
+				PRINTMSG(" %6.0f", (double)ld[13]);
+			PRINTMSG(" %6.0f", (double)ld[2] * 1024);
+			if (ld[3] > 1e3) 
+				PRINTMSG(" %6.0f", (double)ld[3]);
+			else
+				PRINTMSG(" %6.1f", (double)ld[3]);
+			PRINTMSG(" %6.0f", (double)ld[4]);
+			if (flag_s)
+				PRINTMSG(" %6.0f", (double)ld[14]);
+			PRINTMSG(" %6.0f", (double)ld[5] * 1024);
+			if (ld[6] > 1e3) 
+				PRINTMSG(" %6.0f", (double)ld[6]);
+			else
+				PRINTMSG(" %6.1f", (double)ld[6]);
+
+			if (flag_d) {
+				PRINTMSG(" %6.0f", (double)ld[8]);
+				if (flag_s)
+					PRINTMSG(" %6.0f", (double)ld[15]);
+				PRINTMSG(" %6.0f", (double)ld[9] * 1024);
+				if (ld[10] > 1e3) 
+					PRINTMSG(" %6.0f", (double)ld[10]);
+				else
+					PRINTMSG(" %6.1f", (double)ld[10]);
+			}
+
+			if (flag_o) {
+				PRINTMSG(" %6.0f", (double)ld[11]);
+				if (ld[12] > 1e3) 
+					PRINTMSG(" %6.0f", (double)ld[12]);
+				else
+					PRINTMSG(" %6.1f", (double)ld[12]);
+			}
+
+			if (ld[7] > 80)
+				i = 3;
+			else if (ld[7] > 50)
+				i = 2;
+			else 
+				i = 1;
+			if (!flag_b)
+				attron(COLOR_PAIR(i));
+			PRINTMSG(" %6.1lf", (double)ld[7]);
+			if (!flag_b) {
+				attroff(COLOR_PAIR(i));
+				PRINTMSG("|");
+			} else
+				PRINTMSG(" ");
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			if (gid == NULL) {
 				(void)snprintf(g_name, sizeof(g_name), "??");
 			} else if (gid->lg_what == ISPROVIDER) {
@@ -596,7 +686,11 @@ main(int argc, char **argv)
 static void
 usage(void)
 {
+<<<<<<< HEAD
 	fprintf(stderr, "usage: gstat [-abBcCdps] [-f filter] [-I interval]\n");
+=======
+	fprintf(stderr, "usage: gstat [-abBcdps] [-f filter] [-I interval]\n");
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	exit(EX_USAGE);
         /* NOTREACHED */
 }

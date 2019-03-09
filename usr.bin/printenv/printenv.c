@@ -69,7 +69,11 @@ main(int argc, char *argv[])
 	size_t len;
 	int ch;
 
+<<<<<<< HEAD
 	if (caph_limit_stdio() < 0 || caph_enter() < 0)
+=======
+	if (caph_limit_stdio() < 0 || (cap_enter() < 0 && errno != ENOSYS))
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		err(1, "capsicum");
 
 	while ((ch = getopt(argc, argv, "")) != -1)

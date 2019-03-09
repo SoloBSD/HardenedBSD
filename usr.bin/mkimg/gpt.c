@@ -32,9 +32,16 @@ __FBSDID("$FreeBSD$");
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+<<<<<<< HEAD
 
 #include <gpt.h>
 #include <mbr.h>
+=======
+#include <unistd.h>
+
+#include <sys/diskmbr.h>
+#include <sys/gpt.h>
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 #include "endian.h"
 #include "image.h"

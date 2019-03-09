@@ -32,7 +32,11 @@ __FBSDID("$FreeBSD$");
 #include <stdlib.h>
 #include <string.h>
 
+<<<<<<< HEAD
 #include <bsd.h>
+=======
+#include <sys/disklabel.h>
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 #include "endian.h"
 #include "image.h"
@@ -100,7 +104,11 @@ bsd_write(lba_t imgsz, void *bootcode)
 	dp = &d->d_partitions[BSD_PART_RAW];
 	le32enc(&dp->p_size, imgsz);
 	TAILQ_FOREACH(part, &partlist, link) {
+<<<<<<< HEAD
 		n = part->index + ((part->index >= BSD_PART_RAW) ? 1 : 0);
+=======
+		n = part->index + ((part->index >= RAW_PART) ? 1 : 0);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		dp = &d->d_partitions[n];
 		le32enc(&dp->p_size, part->size);
 		le32enc(&dp->p_offset, part->block);

@@ -27,7 +27,11 @@ SRCS+=	ops_umapfs.c
 SRCS+=	ops_unionfs.c opts.c readdir.c restart.c rpc_fwd.c sched.c
 SRCS+=	srvr_amfs_auto.c srvr_nfs.c sun_map.c
 
+<<<<<<< HEAD
 CFLAGS+= -I${SRCTOP}/contrib/amd/amd \
+=======
+CFLAGS+= -I${.CURDIR}/../../../contrib/amd/amd \
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	 -I${SRCTOP}/contrib/amd/include \
 	 -I${OBJTOP}/include/rpcsvc
 

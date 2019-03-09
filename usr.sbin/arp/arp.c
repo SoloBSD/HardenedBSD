@@ -655,6 +655,20 @@ print_entry(struct sockaddr_dl *sdl,
 	case IFT_ETHER:
 		xo_emit(" [{:type/ethernet}]");
 		break;
+<<<<<<< HEAD
+=======
+	case IFT_ISO88025:
+		xo_emit(" [{:type/token-ring}]");
+		trld = SDL_ISO88025(sdl);
+		if (trld->trld_rcf != 0) {
+			xo_emit(" rt=%x", ntohs(trld->trld_rcf));
+			for (seg = 0;
+			     seg < ((TR_RCF_RIFLEN(trld->trld_rcf) - 2 ) / 2);
+			     seg++)
+				xo_emit(":%x", ntohs(*(trld->trld_route[seg])));
+		}
+                break;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	case IFT_FDDI:
 		xo_emit(" [{:type/fddi}]");
 		break;
@@ -676,9 +690,15 @@ print_entry(struct sockaddr_dl *sdl,
 	default:
 		break;
 	}
+<<<<<<< HEAD
 
 	xo_emit("\n");
 
+=======
+
+	xo_emit("\n");
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	xo_close_instance("arp-cache");
 }
 

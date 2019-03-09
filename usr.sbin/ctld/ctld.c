@@ -1240,6 +1240,7 @@ port_new(struct conf *conf, struct target *target, struct portal_group *pg)
 	port->p_target = target;
 	TAILQ_INSERT_TAIL(&pg->pg_ports, port, p_pgs);
 	port->p_portal_group = pg;
+<<<<<<< HEAD
 	return (port);
 }
 
@@ -1285,6 +1286,8 @@ port_new_ioctl(struct conf *conf, struct target *target, int pp, int vp)
 	TAILQ_INSERT_TAIL(&conf->conf_ports, port, p_next);
 	TAILQ_INSERT_TAIL(&target->t_ports, port, p_ts);
 	port->p_target = target;
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	return (port);
 }
 

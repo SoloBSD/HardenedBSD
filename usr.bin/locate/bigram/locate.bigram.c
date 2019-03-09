@@ -61,6 +61,10 @@ static char sccsid[] = "@(#)locate.bigram.c	8.1 (Berkeley) 6/6/93";
 
 #include <capsicum_helpers.h>
 #include <err.h>
+<<<<<<< HEAD
+=======
+#include <errno.h>
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/param.h>			/* for MAXPATHLEN */
@@ -77,7 +81,11 @@ main(void)
 	u_char *oldpath = buf1, *path = buf2;
 	u_int i, j;
 
+<<<<<<< HEAD
 	if (caph_limit_stdio() < 0 || caph_enter() < 0)
+=======
+	if (caph_limit_stdio() < 0 || (cap_enter() < 0 && errno != ENOSYS))
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		err(1, "capsicum");
 
      	while (fgets(path, sizeof(buf2), stdin) != NULL) {

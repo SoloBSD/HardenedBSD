@@ -1,6 +1,10 @@
 /* $FreeBSD$ */
 /* See r303718 */
+<<<<<<< HEAD
 void
+=======
+void 
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 t(void)
 {
 	int		n = malloc(offsetof(struct s, f) + 1);

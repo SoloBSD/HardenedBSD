@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /*	$OpenBSD: stack.c,v 1.13 2014/12/01 13:13:00 deraadt Exp $	*/
+=======
+/*	$OpenBSD: stack.c,v 1.12 2014/11/26 15:05:51 otto Exp $	*/
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 /*
  * Copyright (c) 2003, Otto Moerbeek <otto@drijf.net>

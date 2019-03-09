@@ -47,7 +47,10 @@ __FBSDID("$FreeBSD$");
 #ifdef __LP64__
 #define	_WANT_KEVENT32
 #endif
+<<<<<<< HEAD
 #define	_WANT_FREEBSD11_KEVENT
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <sys/param.h>
 #include <sys/capsicum.h>
 #include <sys/errno.h>
@@ -118,6 +121,10 @@ void ktrfault(struct ktr_fault *);
 void ktrfaultend(struct ktr_faultend *);
 void ktrkevent(struct kevent *);
 void ktrstructarray(struct ktr_struct_array *, size_t);
+<<<<<<< HEAD
+=======
+void limitfd(int fd);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 void usage(void);
 
 #define	TIMESTAMP_NONE		0x0
@@ -347,6 +354,133 @@ print_mask_argul(bool (*decoder)(FILE *, u_long, u_long *), u_long value)
 		printf("<invalid>%lu", rem);
 }
 
+static void
+print_integer_arg(const char *(*decoder)(int), int value)
+{
+	const char *str;
+
+	str = decoder(value);
+	if (str != NULL)
+		printf("%s", str);
+	else {
+		if (decimal)
+			printf("<invalid=%d>", value);
+		else
+			printf("<invalid=%#x>", value);
+	}
+}
+
+/* Like print_integer_arg but unknown values are treated as valid. */
+static void
+print_integer_arg_valid(const char *(*decoder)(int), int value)
+{
+	const char *str;
+
+	str = decoder(value);
+	if (str != NULL)
+		printf("%s", str);
+	else {
+		if (decimal)
+			printf("%d", value);
+		else
+			printf("%#x", value);
+	}
+}
+
+static void
+print_mask_arg(bool (*decoder)(FILE *, int, int *), int value)
+{
+	bool invalid;
+	int rem;
+
+	printf("%#x<", value);
+	invalid = !decoder(stdout, value, &rem);
+	printf(">");
+	if (invalid)
+		printf("<invalid>%u", rem);
+}
+
+static void
+print_mask_arg0(bool (*decoder)(FILE *, int, int *), int value)
+{
+	bool invalid;
+	int rem;
+
+	if (value == 0) {
+		printf("0");
+		return;
+	}
+	printf("%#x<", value);
+	invalid = !decoder(stdout, value, &rem);
+	printf(">");
+	if (invalid)
+		printf("<invalid>%u", rem);
+}
+
+static void
+decode_fileflags(fflags_t value)
+{
+	bool invalid;
+	fflags_t rem;
+
+	if (value == 0) {
+		printf("0");
+		return;
+	}
+	printf("%#x<", value);
+	invalid = !sysdecode_fileflags(stdout, value, &rem);
+	printf(">");
+	if (invalid)
+		printf("<invalid>%u", rem);
+}
+
+static void
+decode_filemode(int value)
+{
+	bool invalid;
+	int rem;
+
+	if (value == 0) {
+		printf("0");
+		return;
+	}
+	printf("%#o<", value);
+	invalid = !sysdecode_filemode(stdout, value, &rem);
+	printf(">");
+	if (invalid)
+		printf("<invalid>%u", rem);
+}
+
+static void
+print_mask_arg32(bool (*decoder)(FILE *, uint32_t, uint32_t *), uint32_t value)
+{
+	bool invalid;
+	uint32_t rem;
+
+	printf("%#x<", value);
+	invalid = !decoder(stdout, value, &rem);
+	printf(">");
+	if (invalid)
+		printf("<invalid>%u", rem);
+}
+
+static void
+print_mask_argul(bool (*decoder)(FILE *, u_long, u_long *), u_long value)
+{
+	bool invalid;
+	u_long rem;
+
+	if (value == 0) {
+		printf("0");
+		return;
+	}
+	printf("%#lx<", value);
+	invalid = !decoder(stdout, value, &rem);
+	printf(">");
+	if (invalid)
+		printf("<invalid>%lu", rem);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -424,10 +558,16 @@ main(int argc, char *argv[])
 		if (!freopen(tracefile, "r", stdin))
 			err(1, "%s", tracefile);
 
+<<<<<<< HEAD
 	caph_cache_catpages();
 	caph_cache_tzdata();
 
 #ifdef WITH_CASPER
+=======
+	strerror_init();
+	localtime_init();
+#ifdef HAVE_LIBCASPER
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	if (resolv) {
 		if (cappwdgrp_setup(&cappwd, &capgrp) < 0) {
 			cappwd = NULL;
@@ -435,12 +575,20 @@ main(int argc, char *argv[])
 		}
 	}
 	if (!resolv || (cappwd != NULL && capgrp != NULL)) {
+<<<<<<< HEAD
 		if (caph_enter() < 0)
+=======
+		if (cap_enter() < 0 && errno != ENOSYS)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			err(1, "unable to enter capability mode");
 	}
 #else
 	if (!resolv) {
+<<<<<<< HEAD
 		if (caph_enter() < 0)
+=======
+		if (cap_enter() < 0 && errno != ENOSYS)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			err(1, "unable to enter capability mode");
 	}
 #endif
@@ -2053,7 +2201,10 @@ ktrkevent(struct kevent *kev)
 	case EVFILT_PROC:
 	case EVFILT_TIMER:
 	case EVFILT_PROCDESC:
+<<<<<<< HEAD
 	case EVFILT_EMPTY:
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		printf("%ju", (uintmax_t)kev->ident);
 		break;
 	case EVFILT_SIGNAL:
@@ -2109,6 +2260,7 @@ ktrstructarray(struct ktr_struct_array *ksa, size_t buflen)
 				goto bad_size;
 			memcpy(&kev, data, sizeof(kev));
 			ktrkevent(&kev);
+<<<<<<< HEAD
 		} else if (strcmp(name, "kevent_freebsd11") == 0) {
 			struct kevent_freebsd11 kev11;
 
@@ -2123,6 +2275,8 @@ ktrstructarray(struct ktr_struct_array *ksa, size_t buflen)
 			kev.data = kev11.data;
 			kev.udata = kev11.udata;
 			ktrkevent(&kev);
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #ifdef _WANT_KEVENT32
 		} else if (strcmp(name, "kevent32") == 0) {
 			struct kevent32 kev32;
@@ -2135,6 +2289,7 @@ ktrstructarray(struct ktr_struct_array *ksa, size_t buflen)
 			kev.filter = kev32.filter;
 			kev.flags = kev32.flags;
 			kev.fflags = kev32.fflags;
+<<<<<<< HEAD
 #if BYTE_ORDER == BIG_ENDIAN
 			kev.data = kev32.data2 | ((int64_t)kev32.data1 << 32);
 #else
@@ -2153,6 +2308,8 @@ ktrstructarray(struct ktr_struct_array *ksa, size_t buflen)
 			kev.filter = kev32.filter;
 			kev.flags = kev32.flags;
 			kev.fflags = kev32.fflags;
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			kev.data = kev32.data;
 			kev.udata = (void *)(uintptr_t)kev32.udata;
 			ktrkevent(&kev);

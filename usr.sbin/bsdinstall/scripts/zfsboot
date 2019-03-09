@@ -846,8 +846,15 @@ zfs_create_diskpart()
 		if [ "$ZFSBOOT_BOOT_TYPE" = "UEFI" -o "$ZFSBOOT_BOOT_TYPE" = "BIOS+UEFI" ]; then
 			f_eval_catch $funcname gpart \
 			             "$GPART_ADD_ALIGN_LABEL_WITH_SIZE" \
+<<<<<<< HEAD
 			             "$align_small" efiboot$index efi 200M \
 				     $disk ||
+=======
+			             "$align_small" efiboot$index efi 200M $disk ||
+			             return $FAILURE
+			f_eval_catch $funcname gpart "$GPART_BOOTCODE_PARTONLY" \
+			             /boot/boot1.efifat 1 $disk ||
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 			             return $FAILURE
 
 			f_eval_catch $funcname mkdir "$MKDIR_P" \
@@ -1594,6 +1601,7 @@ arm64)
 	fi
 	;;
 esac
+<<<<<<< HEAD
 
 #
 # The EFI loader installed in the ESP (EFI System Partition) must
@@ -1608,6 +1616,8 @@ esac
 		f_dprintf "Unsupported architecture: %s" $UNAME_m
 		f_die
 esac
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 #
 # Loop over the main menu until we've accomplished what we came here to do

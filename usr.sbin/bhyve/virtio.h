@@ -211,9 +211,14 @@ struct vring_used {
 #define	VIRTIO_VENDOR		0x1AF4
 #define	VIRTIO_DEV_NET		0x1000
 #define	VIRTIO_DEV_BLOCK	0x1001
+<<<<<<< HEAD
 #define	VIRTIO_DEV_CONSOLE	0x1003
 #define	VIRTIO_DEV_RANDOM	0x1005
 #define	VIRTIO_DEV_SCSI		0x1008
+=======
+#define	VIRTIO_DEV_RANDOM	0x1005
+#define	VIRTIO_DEV_CONSOLE	0x1003
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 /*
  * PCI config space constants.

@@ -1207,7 +1207,11 @@ dump_collate(void)
 		collate_subst_t *st = NULL;
 		subst_t *temp;
 		RB_COUNT(temp, substs, &substs[i], n);
+<<<<<<< HEAD
 		subst_count[i] = n;
+=======
+		collinfo.subst_count[i] = n;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		if ((st = calloc(n, sizeof(collate_subst_t))) == NULL) {
 			fprintf(stderr, "out of memory");
 			return;
@@ -1237,8 +1241,14 @@ dump_collate(void)
 	/*
 	 * Chains, i.e. collating elements
 	 */
+<<<<<<< HEAD
 	RB_NUMNODES(collelem_t, elem_by_expand, &elem_by_expand, chain_count);
 	chain = calloc(chain_count, sizeof(collate_chain_t));
+=======
+	RB_NUMNODES(collelem_t, elem_by_expand, &elem_by_expand,
+	    collinfo.chain_count);
+	chain = calloc(collinfo.chain_count, sizeof(collate_chain_t));
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	if (chain == NULL) {
 		fprintf(stderr, "out of memory");
 		return;

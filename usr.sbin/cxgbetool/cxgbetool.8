@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 .\" Copyright (c) 2015, 2018 Chelsio Inc
+=======
+.\" Copyright (c) 2015, Chelsio Inc
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -31,7 +35,11 @@
 .\"
 .\" $FreeBSD$
 .\"
+<<<<<<< HEAD
 .Dd Sep 21, 2018
+=======
+.Dd March 6, 2017
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Dt CXGBETOOL 8
 .Os
 .Sh NAME
@@ -48,6 +56,7 @@
 .It
 .Nm Ar nexus Cm context Bro Cm ingress | egress | fl | cong Brc Ar cntxt_id
 .It
+<<<<<<< HEAD
 .Nm Ar nexus Cm hashfilter mode
 .It
 .Nm Ar nexus Cm hashfilter Ar filter-specification
@@ -61,6 +70,11 @@
 .Nm Ar nexus Cm filter Ar idx Ar filter-specification
 .It
 .Nm Ar nexus Cm filter Ar idx Cm delete Op Cm prio Bro Cm 0 | 1 Brc
+=======
+.Nm Ar nexus Cm filter mode Op Ar match-criteria ...
+.It
+.Nm Ar nexus Cm filter Ar idx Bro Ar filter-specification | Cm delete Brc
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .It
 .Nm Ar nexus Cm filter list
 .It
@@ -74,10 +88,13 @@
 .It
 .Nm Ar nexus Cm memdump Ar addr len
 .It
+<<<<<<< HEAD
 .Nm Ar nexus Cm policy Ar cop.txt
 .It
 .Nm Ar nexus Cm policy clear
 .It
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Nm Ar nexus Bro Cm reg | reg64 Brc Ar addr Ns Op Ar =val
 .It
 .Nm Ar nexus Cm regdump Op Ar register-block ...
@@ -151,6 +168,7 @@ context id of a freelist manager.
 The FLM context id is displayed in the
 egress context dump of a freelist as FLMcontextID.
 .El
+<<<<<<< HEAD
 .Pp
 .Bl -item -compact
 .It
@@ -170,32 +188,66 @@ depends on the "filterMask" setting in the firmware configuration file.
 Hash filters do not support masked matches and an exact value for every
 parameter in the output of "hashfilter mode" (except ipv4/ipv6) must be provided
 when creating a hash filter.
+=======
+.It Cm filter mode Op Ar match-criteria ...
+Display or set the nexus's filter mode.
+.Ar match-criteria
+is a whitespace separated list of criteria from the table below.
+Each criteria has an associated budget which is also listed in the table.
+The total budget allowed is 36 and attempts to set a filter mode that
+exceeds this will be rejected.
+Every filter must conform to the filter mode -- multiple match criteria
+per filter are allowed but only from among those in the current setting
+of the filter mode.
+The filter mode can only be changed when there are no existing filters.
+Its default value is
+.Cm ipv4 ipv6 sip dip sport dport matchtype proto vlan iport fcoe
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Pp
 (Note that
 .Ar mask
 defaults to all 1s when not provided explicitly.
+<<<<<<< HEAD
 Hash filters do not support masked matches.
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 Also note that many of the items being matched are discrete numeric
 values rather than bit fields and should be masked with caution.)
 .TS
 center expand;
+<<<<<<< HEAD
 cb cb cbw(40m)
 cb l l.
 Criteria	Usage	Matches if ...
 _
 ipv4	T{
+=======
+cb cb cb cbw(40m)
+cb c l l.
+Criteria	Budget	Usage	Matches if ...
+_
+ipv4	0	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm type ipv4
 T}	T{
 incoming packet is an IPv4 datagram.
 T}
 _
+<<<<<<< HEAD
 ipv6	T{
+=======
+ipv6	0	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm type ipv6
 T}	T{
 incoming packet is an IPv6 datagram.
 T}
 _
+<<<<<<< HEAD
 sip	T{
+=======
+sip	0	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm sip Ar addr Ns Op / Ns Ar mask
 T}	T{
 bitwise and of the source address in an incoming IP datagram with
@@ -206,7 +258,11 @@ equals
 can be an IPv4 or IPv6 address.
 T}
 _
+<<<<<<< HEAD
 dip	T{
+=======
+dip	0	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm dip Ar addr Ns Op / Ns Ar mask
 T}	T{
 bitwise and of the destination address in an incoming IP datagram with
@@ -217,7 +273,11 @@ equals
 can be an IPv4 or IPv6 address.
 T}
 _
+<<<<<<< HEAD
 sport	T{
+=======
+sport	0	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm sport Ar port Ns Op : Ns Ar mask
 T}	T{
 bitwise and of the source port in an incoming TCP or UDP datagram with
@@ -226,7 +286,11 @@ equals
 .Ar port Ns .
 T}
 _
+<<<<<<< HEAD
 dport	T{
+=======
+dport	0	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm dport Ar port Ns Op : Ns Ar mask
 T}	T{
 bitwise and of the destination port in an incoming TCP or UDP datagram with
@@ -235,13 +299,21 @@ equals
 .Ar port Ns .
 T}
 _
+<<<<<<< HEAD
 fcoe	T{
+=======
+fcoe	1	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm fcoe Brq 0 | 1
 T}	T{
 incoming frame is Fibre Channel over Ethernet(1) or not(0).
 T}
 _
+<<<<<<< HEAD
 iport	T{
+=======
+iport	3	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm iport Ar val Ns Op : Ns Ar mask
 T}	T{
 bitwise and of the ingress port with
@@ -256,7 +328,11 @@ Note that ingress port is not a bit field so it is not always possible
 to match an arbitrary subset of ingress ports with a single filter rule.
 T}
 _
+<<<<<<< HEAD
 ovlan	T{
+=======
+ovlan	17	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm ovlan Ar tag Ns Op : Ns Ar mask
 T}	T{
 bitwise and of the 16-bit outer VLAN tag of an incoming frame with
@@ -265,7 +341,11 @@ equals
 .Ar tag Ns .
 T}
 _
+<<<<<<< HEAD
 vlan	T{
+=======
+vlan	17	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm vlan Ar tag Ns Op : Ns Ar mask
 T}	T{
 bitwise and of the 16-bit VLAN tag of an incoming QinQ frame with
@@ -275,7 +355,11 @@ equals
 The inner VLAN tag is used if the incoming frame is QinQ.
 T}
 _
+<<<<<<< HEAD
 tos	T{
+=======
+tos	8	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm tos Ar val Ns Op : Ns Ar mask
 T}	T{
 bitwise and of the 8-bit IP Type of Service/IPv6 Traffic Class in an
@@ -285,7 +369,11 @@ equals
 .Ar val Ns .
 T}
 _
+<<<<<<< HEAD
 proto	T{
+=======
+proto	8	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm proto Ar ipproto Ns Op : Ns Ar mask
 T}	T{
 bitwise and of the 8-bit IP protocol in an incoming packet with
@@ -294,7 +382,11 @@ equals
 .Ar ipproto Ns .
 T}
 _
+<<<<<<< HEAD
 ethtype	T{
+=======
+ethtype	16	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm ethtype Ar type Ns Op : Ns Ar mask
 T}	T{
 bitwise and of the 16-bit Ethernet type field of an incoming frame with
@@ -303,7 +395,11 @@ equals
 .Ar type Ns .
 T}
 _
+<<<<<<< HEAD
 macidx	T{
+=======
+macidx	9	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm macidx Ar idx Ns Op : Ns Ar mask
 T}	T{
 bitwise and of the MAC Address Match Index of an incoming frame with
@@ -316,7 +412,11 @@ MPS hash.  See
 for more information.
 T}
 _
+<<<<<<< HEAD
 matchtype	T{
+=======
+matchtype	3	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm matchtype Ar type Ns Op : Ns Ar mask
 T}	T{
 bitwise and of the Match Type of an incoming frame with
@@ -362,12 +462,17 @@ Not documented.  Do not use.
 .El
 T}
 _
+<<<<<<< HEAD
 frag	T{
+=======
+frag	1	T{
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Cm frag Brq 0 | 1
 T}	T{
 incoming frame is part of a fragmented IP datagram(1) or not(0).
 T}
 .TE
+<<<<<<< HEAD
 .Pp
 .Bl -item -compact
 .It
@@ -497,6 +602,15 @@ than this supplied value.
 .It
 .Cm filter Ar idx Cm delete
 .El
+=======
+.It Cm filter Ar idx Ar filter-specification
+Program a filter at the index specified by
+.Ar idx Ns .
+.Ar filter-specification
+consists of one or more matches to try against an incoming frame and an
+action to perform when all matches succeed.
+.It Cm filter Ar idx Cm delete
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 Delete filter that is at the given index.
 .It Cm filter Cm list
 List all filters programmed into the hardware.
@@ -521,6 +635,7 @@ bytes of data of the card's memory starting at
 .Ar addr Ns .
 The card's memory map is available in
 .Va dev.t4nex.%d.misc.meminfo Ns .
+<<<<<<< HEAD
 .It Cm policy Ar cop.txt
 Install the Connection Offload Policy (COP) in
 .Ar cop.txt Ns .
@@ -659,6 +774,8 @@ will get offloaded.
 .El
 .It Cm policy clear
 Remove the Connection Offload Policy (COP) if one is in use.
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .It Bro Cm reg | reg64 Brc Ar addr Ns Op Ar =val
 .It Cm regdump Op Ar register-block ...
 Display contents of device registers.

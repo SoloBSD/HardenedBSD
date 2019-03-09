@@ -212,6 +212,9 @@ SUBDIR.${MK_GAMES}+=	number
 SUBDIR.${MK_GAMES}+=	pom
 SUBDIR.${MK_GAMES}+=	primes
 SUBDIR.${MK_GAMES}+=	random
+.if ${MK_GNU_DIFF} == "no"
+SUBDIR+=		diff
+.endif
 .if ${MK_GPL_DTC} != "yes"
 .if ${COMPILER_FEATURES:Mc++11}
 SUBDIR+=	dtc
@@ -247,6 +250,11 @@ SUBDIR.${MK_OPENSSL}+=	chkey
 SUBDIR.${MK_OPENSSL}+=	dc
 SUBDIR.${MK_OPENSSL}+=	newkey
 SUBDIR.${MK_QUOTAS}+=	quota
+<<<<<<< HEAD
+=======
+SUBDIR.${MK_RCMDS}+=	rlogin
+SUBDIR.${MK_RCMDS}+=	rsh
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 SUBDIR.${MK_SENDMAIL}+=	vacation
 SUBDIR.${MK_TALK}+=	talk
 SUBDIR.${MK_TELNET}+=	telnet
@@ -274,6 +282,12 @@ SUBDIR.${MK_TOOLCHAIN}+=	readelf
 SUBDIR.${MK_TOOLCHAIN}+=	rpcgen
 SUBDIR.${MK_TOOLCHAIN}+=	unifdef
 SUBDIR.${MK_TOOLCHAIN}+=	size
+<<<<<<< HEAD
+=======
+.if ${MK_LINT} != "no" && ${MACHINE_ARCH} != "aarch64" # ARM64TODO xlint does not build
+SUBDIR.${MK_TOOLCHAIN}+=	xlint
+.endif
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 SUBDIR.${MK_TOOLCHAIN}+=	xstr
 SUBDIR.${MK_TOOLCHAIN}+=	yacc
 SUBDIR.${MK_VI}+=	vi

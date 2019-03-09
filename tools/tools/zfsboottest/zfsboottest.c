@@ -51,6 +51,7 @@ pager_output(const char *line)
 
 	fprintf(stderr, "%s", line);
 	return (0);
+<<<<<<< HEAD
 }
 
 uint64_t
@@ -65,6 +66,8 @@ ldi_get_size(void *priv)
 	if (S_ISCHR(sb.st_mode) && ioctl(fd, DIOCGMEDIASIZE, &sb.st_size) != 0)
 		return (0);
 	return (sb.st_size);
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 }
 
 #define ZFS_TEST

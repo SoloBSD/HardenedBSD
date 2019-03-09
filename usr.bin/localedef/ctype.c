@@ -427,6 +427,7 @@ dump_ctype(void)
 
 		if ((last_ct != NULL) && (last_ct->ctype == ctn->ctype) &&
 		    (last_ct->wc + 1 == wc)) {
+<<<<<<< HEAD
 			ct[runetype_ext_nranges - 1].max = htote(wc);
 		} else {
 			runetype_ext_nranges++;
@@ -435,6 +436,16 @@ dump_ctype(void)
 			ct[runetype_ext_nranges - 1].max = htote(wc);
 			ct[runetype_ext_nranges - 1].map =
 			    htote(ctn->ctype);
+=======
+			ct[rl.runetype_ext_nranges-1].max = wc;
+		} else {
+			rl.runetype_ext_nranges++;
+			ct = realloc(ct,
+			    sizeof (*ct) * rl.runetype_ext_nranges);
+			ct[rl.runetype_ext_nranges - 1].min = wc;
+			ct[rl.runetype_ext_nranges - 1].max = wc;
+			ct[rl.runetype_ext_nranges - 1].map = ctn->ctype;
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		}
 		last_ct = ctn;
 		if (ctn->tolower == 0) {

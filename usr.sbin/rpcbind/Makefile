@@ -17,6 +17,8 @@ CFLAGS+= -DINET6
 
 .if ${MK_RPCBIND_WARMSTART_SUPPORT} != "no"
 CFLAGS+= -DWARMSTART
+<<<<<<< HEAD
+=======
 .endif
 
 .if ${MK_TCP_WRAPPERS} != "no"
@@ -24,9 +26,22 @@ CFLAGS+= -DLIBWRAP
 LIBADD+= wrap
 .endif
 
+.if ${MK_TESTS} != "no"
+SUBDIR+= tests
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
+.endif
+
+.if ${MK_TCP_WRAPPERS} != "no"
+CFLAGS+= -DLIBWRAP
+LIBADD+= wrap
+.endif
+
+<<<<<<< HEAD
 HAS_TESTS=
 SUBDIR.${MK_TESTS}+= tests
 
 WARNS?=	1
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .include <bsd.prog.mk>

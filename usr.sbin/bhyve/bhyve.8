@@ -24,7 +24,11 @@
 .\"
 .\" $FreeBSD$
 .\"
+<<<<<<< HEAD
 .Dd December 11, 2018
+=======
+.Dd October 24, 2018
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Dt BHYVE 8
 .Os
 .Sh NAME
@@ -246,8 +250,11 @@ The LPC bridge emulation can only be configured on bus 0.
 Raw framebuffer device attached to VNC server.
 .It Li xhci
 eXtensible Host Controller Interface (xHCI) USB controller.
+<<<<<<< HEAD
 .It Li nvme
 NVM Express (NVMe) controller.
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .El
 .It Op Ar conf
 This optional parameter describes the backend for device emulations.
@@ -386,7 +393,11 @@ address and a
 VNC should listen on.
 The default is to listen on localhost IPv4 address and default VNC port 5900.
 An IPv6 address must be enclosed in square brackets and may contain an
+<<<<<<< HEAD
 optional zone identifier.
+=======
+optional zone identifer.
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .It Ar width No and Ar height
 A display resolution, width and height, respectively.
 If not specified, a default resolution of 1024x768 pixels will be used.
@@ -450,6 +461,7 @@ xHCI USB devices:
 A USB tablet device which provides precise cursor synchronization
 when using VNC.
 .El
+<<<<<<< HEAD
 .Pp
 NVMe devices:
 .Bl -tag -width 10n
@@ -471,6 +483,8 @@ Sector size (defaults to blockif sector size).
 .It Li ser
 Serial number with maximum 20 characters.
 .El
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .El
 .It Fl S
 Wire guest memory.

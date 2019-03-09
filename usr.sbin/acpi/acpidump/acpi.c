@@ -1765,10 +1765,13 @@ acpi_handle_rsdt(ACPI_TABLE_HEADER *rsdp)
 			acpi_handle_dmar(sdp);
 		else if (!memcmp(sdp->Signature, ACPI_SIG_NFIT, 4))
 			acpi_handle_nfit(sdp);
+<<<<<<< HEAD
 		else if (!memcmp(sdp->Signature, ACPI_SIG_WDDT, 4))
 			acpi_handle_wddt(sdp);
 		else if (!memcmp(sdp->Signature, ACPI_SIG_LPIT, 4))
 			acpi_handle_lpit(sdp);
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		else {
 			printf(BEGIN_COMMENT);
 			acpi_print_sdt(sdp);

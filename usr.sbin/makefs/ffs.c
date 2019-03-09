@@ -149,6 +149,11 @@ static  void	*ffs_build_dinode2(struct ufs2_dinode *, dirbuf_t *, fsnode *,
 				 fsnode *, fsinfo_t *);
 
 
+<<<<<<< HEAD
+=======
+
+int	sectorsize;		/* XXX: for buf.c::getblk() */
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	/* publicly visible functions */
 
 void
@@ -181,8 +186,11 @@ ffs_prep_opts(fsinfo_t *fsopts)
 	      0, 0, "Optimization (time|space)" },
 	    { 'l', "label", ffs_opts->label, OPT_STRARRAY,
 	      1, sizeof(ffs_opts->label), "UFS label" },
+<<<<<<< HEAD
 	    { 's', "softupdates", &ffs_opts->softupdates, OPT_INT32,
 	      0, 1, "enable softupdates" },
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	    { .name = NULL }
 	};
 
@@ -197,7 +205,10 @@ ffs_prep_opts(fsinfo_t *fsopts)
 	ffs_opts->avgfilesize= -1;
 	ffs_opts->avgfpdir= -1;
 	ffs_opts->version = 1;
+<<<<<<< HEAD
 	ffs_opts->softupdates = 0;
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	fsopts->fs_specific = ffs_opts;
 	fsopts->fs_options = copy_opts(ffs_options);
@@ -980,7 +991,7 @@ ffs_write_file(union dinode *din, uint32_t ino, void *buf, fsinfo_t *fsopts)
 		errno = bwrite(bp);
 		if (errno != 0)
 			goto bad_ffs_write_file;
-		brelse(bp);
+		brelse(bp, 0);
 		if (!isfile)
 			p += chunk;
 	}

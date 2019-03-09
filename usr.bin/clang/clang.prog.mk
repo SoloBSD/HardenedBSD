@@ -19,7 +19,10 @@ PACKAGE=	clang
 
 LIBADD+=	ncursesw
 LIBADD+=	pthread
+<<<<<<< HEAD
 
 NOCFI=		yes
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 .include <bsd.prog.mk>

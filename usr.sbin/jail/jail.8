@@ -25,7 +25,11 @@
 .\"
 .\" $FreeBSD$
 .\"
+<<<<<<< HEAD
 .Dd November 27, 2018
+=======
+.Dd November 10, 2018
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .Dt JAIL 8
 .Os
 .Sh NAME
@@ -669,12 +673,45 @@ See
 .Xr zfs 8
 for information on how to configure the ZFS filesystem to operate from
 within a jail.
+<<<<<<< HEAD
 .It Va allow.vmm
 The jail may access
 .Xr vmm 4 .
 This flag is only available when the
 .Xr vmm 4
 kernel module is loaded.
+=======
+.It Va allow.quotas
+The jail root may administer quotas on the jail's filesystem(s).
+This includes filesystems that the jail may share with other jails or
+with non-jailed parts of the system.
+.It Va allow.read_msgbuf
+Jailed users may read the kernel message buffer.
+If the
+.Va security.bsd.unprivileged_read_msgbuf
+MIB entry is zero, this will be restricted to the root user.
+.It Va allow.socket_af
+Sockets within a jail are normally restricted to IPv4, IPv6, local
+(UNIX), and route.  This allows access to other protocol stacks that
+have not had jail functionality added to them.
+.El
+.El
+.Pp
+Kernel modules may add their own parameters, which only exist when the
+module is loaded.
+These are typically headed under a parameter named after the module,
+with values of
+.Dq inherit
+to give the jail full use of the module,
+.Dq new
+to encapsulate the jail in some module-specific way,
+and
+.Dq disable
+to make the module unavailable to the jail.
+There also may be other parameters to define jail behavior within the module.
+Module-specific parameters include:
+.Bl -tag -width indent
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 .It Va linux
 Determine how a jail's Linux emulation environment appears.
 A value of

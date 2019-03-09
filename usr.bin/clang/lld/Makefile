@@ -2,16 +2,23 @@
 
 .include <src.opts.mk>
 
+<<<<<<< HEAD
 MK_CFI=		no
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 LLVM_SRCS=	${SRCTOP}/contrib/llvm
 LLD_SRCS=	${LLVM_SRCS}/tools/lld
 
 PACKAGE=	lld
 PROG_CXX=	ld.lld
 
+<<<<<<< HEAD
 .if (!defined(TOOLS_PREFIX) && ${MK_LLD_IS_LD} != "no") || \
     (defined(TOOLS_PREFIX) && ${MK_LLD_BOOTSTRAP} != "no")
+=======
+.if ${MK_LLD_IS_LD} != "no"
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 SYMLINKS=	${PROG_CXX} ${BINDIR}/ld
 MLINKS=		ld.lld.1 ld.1
 .endif

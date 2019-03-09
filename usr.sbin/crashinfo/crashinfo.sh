@@ -38,6 +38,7 @@ usage()
 	exit 1
 }
 
+<<<<<<< HEAD
 # Remove an uncompressed copy of a dump
 cleanup()
 {
@@ -58,6 +59,8 @@ find_gdb()
 	done
 }
 
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 # Run a single gdb command against a kernel file in batch mode.
 # The kernel file is specified as the first argument and the command
 # is given in the remaining arguments.
@@ -67,10 +70,17 @@ gdb_command()
 
 	k=$1 ; shift
 
+<<<<<<< HEAD
 	if [ ${GDB} = /usr/local/bin/gdb ]; then
 		${GDB} -batch -ex "$@" $k
 	else
 		echo -e "$@" | ${GDB} -x /dev/stdin -batch $k
+=======
+	if [ -x /usr/local/bin/gdb ]; then
+		/usr/local/bin/gdb -batch -ex "$@" $k
+	else
+		echo -e "$@" | /usr/bin/gdb -x /dev/stdin -batch $k
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	fi
 }
 
@@ -218,10 +228,14 @@ osrelease=$(gdb_command $KERNEL 'printf "%s", osrelease')
 version=$(gdb_command $KERNEL 'printf "%s", version' | tr '\t\n' '  ')
 machine=$(gdb_command $KERNEL 'printf "%s", machine')
 
+<<<<<<< HEAD
 if ! $BATCH; then
 	echo "Writing crash summary to $FILE."
 	exec > $FILE 2>&1
 fi
+=======
+exec > $FILE 2>&1
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 echo "$HOSTNAME dumped core - see $VMCORE"
 echo
@@ -238,7 +252,15 @@ file=`mktemp /tmp/crashinfo.XXXXXX`
 if [ $? -eq 0 ]; then
 	echo "bt" >> $file
 	echo "quit" >> $file
+<<<<<<< HEAD
 	${GDB%gdb}kgdb $KERNEL $VMCORE < $file
+=======
+	if [ -x /usr/local/bin/kgdb ]; then
+		/usr/local/bin/kgdb $KERNEL $VMCORE < $file
+	else
+		kgdb $KERNEL $VMCORE < $file
+	fi
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	rm -f $file
 	echo
 fi

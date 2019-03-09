@@ -791,6 +791,7 @@ search_path() {
 
 	IFS=:
 	for path in $PATH; do
+<<<<<<< HEAD
 		if add_to_manpath "$path/man"; then
 			:
 		elif add_to_manpath "$path/MAN"; then
@@ -804,6 +805,28 @@ search_path() {
 				;;
 			esac
 		fi
+=======
+		# Do a little special casing since the base manpages
+		# are in /usr/share/man instead of /usr/man or /man.
+		case "$path" in
+		/bin|/usr/bin)	add_to_manpath "/usr/share/man" ;;
+		*)	if add_to_manpath "$path/man"; then
+				:
+			elif add_to_manpath "$path/MAN"; then
+				:
+			else
+				case "$path" in
+				*/bin)	p="${path%/bin}/man"
+					add_to_manpath "$p"
+					p="${path%/bin}/share/man"
+					add_to_manpath "$p"
+					;;
+				*)	;;
+				esac
+			fi
+			;;
+		esac
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	done
 	unset IFS
 

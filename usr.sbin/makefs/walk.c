@@ -42,7 +42,10 @@
 __FBSDID("$FreeBSD$");
 
 #include <sys/param.h>
+<<<<<<< HEAD
 #include <sys/stat.h>
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 #include <sys/time.h>
 
 #include <assert.h>

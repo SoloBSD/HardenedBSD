@@ -569,11 +569,19 @@ savemail(char name[], FILE *fi)
 	int i;
 	time_t now;
 	mode_t saved_umask;
+<<<<<<< HEAD
 
 	saved_umask = umask(077);
 	fo = Fopen(name, "a");
 	umask(saved_umask);
 
+=======
+
+	saved_umask = umask(077);
+	fo = Fopen(name, "a");
+	umask(saved_umask);
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	if (fo == NULL) {
 		warn("%s", name);
 		return (-1);

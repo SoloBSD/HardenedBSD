@@ -774,6 +774,7 @@ rbllist_add(rpcprog_t prog, rpcvers_t vers, struct netconfig *nconf,
  * Catch the signal and die
  */
 static void
+<<<<<<< HEAD
 terminate(int signum)
 {
 	char c = '\0';
@@ -783,6 +784,18 @@ terminate(int signum)
 	wr = write(terminate_wfd, &c, 1);
 	if (wr < 1)
 		_exit(2);
+=======
+terminate(int signum __unused)
+{
+	close(rpcbindlockfd);
+#ifdef WARMSTART
+	syslog(LOG_ERR,
+	    "rpcbind terminating on signal %d. Restart with \"rpcbind -w\"",
+	    signum);
+	write_warmstart();	/* Dump yourself */
+#endif
+	exit(2);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 }
 
 void

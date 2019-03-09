@@ -234,6 +234,666 @@ pmcstat_stats_reset(int reset_global)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Compute a 'hash' value for a string.
+ */
+
+static int
+pmcstat_string_compute_hash(const char *s)
+{
+	unsigned hash;
+
+	for (hash = 2166136261; *s; s++)
+		hash = (hash ^ *s) * 16777619;
+
+	return (hash & PMCSTAT_HASH_MASK);
+}
+
+/*
+ * Intern a copy of string 's', and return a pointer to the
+ * interned structure.
+ */
+
+pmcstat_interned_string
+pmcstat_string_intern(const char *s)
+{
+	struct pmcstat_string *ps;
+	const struct pmcstat_string *cps;
+	int hash, len;
+
+	if ((cps = pmcstat_string_lookup(s)) != NULL)
+		return (cps);
+
+	hash = pmcstat_string_compute_hash(s);
+	len  = strlen(s);
+
+	if ((ps = malloc(sizeof(*ps))) == NULL)
+		err(EX_OSERR, "ERROR: Could not intern string");
+	ps->ps_len = len;
+	ps->ps_hash = hash;
+	ps->ps_string = strdup(s);
+	LIST_INSERT_HEAD(&pmcstat_string_hash[hash], ps, ps_next);
+	return ((pmcstat_interned_string) ps);
+}
+
+const char *
+pmcstat_string_unintern(pmcstat_interned_string str)
+{
+	const char *s;
+
+	s = ((const struct pmcstat_string *) str)->ps_string;
+	return (s);
+}
+
+pmcstat_interned_string
+pmcstat_string_lookup(const char *s)
+{
+	struct pmcstat_string *ps;
+	int hash, len;
+
+	hash = pmcstat_string_compute_hash(s);
+	len = strlen(s);
+
+	LIST_FOREACH(ps, &pmcstat_string_hash[hash], ps_next)
+	    if (ps->ps_len == len && ps->ps_hash == hash &&
+		strcmp(ps->ps_string, s) == 0)
+		    return (ps);
+	return (NULL);
+}
+
+static int
+pmcstat_string_lookup_hash(pmcstat_interned_string s)
+{
+	const struct pmcstat_string *ps;
+
+	ps = (const struct pmcstat_string *) s;
+	return (ps->ps_hash);
+}
+
+/*
+ * Initialize the string interning facility.
+ */
+
+static void
+pmcstat_string_initialize(void)
+{
+	int i;
+
+	for (i = 0; i < PMCSTAT_NHASH; i++)
+		LIST_INIT(&pmcstat_string_hash[i]);
+}
+
+/*
+ * Destroy the string table, free'ing up space.
+ */
+
+static void
+pmcstat_string_shutdown(void)
+{
+	int i;
+	struct pmcstat_string *ps, *pstmp;
+
+	for (i = 0; i < PMCSTAT_NHASH; i++)
+		LIST_FOREACH_SAFE(ps, &pmcstat_string_hash[i], ps_next,
+		    pstmp) {
+			LIST_REMOVE(ps, ps_next);
+			free(ps->ps_string);
+			free(ps);
+		}
+}
+
+/*
+ * Determine whether a given executable image is an A.OUT object, and
+ * if so, fill in its parameters from the text file.
+ * Sets image->pi_type.
+ */
+
+static void
+pmcstat_image_get_aout_params(struct pmcstat_image *image)
+{
+	int fd;
+	ssize_t nbytes;
+	struct exec ex;
+	const char *path;
+	char buffer[PATH_MAX];
+
+	path = pmcstat_string_unintern(image->pi_execpath);
+	assert(path != NULL);
+
+	if (image->pi_iskernelmodule)
+		errx(EX_SOFTWARE,
+		    "ERROR: a.out kernel modules are unsupported \"%s\"", path);
+
+	(void) snprintf(buffer, sizeof(buffer), "%s%s",
+	    args.pa_fsroot, path);
+
+	if ((fd = open(buffer, O_RDONLY, 0)) < 0 ||
+	    (nbytes = read(fd, &ex, sizeof(ex))) < 0) {
+		if (args.pa_verbosity >= 2)
+			warn("WARNING: Cannot determine type of \"%s\"",
+			    path);
+		image->pi_type = PMCSTAT_IMAGE_INDETERMINABLE;
+		if (fd != -1)
+			(void) close(fd);
+		return;
+	}
+
+	(void) close(fd);
+
+	if ((unsigned) nbytes != sizeof(ex) ||
+	    N_BADMAG(ex))
+		return;
+
+	image->pi_type = PMCSTAT_IMAGE_AOUT;
+
+	/* TODO: the rest of a.out processing */
+
+	return;
+}
+
+/*
+ * Helper function.
+ */
+
+static int
+pmcstat_symbol_compare(const void *a, const void *b)
+{
+	const struct pmcstat_symbol *sym1, *sym2;
+
+	sym1 = (const struct pmcstat_symbol *) a;
+	sym2 = (const struct pmcstat_symbol *) b;
+
+	if (sym1->ps_end <= sym2->ps_start)
+		return (-1);
+	if (sym1->ps_start >= sym2->ps_end)
+		return (1);
+	return (0);
+}
+
+/*
+ * Map an address to a symbol in an image.
+ */
+
+struct pmcstat_symbol *
+pmcstat_symbol_search(struct pmcstat_image *image, uintfptr_t addr)
+{
+	struct pmcstat_symbol sym;
+
+	if (image->pi_symbols == NULL)
+		return (NULL);
+
+	sym.ps_name  = NULL;
+	sym.ps_start = addr;
+	sym.ps_end   = addr + 1;
+
+	return (bsearch((void *) &sym, image->pi_symbols,
+		    image->pi_symcount, sizeof(struct pmcstat_symbol),
+		    pmcstat_symbol_compare));
+}
+
+/*
+ * Add the list of symbols in the given section to the list associated
+ * with the object.
+ */
+static void
+pmcstat_image_add_symbols(struct pmcstat_image *image, Elf *e,
+    Elf_Scn *scn, GElf_Shdr *sh)
+{
+	int firsttime;
+	size_t n, newsyms, nshsyms, nfuncsyms;
+	struct pmcstat_symbol *symptr;
+	char *fnname;
+	GElf_Sym sym;
+	Elf_Data *data;
+
+	if ((data = elf_getdata(scn, NULL)) == NULL)
+		return;
+
+	/*
+	 * Determine the number of functions named in this
+	 * section.
+	 */
+
+	nshsyms = sh->sh_size / sh->sh_entsize;
+	for (n = nfuncsyms = 0; n < nshsyms; n++) {
+		if (gelf_getsym(data, (int) n, &sym) != &sym)
+			return;
+		if (GELF_ST_TYPE(sym.st_info) == STT_FUNC)
+			nfuncsyms++;
+	}
+
+	if (nfuncsyms == 0)
+		return;
+
+	/*
+	 * Allocate space for the new entries.
+	 */
+	firsttime = image->pi_symbols == NULL;
+	symptr = reallocarray(image->pi_symbols,
+	    image->pi_symcount + nfuncsyms, sizeof(*symptr));
+	if (symptr == image->pi_symbols) /* realloc() failed. */
+		return;
+	image->pi_symbols = symptr;
+
+	/*
+	 * Append new symbols to the end of the current table.
+	 */
+	symptr += image->pi_symcount;
+
+	for (n = newsyms = 0; n < nshsyms; n++) {
+		if (gelf_getsym(data, (int) n, &sym) != &sym)
+			return;
+		if (GELF_ST_TYPE(sym.st_info) != STT_FUNC)
+			continue;
+		if (sym.st_shndx == STN_UNDEF)
+			continue;
+
+		if (!firsttime && pmcstat_symbol_search(image, sym.st_value))
+			continue; /* We've seen this symbol already. */
+
+		if ((fnname = elf_strptr(e, sh->sh_link, sym.st_name))
+		    == NULL)
+			continue;
+#ifdef __arm__
+		/* Remove spurious ARM function name. */
+		if (fnname[0] == '$' &&
+		    (fnname[1] == 'a' || fnname[1] == 't' ||
+		    fnname[1] == 'd') &&
+		    fnname[2] == '\0')
+			continue;
+#endif
+
+		symptr->ps_name  = pmcstat_string_intern(fnname);
+		symptr->ps_start = sym.st_value - image->pi_vaddr;
+		symptr->ps_end   = symptr->ps_start + sym.st_size;
+		symptr++;
+
+		newsyms++;
+	}
+
+	image->pi_symcount += newsyms;
+	if (image->pi_symcount == 0)
+		return;
+
+	assert(newsyms <= nfuncsyms);
+
+	/*
+	 * Return space to the system if there were duplicates.
+	 */
+	if (newsyms < nfuncsyms)
+		image->pi_symbols = reallocarray(image->pi_symbols,
+		    image->pi_symcount, sizeof(*symptr));
+
+	/*
+	 * Keep the list of symbols sorted.
+	 */
+	qsort(image->pi_symbols, image->pi_symcount, sizeof(*symptr),
+	    pmcstat_symbol_compare);
+
+	/*
+	 * Deal with function symbols that have a size of 'zero' by
+	 * making them extend to the next higher address.  These
+	 * symbols are usually defined in assembly code.
+	 */
+	for (symptr = image->pi_symbols;
+	     symptr < image->pi_symbols + (image->pi_symcount - 1);
+	     symptr++)
+		if (symptr->ps_start == symptr->ps_end)
+			symptr->ps_end = (symptr+1)->ps_start;
+}
+
+/*
+ * Examine an ELF file to determine the size of its text segment.
+ * Sets image->pi_type if anything conclusive can be determined about
+ * this image.
+ */
+
+static void
+pmcstat_image_get_elf_params(struct pmcstat_image *image)
+{
+	int fd;
+	size_t i, nph, nsh;
+	const char *path, *elfbase;
+	char *p, *endp;
+	uintfptr_t minva, maxva;
+	Elf *e;
+	Elf_Scn *scn;
+	GElf_Ehdr eh;
+	GElf_Phdr ph;
+	GElf_Shdr sh;
+	enum pmcstat_image_type image_type;
+	char buffer[PATH_MAX];
+
+	assert(image->pi_type == PMCSTAT_IMAGE_UNKNOWN);
+
+	image->pi_start = minva = ~(uintfptr_t) 0;
+	image->pi_end = maxva = (uintfptr_t) 0;
+	image->pi_type = image_type = PMCSTAT_IMAGE_INDETERMINABLE;
+	image->pi_isdynamic = 0;
+	image->pi_dynlinkerpath = NULL;
+	image->pi_vaddr = 0;
+
+	path = pmcstat_string_unintern(image->pi_execpath);
+	assert(path != NULL);
+
+	/*
+	 * Look for kernel modules under FSROOT/KERNELPATH/NAME,
+	 * and user mode executable objects under FSROOT/PATHNAME.
+	 */
+	if (image->pi_iskernelmodule)
+		(void) snprintf(buffer, sizeof(buffer), "%s%s/%s",
+		    args.pa_fsroot, args.pa_kernel, path);
+	else
+		(void) snprintf(buffer, sizeof(buffer), "%s%s",
+		    args.pa_fsroot, path);
+
+	e = NULL;
+	if ((fd = open(buffer, O_RDONLY, 0)) < 0 ||
+	    (e = elf_begin(fd, ELF_C_READ, NULL)) == NULL ||
+	    (elf_kind(e) != ELF_K_ELF)) {
+		if (args.pa_verbosity >= 2)
+			warnx("WARNING: Cannot determine the type of \"%s\".",
+			    buffer);
+		goto done;
+	}
+
+	if (gelf_getehdr(e, &eh) != &eh) {
+		warnx(
+		    "WARNING: Cannot retrieve the ELF Header for \"%s\": %s.",
+		    buffer, elf_errmsg(-1));
+		goto done;
+	}
+
+	if (eh.e_type != ET_EXEC && eh.e_type != ET_DYN &&
+	    !(image->pi_iskernelmodule && eh.e_type == ET_REL)) {
+		warnx("WARNING: \"%s\" is of an unsupported ELF type.",
+		    buffer);
+		goto done;
+	}
+
+	image_type = eh.e_ident[EI_CLASS] == ELFCLASS32 ?
+	    PMCSTAT_IMAGE_ELF32 : PMCSTAT_IMAGE_ELF64;
+
+	/*
+	 * Determine the virtual address where an executable would be
+	 * loaded.  Additionally, for dynamically linked executables,
+	 * save the pathname to the runtime linker.
+	 */
+	if (eh.e_type == ET_EXEC) {
+		if (elf_getphnum(e, &nph) == 0) {
+			warnx(
+"WARNING: Could not determine the number of program headers in \"%s\": %s.",
+			    buffer,
+			    elf_errmsg(-1));
+			goto done;
+		}
+		for (i = 0; i < eh.e_phnum; i++) {
+			if (gelf_getphdr(e, i, &ph) != &ph) {
+				warnx(
+"WARNING: Retrieval of PHDR entry #%ju in \"%s\" failed: %s.",
+				    (uintmax_t) i, buffer, elf_errmsg(-1));
+				goto done;
+			}
+			switch (ph.p_type) {
+			case PT_DYNAMIC:
+				image->pi_isdynamic = 1;
+				break;
+			case PT_INTERP:
+				if ((elfbase = elf_rawfile(e, NULL)) == NULL) {
+					warnx(
+"WARNING: Cannot retrieve the interpreter for \"%s\": %s.",
+					    buffer, elf_errmsg(-1));
+					goto done;
+				}
+				image->pi_dynlinkerpath =
+				    pmcstat_string_intern(elfbase +
+				        ph.p_offset);
+				break;
+			case PT_LOAD:
+				if ((ph.p_flags & PF_X) != 0 &&
+				    (ph.p_offset & (-ph.p_align)) == 0)
+					image->pi_vaddr = ph.p_vaddr & (-ph.p_align);
+				break;
+			}
+		}
+	}
+
+	/*
+	 * Get the min and max VA associated with this ELF object.
+	 */
+	if (elf_getshnum(e, &nsh) == 0) {
+		warnx(
+"WARNING: Could not determine the number of sections for \"%s\": %s.",
+		    buffer, elf_errmsg(-1));
+		goto done;
+	}
+
+	for (i = 0; i < nsh; i++) {
+		if ((scn = elf_getscn(e, i)) == NULL ||
+		    gelf_getshdr(scn, &sh) != &sh) {
+			warnx(
+"WARNING: Could not retrieve section header #%ju in \"%s\": %s.",
+			    (uintmax_t) i, buffer, elf_errmsg(-1));
+			goto done;
+		}
+		if (sh.sh_flags & SHF_EXECINSTR) {
+			minva = min(minva, sh.sh_addr);
+			maxva = max(maxva, sh.sh_addr + sh.sh_size);
+		}
+		if (sh.sh_type == SHT_SYMTAB || sh.sh_type == SHT_DYNSYM)
+			pmcstat_image_add_symbols(image, e, scn, &sh);
+	}
+
+	image->pi_start = minva;
+	image->pi_end   = maxva;
+	image->pi_type  = image_type;
+	image->pi_fullpath = pmcstat_string_intern(buffer);
+
+	/* Build display name
+	 */
+	endp = buffer;
+	for (p = buffer; *p; p++)
+		if (*p == '/')
+			endp = p+1;
+	image->pi_name = pmcstat_string_intern(endp);
+
+ done:
+	(void) elf_end(e);
+	if (fd >= 0)
+		(void) close(fd);
+	return;
+}
+
+/*
+ * Given an image descriptor, determine whether it is an ELF, or AOUT.
+ * If no handler claims the image, set its type to 'INDETERMINABLE'.
+ */
+
+void
+pmcstat_image_determine_type(struct pmcstat_image *image)
+{
+	assert(image->pi_type == PMCSTAT_IMAGE_UNKNOWN);
+
+	/* Try each kind of handler in turn */
+	if (image->pi_type == PMCSTAT_IMAGE_UNKNOWN)
+		pmcstat_image_get_elf_params(image);
+	if (image->pi_type == PMCSTAT_IMAGE_UNKNOWN)
+		pmcstat_image_get_aout_params(image);
+
+	/*
+	 * Otherwise, remember that we tried to determine
+	 * the object's type and had failed.
+	 */
+	if (image->pi_type == PMCSTAT_IMAGE_UNKNOWN)
+		image->pi_type = PMCSTAT_IMAGE_INDETERMINABLE;
+}
+
+/*
+ * Locate an image descriptor given an interned path, adding a fresh
+ * descriptor to the cache if necessary.  This function also finds a
+ * suitable name for this image's sample file.
+ *
+ * We defer filling in the file format specific parts of the image
+ * structure till the time we actually see a sample that would fall
+ * into this image.
+ */
+
+static struct pmcstat_image *
+pmcstat_image_from_path(pmcstat_interned_string internedpath,
+    int iskernelmodule)
+{
+	int hash;
+	struct pmcstat_image *pi;
+
+	hash = pmcstat_string_lookup_hash(internedpath);
+
+	/* First, look for an existing entry. */
+	LIST_FOREACH(pi, &pmcstat_image_hash[hash], pi_next)
+	    if (pi->pi_execpath == internedpath &&
+		  pi->pi_iskernelmodule == iskernelmodule)
+		    return (pi);
+
+	/*
+	 * Allocate a new entry and place it at the head of the hash
+	 * and LRU lists.
+	 */
+	pi = malloc(sizeof(*pi));
+	if (pi == NULL)
+		return (NULL);
+
+	pi->pi_type = PMCSTAT_IMAGE_UNKNOWN;
+	pi->pi_execpath = internedpath;
+	pi->pi_start = ~0;
+	pi->pi_end = 0;
+	pi->pi_entry = 0;
+	pi->pi_vaddr = 0;
+	pi->pi_isdynamic = 0;
+	pi->pi_iskernelmodule = iskernelmodule;
+	pi->pi_dynlinkerpath = NULL;
+	pi->pi_symbols = NULL;
+	pi->pi_symcount = 0;
+	pi->pi_addr2line = NULL;
+
+	if (plugins[args.pa_pplugin].pl_initimage != NULL)
+		plugins[args.pa_pplugin].pl_initimage(pi);
+	if (plugins[args.pa_plugin].pl_initimage != NULL)
+		plugins[args.pa_plugin].pl_initimage(pi);
+
+	LIST_INSERT_HEAD(&pmcstat_image_hash[hash], pi, pi_next);
+
+	return (pi);
+}
+
+/*
+ * Record the fact that PC values from 'start' to 'end' come from
+ * image 'image'.
+ */
+
+static void
+pmcstat_image_link(struct pmcstat_process *pp, struct pmcstat_image *image,
+    uintfptr_t start)
+{
+	struct pmcstat_pcmap *pcm, *pcmnew;
+	uintfptr_t offset;
+
+	assert(image->pi_type != PMCSTAT_IMAGE_UNKNOWN &&
+	    image->pi_type != PMCSTAT_IMAGE_INDETERMINABLE);
+
+	if ((pcmnew = malloc(sizeof(*pcmnew))) == NULL)
+		err(EX_OSERR, "ERROR: Cannot create a map entry");
+
+	/*
+	 * Adjust the map entry to only cover the text portion
+	 * of the object.
+	 */
+
+	offset = start - image->pi_vaddr;
+	pcmnew->ppm_lowpc  = image->pi_start + offset;
+	pcmnew->ppm_highpc = image->pi_end + offset;
+	pcmnew->ppm_image  = image;
+
+	assert(pcmnew->ppm_lowpc < pcmnew->ppm_highpc);
+
+	/* Overlapped mmap()'s are assumed to never occur. */
+	TAILQ_FOREACH(pcm, &pp->pp_map, ppm_next)
+	    if (pcm->ppm_lowpc >= pcmnew->ppm_highpc)
+		    break;
+
+	if (pcm == NULL)
+		TAILQ_INSERT_TAIL(&pp->pp_map, pcmnew, ppm_next);
+	else
+		TAILQ_INSERT_BEFORE(pcm, pcmnew, ppm_next);
+}
+
+/*
+ * Unmap images in the range [start..end) associated with process
+ * 'pp'.
+ */
+
+static void
+pmcstat_image_unmap(struct pmcstat_process *pp, uintfptr_t start,
+    uintfptr_t end)
+{
+	struct pmcstat_pcmap *pcm, *pcmtmp, *pcmnew;
+
+	assert(pp != NULL);
+	assert(start < end);
+
+	/*
+	 * Cases:
+	 * - we could have the range completely in the middle of an
+	 *   existing pcmap; in this case we have to split the pcmap
+	 *   structure into two (i.e., generate a 'hole').
+	 * - we could have the range covering multiple pcmaps; these
+	 *   will have to be removed.
+	 * - we could have either 'start' or 'end' falling in the
+	 *   middle of a pcmap; in this case shorten the entry.
+	 */
+	TAILQ_FOREACH_SAFE(pcm, &pp->pp_map, ppm_next, pcmtmp) {
+		assert(pcm->ppm_lowpc < pcm->ppm_highpc);
+		if (pcm->ppm_highpc <= start)
+			continue;
+		if (pcm->ppm_lowpc >= end)
+			return;
+		if (pcm->ppm_lowpc >= start && pcm->ppm_highpc <= end) {
+			/*
+			 * The current pcmap is completely inside the
+			 * unmapped range: remove it entirely.
+			 */
+			TAILQ_REMOVE(&pp->pp_map, pcm, ppm_next);
+			free(pcm);
+		} else if (pcm->ppm_lowpc < start && pcm->ppm_highpc > end) {
+			/*
+			 * Split this pcmap into two; curtail the
+			 * current map to end at [start-1], and start
+			 * the new one at [end].
+			 */
+			if ((pcmnew = malloc(sizeof(*pcmnew))) == NULL)
+				err(EX_OSERR,
+				    "ERROR: Cannot split a map entry");
+
+			pcmnew->ppm_image = pcm->ppm_image;
+
+			pcmnew->ppm_lowpc = end;
+			pcmnew->ppm_highpc = pcm->ppm_highpc;
+
+			pcm->ppm_highpc = start;
+
+			TAILQ_INSERT_AFTER(&pp->pp_map, pcm, pcmnew, ppm_next);
+
+			return;
+		} else if (pcm->ppm_lowpc < start && pcm->ppm_highpc <= end)
+			pcm->ppm_highpc = start;
+		else if (pcm->ppm_lowpc >= start && pcm->ppm_highpc > end)
+			pcm->ppm_lowpc = end;
+		else
+			assert(0);
+	}
+}
+
+/*
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  * Resolve file name and line number for the given address.
  */
 int

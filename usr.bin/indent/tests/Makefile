@@ -8,6 +8,7 @@ ${PACKAGE}FILES+=	comments.0
 ${PACKAGE}FILES+=	comments.0.stdout
 ${PACKAGE}FILES+=	declarations.0
 ${PACKAGE}FILES+=	declarations.0.stdout
+<<<<<<< HEAD
 ${PACKAGE}FILES+=	elsecomment.0
 ${PACKAGE}FILES+=	elsecomment.0.stdout
 ${PACKAGE}FILES+=	elsecomment.0.pro
@@ -34,15 +35,27 @@ ${PACKAGE}FILES+=	pcs.0.pro
 ${PACKAGE}FILES+=	cs.0
 ${PACKAGE}FILES+=	cs.0.stdout
 ${PACKAGE}FILES+=	cs.0.pro
+=======
+${PACKAGE}FILES+=	float.0
+${PACKAGE}FILES+=	float.0.stdout
+${PACKAGE}FILES+=	nsac.0
+${PACKAGE}FILES+=	nsac.0.stdout
+${PACKAGE}FILES+=	nsac.0.pro
+${PACKAGE}FILES+=	offsetof.0
+${PACKAGE}FILES+=	offsetof.0.stdout
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 ${PACKAGE}FILES+=	struct.0
 ${PACKAGE}FILES+=	struct.0.stdout
 ${PACKAGE}FILES+=	surplusbad.0
 ${PACKAGE}FILES+=	surplusbad.0.stdout
 ${PACKAGE}FILES+=	surplusbad.0.pro
+<<<<<<< HEAD
 ${PACKAGE}FILES+=	types_from_file.0
 ${PACKAGE}FILES+=	types_from_file.0.stdout
 ${PACKAGE}FILES+=	types_from_file.0.list
 ${PACKAGE}FILES+=	types_from_file.0.pro
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 ${PACKAGE}FILES+=	wchar.0
 ${PACKAGE}FILES+=	wchar.0.stdout
 

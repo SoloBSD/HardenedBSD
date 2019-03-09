@@ -57,7 +57,14 @@ __FBSDID("$FreeBSD$");
 #include <pthread_np.h>
 #include <sysexits.h>
 #include <stdbool.h>
+<<<<<<< HEAD
 #include <stdint.h>
+=======
+#ifndef WITHOUT_CAPSICUM
+#include <nl_types.h>
+#include <termios.h>
+#endif
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 #include <machine/vmm.h>
 #ifndef WITHOUT_CAPSICUM
@@ -171,6 +178,7 @@ usage(int code)
 	exit(code);
 }
 
+<<<<<<< HEAD
 /*
  * XXX This parser is known to have the following issues:
  * 1.  It accepts null key=value tokens ",,".
@@ -260,6 +268,45 @@ out:
 	return (-1);
 }
 
+=======
+#ifndef WITHOUT_CAPSICUM
+/*
+ * 11-stable capsicum helpers
+ */
+static void
+bhyve_caph_cache_catpages(void)
+{
+
+	(void)catopen("libc", NL_CAT_LOCALE);
+}
+
+static int
+bhyve_caph_limit_stdoe(void)
+{
+	cap_rights_t rights;
+	unsigned long cmds[] = { TIOCGETA, TIOCGWINSZ };
+	int i, fds[] = { STDOUT_FILENO, STDERR_FILENO };
+
+	cap_rights_init(&rights, CAP_FCNTL, CAP_FSTAT, CAP_IOCTL);
+	cap_rights_set(&rights, CAP_WRITE);
+
+	for (i = 0; i < nitems(fds); i++) {
+		if (cap_rights_limit(fds[i], &rights) < 0 && errno != ENOSYS)
+			return (-1);
+
+		if (cap_ioctls_limit(fds[i], cmds, nitems(cmds)) < 0 && errno != ENOSYS)
+			return (-1);
+
+		if (cap_fcntls_limit(fds[i], CAP_FCNTL_GETFL) < 0 && errno != ENOSYS)
+			return (-1);
+	}
+
+	return (0);
+}
+
+#endif
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 static int
 pincpu_parse(const char *opt)
 {
@@ -970,10 +1017,14 @@ main(int argc, char *argv[])
 			}
 			break;
 		case 's':
+<<<<<<< HEAD
 			if (strncmp(optarg, "help", strlen(optarg)) == 0) {
 				pci_print_supported_devices();
 				exit(0);
 			} else if (pci_parse_slot(optarg) != 0)
+=======
+			if (pci_parse_slot(optarg) != 0)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 				exit(4);
 			else
 				break;
@@ -1074,9 +1125,12 @@ main(int argc, char *argv[])
 		perror("device emulation initialization error");
 		exit(4);
 	}
+<<<<<<< HEAD
 
 	if (dbg_port != 0)
 		init_dbgport(dbg_port);
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 	if (gdb_port != 0)
 		init_gdb(ctx, gdb_port, gdb_stop);
@@ -1125,12 +1179,21 @@ main(int argc, char *argv[])
 	setproctitle("%s", vmname);
 
 #ifndef WITHOUT_CAPSICUM
+<<<<<<< HEAD
 	caph_cache_catpages();
 
 	if (caph_limit_stdout() == -1 || caph_limit_stderr() == -1)
 		errx(EX_OSERR, "Unable to apply rights for sandbox");
 
 	if (caph_enter() == -1)
+=======
+	bhyve_caph_cache_catpages();
+
+	if (bhyve_caph_limit_stdoe() == -1)
+		errx(EX_OSERR, "Unable to apply rights for sandbox");
+
+	if (cap_enter() == -1 && errno != ENOSYS)
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		errx(EX_OSERR, "cap_enter() failed");
 #endif
 

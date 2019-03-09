@@ -1259,6 +1259,7 @@ camdd_get_cgd(struct cam_device *device, struct ccb_getdev *cgd)
 
 	CCB_CLEAR_ALL_EXCEPT_HDR(&ccb->cgd);
 
+<<<<<<< HEAD
 	ccb->ccb_h.func_code = XPT_GDEV_TYPE;
  
 	if (cam_send_ccb(device, ccb) < 0) {
@@ -1267,6 +1268,24 @@ camdd_get_cgd(struct cam_device *device, struct ccb_getdev *cgd)
 					CAM_EPF_ALL, stderr);
 		retval = -1;
 		goto bailout;
+=======
+	/*
+	 * For devices that support READ CAPACITY, we'll attempt to get the
+	 * capacity.  Otherwise, we really don't support tape or other
+	 * devices via SCSI passthrough, so just return an error in that case.
+	 */
+	switch (scsi_dev_type) {
+	case T_DIRECT:
+	case T_WORM:
+	case T_CDROM:
+	case T_OPTICAL:
+	case T_RBC:
+	case T_ZBC_HM:
+		break;
+	default:
+		errx(1, "Unsupported SCSI device type %d", scsi_dev_type);
+		break; /*NOTREACHED*/
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 	}
 
 	if ((ccb->ccb_h.status & CAM_STATUS_MASK) != CAM_REQ_CMP) {

@@ -101,6 +101,7 @@ struct ef_file {
 	int		ef_verbose;
 };
 
+<<<<<<< HEAD
 static int	ef_obj_get_type(elf_file_t ef);
 static int	ef_obj_close(elf_file_t ef);
 static int	ef_obj_read(elf_file_t ef, Elf_Off offset, size_t len,
@@ -136,6 +137,41 @@ static struct elf_file_ops ef_obj_file_ops = {
 	.symaddr		= ef_obj_symaddr,
 	.lookup_set		= ef_obj_lookup_set,
 	.lookup_symbol		= ef_obj_lookup_symbol
+=======
+static int ef_obj_get_type(elf_file_t ef);
+static int ef_obj_close(elf_file_t ef);
+static int ef_obj_read(elf_file_t ef, Elf_Off offset, size_t len, void* dest);
+static int ef_obj_read_entry(elf_file_t ef, Elf_Off offset, size_t len,
+    void **ptr);
+static int ef_obj_seg_read(elf_file_t ef, Elf_Off offset, size_t len,
+    void *dest);
+static int ef_obj_seg_read_rel(elf_file_t ef, Elf_Off offset, size_t len,
+    void *dest);
+static int ef_obj_seg_read_string(elf_file_t ef, Elf_Off offset, size_t len,
+    char *dest);
+static int ef_obj_seg_read_entry(elf_file_t ef, Elf_Off offset, size_t len,
+    void **ptr);
+static int ef_obj_seg_read_entry_rel(elf_file_t ef, Elf_Off offset, size_t len,
+    void **ptr);
+static Elf_Addr ef_obj_symaddr(elf_file_t ef, Elf_Size symidx);
+static int ef_obj_lookup_set(elf_file_t ef, const char *name, long *startp,
+    long *stopp, long *countp);
+static int ef_obj_lookup_symbol(elf_file_t ef, const char* name, Elf_Sym** sym);
+
+static struct elf_file_ops ef_obj_file_ops = {
+	ef_obj_get_type,
+	ef_obj_close,
+	ef_obj_read,
+	ef_obj_read_entry,
+	ef_obj_seg_read,
+	ef_obj_seg_read_rel,
+	ef_obj_seg_read_string,
+	ef_obj_seg_read_entry,
+	ef_obj_seg_read_entry_rel,
+	ef_obj_symaddr,
+	ef_obj_lookup_set,
+	ef_obj_lookup_symbol
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 };
 
 static int

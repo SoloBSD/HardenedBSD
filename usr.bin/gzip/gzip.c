@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /*	$NetBSD: gzip.c,v 1.116 2018/10/27 11:39:12 skrll Exp $	*/
+=======
+/*	$NetBSD: gzip.c,v 1.113 2018/06/12 00:42:17 kamil Exp $	*/
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 /*-
  * SPDX-License-Identifier: BSD-2-Clause-NetBSD
@@ -173,7 +177,11 @@ static suffixes_t suffixes[] = {
 #define NUM_SUFFIXES (nitems(suffixes))
 #define SUFFIX_MAXLEN	30
 
+<<<<<<< HEAD
 static	const char	gzip_version[] = "FreeBSD gzip 20190107";
+=======
+static	const char	gzip_version[] = "FreeBSD gzip 20171121";
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 #ifndef SMALL
 static	const char	gzip_copyright[] = \
@@ -257,7 +265,10 @@ static	void	display_license(void);
 static	const suffixes_t *check_suffix(char *, int);
 static	ssize_t	read_retry(int, void *, size_t);
 static	ssize_t	write_retry(int, const void *, size_t);
+<<<<<<< HEAD
 static void	print_list_out(off_t, off_t, const char*);
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 #ifdef SMALL
 #define infile_set(f,t) infile_set(f)
@@ -1270,6 +1281,7 @@ infile_set(const char *newinfile, off_t total)
 		infile = newinfile;
 #ifndef SMALL
 	infile_total = total;
+<<<<<<< HEAD
 #endif
 }
 
@@ -1282,6 +1294,20 @@ infile_clear(void)
 	infile_total = infile_current = 0;
 #endif
 }
+=======
+#endif
+}
+
+static	void
+infile_clear(void)
+{
+
+	infile = NULL;
+#ifndef SMALL
+	infile_total = infile_current = 0;
+#endif
+}
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 static const suffixes_t *
 check_suffix(char *file, int xlate)
@@ -1462,6 +1488,10 @@ file_uncompress(char *file, char *outfile, size_t outsize)
 		goto lose;
 	}
 	if (fstat(fd, &isb) != 0) {
+<<<<<<< HEAD
+=======
+		close(fd);
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 		maybe_warn("can't stat %s", file);
 		goto lose;
 	}

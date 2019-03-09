@@ -3,8 +3,11 @@
 #
 
 .include <src.opts.mk>
+<<<<<<< HEAD
 CFLAGS+=-I${SRCTOP}/sys
 .PATH:  ${SRCTOP}/sys/cam/ctl
+=======
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 
 PROG=	bhyve
 PACKAGE=	bhyve
@@ -85,6 +88,21 @@ CFLAGS+=-DNO_OPENSSL
 LIBADD+=	crypto
 .endif
 
+<<<<<<< HEAD
+=======
+.if ${MK_INET_SUPPORT} != "no"
+CFLAGS+=-DINET
+.endif
+.if ${MK_INET6_SUPPORT} != "no"
+CFLAGS+=-DINET6
+.endif
+.if ${MK_OPENSSL} == "no"
+CFLAGS+=-DNO_OPENSSL
+.else
+LIBADD+=	crypto
+.endif
+
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
 CFLAGS+= -I${BHYVE_SYSDIR}/sys/dev/e1000
 CFLAGS+= -I${BHYVE_SYSDIR}/sys/dev/mii
 CFLAGS+= -I${BHYVE_SYSDIR}/sys/dev/usb/controller

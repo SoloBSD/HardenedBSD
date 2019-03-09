@@ -2,7 +2,11 @@
  * sys-bsd.c - System-dependent procedures for setting up
  * PPP interfaces on bsd-4.4-ish systems (including 386BSD, NetBSD, etc.)
  *
+<<<<<<< HEAD
  * SPDX-License-Identifier: BSD-1-Clause
+=======
+ * SPDX-License-Identifier: MIT
+>>>>>>> 930409367ecf72a59ee5666730e1b84ac90527b2
  *
  * Copyright (c) 1989 Carnegie Mellon University.
  * All rights reserved.
