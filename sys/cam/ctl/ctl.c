@@ -66,6 +66,8 @@ __FBSDID("$FreeBSD$");
 #include <sys/sbuf.h>
 #include <sys/smp.h>
 #include <sys/endian.h>
+#include <sys/proc.h>
+#include <sys/sched.h>
 #include <sys/sysctl.h>
 #include <sys/nv.h>
 #include <sys/dnv.h>
@@ -651,7 +653,7 @@ ctl_ha_datamove(union ctl_io *io)
 
 	memset(&msg.dt, 0, sizeof(msg.dt));
 	msg.hdr.msg_type = CTL_MSG_DATAMOVE;
-	msg.hdr.original_sc = io->io_hdr.original_sc;
+	msg.hdr.original_sc = io->io_hdr.remote_io;
 	msg.hdr.serializing_sc = io;
 	msg.hdr.nexus = io->io_hdr.nexus;
 	msg.hdr.status = io->io_hdr.status;
@@ -766,7 +768,7 @@ ctl_ha_done(union ctl_io *io)
 	if (io->io_hdr.io_type == CTL_IO_SCSI) {
 		memset(&msg, 0, sizeof(msg));
 		msg.hdr.msg_type = CTL_MSG_FINISH_IO;
-		msg.hdr.original_sc = io->io_hdr.original_sc;
+		msg.hdr.original_sc = io->io_hdr.remote_io;
 		msg.hdr.nexus = io->io_hdr.nexus;
 		msg.hdr.status = io->io_hdr.status;
 		msg.scsi.scsi_status = io->scsiio.scsi_status;
@@ -1439,7 +1441,7 @@ ctl_isc_event_handler(ctl_ha_channel channel, ctl_ha_event event, int param)
 			// populate ctsio from msg
 			io->io_hdr.io_type = CTL_IO_SCSI;
 			io->io_hdr.msg_type = CTL_MSG_SERIALIZE;
-			io->io_hdr.original_sc = msg->hdr.original_sc;
+			io->io_hdr.remote_io = msg->hdr.original_sc;
 			io->io_hdr.flags |= CTL_FLAG_FROM_OTHER_SC |
 					    CTL_FLAG_IO_ACTIVE;
 			/*
@@ -1495,7 +1497,7 @@ ctl_isc_event_handler(ctl_ha_channel channel, ctl_ha_event event, int param)
 			 * Keep track of this, we need to send it back over
 			 * when the datamove is complete.
 			 */
-			io->io_hdr.serializing_sc = msg->hdr.serializing_sc;
+			io->io_hdr.remote_io = msg->hdr.serializing_sc;
 			if (msg->hdr.status == CTL_SUCCESS)
 				io->io_hdr.status = msg->hdr.status;
 
@@ -1508,9 +1510,8 @@ ctl_isc_event_handler(ctl_ha_channel channel, ctl_ha_event event, int param)
 				    CTL_HA_DATAMOVE_SEGMENT + 1;
 				sgl = malloc(sizeof(*sgl) * i, M_CTL,
 				    M_WAITOK | M_ZERO);
-				io->io_hdr.remote_sglist = sgl;
-				io->io_hdr.local_sglist =
-				    &sgl[msg->dt.kern_sg_entries];
+				CTL_RSGL(io) = sgl;
+				CTL_LSGL(io) = &sgl[msg->dt.kern_sg_entries];
 
 				io->scsiio.kern_data_ptr = (uint8_t *)sgl;
 
@@ -1597,7 +1598,7 @@ ctl_isc_event_handler(ctl_ha_channel channel, ctl_ha_event event, int param)
 			}
 			io->io_hdr.flags |= CTL_FLAG_IO_ACTIVE;
 			io->io_hdr.msg_type = CTL_MSG_R2R;
-			io->io_hdr.serializing_sc = msg->hdr.serializing_sc;
+			io->io_hdr.remote_io = msg->hdr.serializing_sc;
 			ctl_enqueue_isc(io);
 			break;
 
@@ -2369,7 +2370,7 @@ ctl_serialize_other_sc_cmd(struct ctl_scsiio *ctsio)
 			mtx_unlock(&lun->lun_lock);
 
 			/* send msg back to other side */
-			msg_info.hdr.original_sc = ctsio->io_hdr.original_sc;
+			msg_info.hdr.original_sc = ctsio->io_hdr.remote_io;
 			msg_info.hdr.serializing_sc = (union ctl_io *)ctsio;
 			msg_info.hdr.msg_type = CTL_MSG_R2R;
 			ctl_ha_msg_send(CTL_HA_CHAN_CTL, &msg_info,
@@ -2395,7 +2396,7 @@ ctl_serialize_other_sc_cmd(struct ctl_scsiio *ctsio)
 					 /*retry_count*/ 0);
 badjuju:
 		ctl_copy_sense_data_back((union ctl_io *)ctsio, &msg_info);
-		msg_info.hdr.original_sc = ctsio->io_hdr.original_sc;
+		msg_info.hdr.original_sc = ctsio->io_hdr.remote_io;
 		msg_info.hdr.serializing_sc = NULL;
 		msg_info.hdr.msg_type = CTL_MSG_BAD_JUJU;
 		ctl_ha_msg_send(CTL_HA_CHAN_CTL, &msg_info,
@@ -11043,7 +11044,7 @@ ctl_check_blocked(struct ctl_lun *lun)
 
 				cur_blocked->io_hdr.flags &= ~CTL_FLAG_IO_ACTIVE;
 				msg_info.hdr.original_sc =
-					cur_blocked->io_hdr.original_sc;
+					cur_blocked->io_hdr.remote_io;
 				msg_info.hdr.serializing_sc = cur_blocked;
 				msg_info.hdr.msg_type = CTL_MSG_R2R;
 				ctl_ha_msg_send(CTL_HA_CHAN_CTL, &msg_info,
@@ -12480,7 +12481,7 @@ ctl_send_datamove_done(union ctl_io *io, int have_lock)
 	memset(&msg, 0, sizeof(msg));
 	msg.hdr.msg_type = CTL_MSG_DATAMOVE_DONE;
 	msg.hdr.original_sc = io;
-	msg.hdr.serializing_sc = io->io_hdr.serializing_sc;
+	msg.hdr.serializing_sc = io->io_hdr.remote_io;
 	msg.hdr.nexus = io->io_hdr.nexus;
 	msg.hdr.status = io->io_hdr.status;
 	msg.scsi.kern_data_resid = io->scsiio.kern_data_resid;
@@ -12531,10 +12532,10 @@ ctl_datamove_remote_write_cb(struct ctl_ha_dt_req *rq)
 	ctl_dt_req_free(rq);
 
 	for (i = 0; i < io->scsiio.kern_sg_entries; i++)
-		free(io->io_hdr.local_sglist[i].addr, M_CTL);
-	free(io->io_hdr.remote_sglist, M_CTL);
-	io->io_hdr.remote_sglist = NULL;
-	io->io_hdr.local_sglist = NULL;
+		free(CTL_LSGLT(io)[i].addr, M_CTL);
+	free(CTL_RSGL(io), M_CTL);
+	CTL_RSGL(io) = NULL;
+	CTL_LSGL(io) = NULL;
 
 	/*
 	 * The data is in local and remote memory, so now we need to send
@@ -12574,7 +12575,7 @@ ctl_datamove_remote_write(union ctl_io *io)
 		return;
 
 	/* Switch the pointer over so the FETD knows what to do */
-	io->scsiio.kern_data_ptr = (uint8_t *)io->io_hdr.local_sglist;
+	io->scsiio.kern_data_ptr = (uint8_t *)CTL_LSGL(io);
 
 	/*
 	 * Use a custom move done callback, since we need to send completion
@@ -12597,10 +12598,10 @@ ctl_datamove_remote_dm_read_cb(union ctl_io *io)
 	uint32_t i;
 
 	for (i = 0; i < io->scsiio.kern_sg_entries; i++)
-		free(io->io_hdr.local_sglist[i].addr, M_CTL);
-	free(io->io_hdr.remote_sglist, M_CTL);
-	io->io_hdr.remote_sglist = NULL;
-	io->io_hdr.local_sglist = NULL;
+		free(CTL_LSGLT(io)[i].addr, M_CTL);
+	free(CTL_RSGL(io), M_CTL);
+	CTL_RSGL(io) = NULL;
+	CTL_LSGL(io) = NULL;
 
 #if 0
 	scsi_path_string(io, path_str, sizeof(path_str));
@@ -12647,7 +12648,7 @@ ctl_datamove_remote_read_cb(struct ctl_ha_dt_req *rq)
 	ctl_dt_req_free(rq);
 
 	/* Switch the pointer over so the FETD knows what to do */
-	io->scsiio.kern_data_ptr = (uint8_t *)io->io_hdr.local_sglist;
+	io->scsiio.kern_data_ptr = (uint8_t *)CTL_LSGL(io);
 
 	/*
 	 * Use a custom move done callback, since we need to send completion
@@ -12670,7 +12671,7 @@ ctl_datamove_remote_sgl_setup(union ctl_io *io)
 	int i;
 
 	retval = 0;
-	local_sglist = io->io_hdr.local_sglist;
+	local_sglist = CTL_LSGL(io);
 	len_to_go = io->scsiio.kern_data_len;
 
 	/*
@@ -12741,8 +12742,8 @@ ctl_datamove_remote_xfer(union ctl_io *io, unsigned command,
 		return (1);
 	}
 
-	local_sglist = io->io_hdr.local_sglist;
-	remote_sglist = io->io_hdr.remote_sglist;
+	local_sglist = CTL_LSGL(io);
+	remote_sglist = CTL_RSGL(io);
 	local_used = 0;
 	remote_used = 0;
 	total_used = 0;
@@ -12855,10 +12856,10 @@ ctl_datamove_remote_read(union ctl_io *io)
 		 * error if there is a problem.
 		 */
 		for (i = 0; i < io->scsiio.kern_sg_entries; i++)
-			free(io->io_hdr.local_sglist[i].addr, M_CTL);
-		free(io->io_hdr.remote_sglist, M_CTL);
-		io->io_hdr.remote_sglist = NULL;
-		io->io_hdr.local_sglist = NULL;
+			free(CTL_LSGLT(io)[i].addr, M_CTL);
+		free(CTL_RSGL(io), M_CTL);
+		CTL_RSGL(io) = NULL;
+		CTL_LSGL(io) = NULL;
 	}
 }
 
@@ -13106,7 +13107,7 @@ bailout:
 	    (io->io_hdr.flags & CTL_FLAG_SENT_2OTHER_SC)) {
 		memset(&msg, 0, sizeof(msg));
 		msg.hdr.msg_type = CTL_MSG_FINISH_IO;
-		msg.hdr.serializing_sc = io->io_hdr.serializing_sc;
+		msg.hdr.serializing_sc = io->io_hdr.remote_io;
 		msg.hdr.nexus = io->io_hdr.nexus;
 		ctl_ha_msg_send(CTL_HA_CHAN_CTL, &msg,
 		    sizeof(msg.scsi) - sizeof(msg.scsi.sense_data),
@@ -13297,6 +13298,9 @@ ctl_work_thread(void *arg)
 	int retval;
 
 	CTL_DEBUG_PRINT(("ctl_work_thread starting\n"));
+	thread_lock(curthread);
+	sched_prio(curthread, PUSER - 1);
+	thread_unlock(curthread);
 
 	while (!softc->shutdown) {
 		/*
@@ -13346,7 +13350,7 @@ ctl_work_thread(void *arg)
 		}
 
 		/* Sleep until we have something to do. */
-		mtx_sleep(thr, &thr->queue_lock, PDROP | PRIBIO, "-", 0);
+		mtx_sleep(thr, &thr->queue_lock, PDROP, "-", 0);
 	}
 	thr->thread = NULL;
 	kthread_exit();
@@ -13359,6 +13363,9 @@ ctl_lun_thread(void *arg)
 	struct ctl_be_lun *be_lun;
 
 	CTL_DEBUG_PRINT(("ctl_lun_thread starting\n"));
+	thread_lock(curthread);
+	sched_prio(curthread, PUSER - 1);
+	thread_unlock(curthread);
 
 	while (!softc->shutdown) {
 		mtx_lock(&softc->ctl_lock);
@@ -13372,7 +13379,7 @@ ctl_lun_thread(void *arg)
 
 		/* Sleep until we have something to do. */
 		mtx_sleep(&softc->pending_lun_queue, &softc->ctl_lock,
-		    PDROP | PRIBIO, "-", 0);
+		    PDROP, "-", 0);
 	}
 	softc->lun_thread = NULL;
 	kthread_exit();
@@ -13390,6 +13397,9 @@ ctl_thresh_thread(void *arg)
 	int i, e, set;
 
 	CTL_DEBUG_PRINT(("ctl_thresh_thread starting\n"));
+	thread_lock(curthread);
+	sched_prio(curthread, PUSER - 1);
+	thread_unlock(curthread);
 
 	while (!softc->shutdown) {
 		mtx_lock(&softc->ctl_lock);
@@ -13477,7 +13487,7 @@ ctl_thresh_thread(void *arg)
 			}
 		}
 		mtx_sleep(&softc->thresh_thread, &softc->ctl_lock,
-		    PDROP | PRIBIO, "-", CTL_LBP_PERIOD * hz);
+		    PDROP, "-", CTL_LBP_PERIOD * hz);
 	}
 	softc->thresh_thread = NULL;
 	kthread_exit();
